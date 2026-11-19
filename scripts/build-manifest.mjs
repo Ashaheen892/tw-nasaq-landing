@@ -1,0 +1,476 @@
+import fs from "node:fs";
+
+const L = (ar, en) => ({ ar, en });
+const text = (id, label, value, o = {}) => ({
+  id,
+  type: "string",
+  format: o.format || "text",
+  label,
+  icon: o.icon || "sicon-format-text-alt",
+  multilanguage: o.multilang !== false,
+  required: false,
+  description: o.desc ?? null,
+  minLength: 0,
+  maxLength: o.max ?? (o.format === "textarea" ? 800 : 180),
+  value,
+});
+const area = (id, label, value, desc = null) => text(id, label, value, { format: "textarea", icon: "sicon-paragraph", desc, max: 800 });
+const plain = (id, label, value, desc = null) => text(id, label, value, { multilang: false, desc });
+const color = (id, label, value = "") => ({
+  id, type: "string", format: "color", inputType: "color", label, icon: "sicon-format-fill", required: false, description: null, value,
+});
+const sw = (id, label, value, desc = null) => ({
+  id, type: "boolean", format: "switch", label, icon: "sicon-toggle-off", required: false, description: desc, value, selected: value,
+});
+const image = (id, label, desc, value = "") => ({
+  id, type: "string", format: "image", label, icon: "sicon-image", required: false, description: desc, value,
+});
+const url = (id, label, value = "", desc = null) => ({
+  id, type: "string", format: "url", label, icon: "sicon-link", required: false, description: desc, value,
+});
+const line = (id) => ({ id, type: "static", format: "line" });
+const num = (id, label, value, min, max, desc = null) => ({
+  id, type: "number", format: "number", inputType: "number", label, icon: "sicon-calculator",
+  required: false, description: desc, minimum: min, maximum: max, value,
+});
+const products = (id, label, desc) => ({
+  id, type: "items", format: "dropdown-list", source: "products", label, icon: "sicon-box",
+  placeholder: "ابحث عن منتج", required: false, description: desc,
+  options: [], selected: [], value: [], searchable: true, multichoice: false,
+});
+const collection = (id, itemLabel, fields, value, min, max) => ({
+  id, type: "collection", format: "collection", required: min > 0, minLength: min, maxLength: max,
+  item_label: itemLabel,
+  fields: fields.map((field) => ({ ...field, id: String(field.id).includes(".") ? field.id : `${id}.${field.id}` })),
+  value: value.map((row) => {
+    const out = {};
+    for (const [key, val] of Object.entries(row)) out[key.startsWith(`${id}.`) ? key : `${id}.${key}`] = val;
+    return out;
+  }),
+});
+const buyHint = "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.";
+
+const components = [
+  {
+    title: "رأس الصفحة",
+    icon: "sicon-store",
+    name: "page-bar",
+    key: "987655b7-d713-48a7-9760-6700de724ed8",
+    image: "",
+    props: { "min-height": "74px" },
+    fields: [
+      image("logo", "شعار", "اتركه فارغاً ليظهر اسم الدار بخط العنوان. المقاس المقترح 280×80 بكسل."),
+      text("brand", "اسم الدار", L("دار نَسَق", "Nasaq House")),
+      text("mark", "سطر صغير تحت الاسم", L("NASAQ", "NASAQ")),
+      url("home_url", "رابط الشعار", "#"),
+      line("pb-brand"),
+      collection("links", "رابط", [
+        text("label", "النص", L("التشكيلة", "The edit")),
+        url("url", "الرابط", "#lookbook"),
+      ], [
+        { label: L("التشكيلة", "The edit"), url: "#lookbook" },
+        { label: L("الأقمشة", "The cloth"), url: "#quality" },
+        { label: L("عباية الموسم", "Season piece"), url: "#product" },
+        { label: L("أسئلة شائعة", "Questions"), url: "#faq" },
+      ], 0, 6),
+      line("pb-links"),
+      text("cta_label", "نص الزر", L("اطلبي الآن", "Order now")),
+      url("cta_url", "رابط الزر", "#product", buyHint),
+      sw("show_search", "أيقونة البحث", true),
+      url("search_url", "رابط البحث", "#product"),
+      line("pb-bar"),
+      sw("sticky", "تثبيت الرأس عند التمرير", true, "يبقى الاسم ظاهراً أثناء نزول الزائرة."),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "افتتاح التشكيلة",
+    icon: "sicon-image",
+    name: "hero-stage",
+    key: "a9909358-5974-4070-bfb8-68410b61c142",
+    image: "",
+    props: { "min-height": "640px" },
+    fields: [
+      text("kicker", "سطر صغير", L("تشكيلة شتاء ٢٠٢٦", "Winter 2026")),
+      text("title_line", "سطر العنوان الأول", L("أناقة ساكنة", "A quiet elegance"), { max: 80 }),
+      text("title_before", "ما قبل الكلمة المميزة", L("في", "in the"), { max: 40 }),
+      text("title_accent", "الكلمة المميزة", L("تفاصيل", "details"), { max: 40 }),
+      text("title_after", "ما بعد الكلمة المميزة", L("القَصّة.", "of the cut."), { max: 80 }),
+      area("text", "النص", L("عبايات مخيطة بأيدٍ سعودية من كريب مطفي وحرير مغسول، بقَصّات مدروسة تُحافظ على انسيابها بعد كل غسلة.", "Abayas sewn in Saudi hands from matte crepe and washed silk, cut so the fall stays after every wash.")),
+      text("primary_label", "نص الزر الأساسي", L("تسوّقي التشكيلة", "Shop the edit")),
+      url("primary_url", "رابط الزر الأساسي", "#product", buyHint),
+      text("secondary_label", "نص الزر الثاني", L("تعرّفي على الأقمشة", "See the cloth")),
+      url("secondary_url", "رابط الزر الثاني", "#quality"),
+      plain("side_tag", "عبارة جانبية", "Collection 2026 · Riyadh"),
+      line("hs-media"),
+      collection("photos", "صورة", [
+        image("image", "الصورة", "المقاس المقترح 900×1400 بكسل. اتركيها فارغة ليظهر الشكل الرملي."),
+        text("caption", "التعليق", L("كريب مطفي", "Matte crepe")),
+      ], [
+        { image: "", caption: L("كريب مطفي", "Matte crepe") },
+        { image: "", caption: L("حرير مغسول", "Washed silk") },
+        { image: "", caption: L("كلوش", "Flared") },
+      ], 1, 3),
+      collection("stats", "رقم", [
+        text("value", "الرقم", L("١٢٤٠٠", "12,400"), { max: 20 }),
+        text("label", "الوصف", L("عميلة", "clients"), { max: 40 }),
+      ], [
+        { value: L("١٢٤٠٠", "12,400"), label: L("عميلة", "clients") },
+        { value: L("٤.٩", "4.9"), label: L("تقييم المتجر", "store rating") },
+        { value: L("٤٨ س", "48h"), label: L("توصيل الرياض", "Riyadh delivery") },
+      ], 0, 3),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "شريط العبارات",
+    icon: "sicon-format-text-alt",
+    name: "ribbon-line",
+    key: "10e7afdc-4807-489b-a683-98d3d88a2e9d",
+    image: "",
+    props: { "min-height": "54px" },
+    fields: [
+      collection("items", "عبارة", [
+        text("text", "العبارة", L("خياطة سعودية", "Sewn in Saudi Arabia")),
+      ], [
+        { text: L("خياطة سعودية", "Sewn in Saudi Arabia") },
+        { text: L("قياسات مخصّصة", "Custom measurements") },
+        { text: L("استرجاع ١٤ يوماً", "14-day returns") },
+        { text: L("تغليف هدية", "Gift wrap") },
+        { text: L("دفع عند الاستلام", "Pay on delivery") },
+      ], 1, 8),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "شبكة القصّات",
+    icon: "sicon-image",
+    name: "cut-grid",
+    key: "5d448cb2-aff8-4cf5-a632-811b877a9fdf",
+    image: "",
+    props: { "min-height": "640px" },
+    fields: [
+      plain("anchor", "معرّف القسم في الرابط", "lookbook", "يُستخدم في روابط الرأس، مثل #lookbook."),
+      text("kicker", "سطر صغير", L("Lookbook", "Lookbook")),
+      text("title", "العنوان", L("ثلاث قَصّات تكفي خزانتك", "Three cuts are enough")),
+      area("text", "النص", L("اخترنا الأكثر طلباً من ٢٨ قَصّة، وأعدنا ضبط أطوالها على القياس السعودي.", "The three most requested of 28 cuts, with lengths set to the Saudi measure.")),
+      collection("cards", "قَصّة", [
+        text("tag", "شارة", L("الأكثر طلباً", "Most requested"), { max: 40 }),
+        image("image", "الصورة", "المقاس المقترح 800×1000 بكسل. اتركيها فارغة ليظهر الشكل الرملي."),
+        text("caption", "تعليق الصورة", L("Nasaq 01", "Nasaq 01"), { max: 40 }),
+        text("title", "الاسم", L("عباية كلوش", "Flared abaya")),
+        text("note", "سطر تحت الاسم", L("كريب مطفي · ٨ ألوان", "Matte crepe · 8 colors")),
+        text("price", "السعر", L("٤٩٥", "495"), { max: 30 }),
+        text("compare", "السعر قبل الخصم", L("٦٢٠ ر.س", "SAR 620"), { max: 30 }),
+        url("url", "الرابط", "#product"),
+      ], [
+        { tag: L("الأكثر طلباً", "Most requested"), image: "", caption: L("Nasaq 01", "Nasaq 01"), title: L("عباية كلوش", "Flared abaya"), note: L("كريب مطفي · ٨ ألوان", "Matte crepe · 8 colors"), price: L("٤٩٥", "495"), compare: L("٦٢٠ ر.س", "SAR 620"), url: "#product" },
+        { tag: L("جديد", "New"), image: "", caption: L("Nasaq 02", "Nasaq 02"), title: L("عباية مطرزة", "Embroidered abaya"), note: L("حرير مغسول · تطريز يدوي", "Washed silk · hand embroidery"), price: L("٧٨٠", "780"), compare: L("٩٥٠ ر.س", "SAR 950"), url: "#product" },
+        { tag: L("يومية", "Everyday"), image: "", caption: L("Nasaq 03", "Nasaq 03"), title: L("عباية مستقيمة", "Straight abaya"), note: L("كريب خفيف · ٦ ألوان", "Light crepe · 6 colors"), price: L("٣٢٠", "320"), compare: L("٤١٠ ر.س", "SAR 410"), url: "#product" },
+      ], 1, 6),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "صف الأقمشة",
+    icon: "sicon-shield-check",
+    name: "craft-row",
+    key: "6209a2b4-4202-4da9-b253-5e743804492c",
+    image: "",
+    props: { "min-height": "220px" },
+    fields: [
+      plain("anchor", "معرّف القسم في الرابط", "quality"),
+      text("title", "وصف للقارئ", L("الأقمشة", "The cloth")),
+      collection("items", "سبب", [
+        text("mark", "الرقم", L("١", "1"), { max: 4 }),
+        text("title", "العنوان", L("قماش يُختبر أولاً", "Cloth is tested first")),
+        area("text", "النص", L("كل دفعة قماش تُغسل ٥ مرات قبل الاعتماد؛ ما يتغيّر لونه أو يفقد انسيابه لا يدخل الورشة.", "Every cloth lot is washed five times before it is approved.")),
+      ], [
+        { mark: L("١", "1"), title: L("قماش يُختبر أولاً", "Cloth is tested first"), text: L("كل دفعة قماش تُغسل ٥ مرات قبل الاعتماد؛ ما يتغيّر لونه أو يفقد انسيابه لا يدخل الورشة.", "Every cloth lot is washed five times before it is approved. What fades or loses its fall never enters the workshop.") },
+        { mark: L("٢", "2"), title: L("قياس على مقاسك", "Cut to your measure"), text: L("أرسلي طولك وطول الكتف، ونخيط العباية على مقاسك بلا فرق سعر.", "Send your height and shoulder, and the abaya is cut to you at the same price.") },
+        { mark: L("٣", "3"), title: L("خياطة مزدوجة", "A double stitch"), text: L("حواشٍ مخفية ودرزة مزدوجة عند الأكمام — المنطقة الأولى التي تتلف عادةً.", "Hidden hems and a double stitch at the sleeve, the first place that usually wears.") },
+        { mark: L("٤", "4"), title: L("استرجاع مريح", "An easy return"), text: L("١٤ يوماً للاستبدال أو الاسترجاع، والشحن علينا في حال اختلاف المقاس.", "14 days to exchange or return, and we cover shipping if the size is off.") },
+      ], 1, 4),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "عباية الموسم",
+    icon: "sicon-box",
+    name: "piece-stage",
+    key: "cf296df4-e4fa-4144-bcbe-3c96e1c42a28",
+    image: "",
+    props: { "min-height": "720px" },
+    fields: [
+      plain("anchor", "معرّف القسم في الرابط", "product"),
+      products("product", "منتج من المتجر", "اتركه فارغاً لاستخدام منتج صفحة الهبوط. عند اختيار منتج تُستبدل الصورة والسعر والاسم."),
+      text("kicker", "سطر صغير", L("عباية الموسم", "The season piece")),
+      text("title", "الاسم", L("عباية نَسَق المطرزة", "Nasaq embroidered abaya")),
+      text("rating_text", "سطر التقييم", L("٤.٩ من ٣٨٢ تقييماً", "4.9 from 382 reviews")),
+      text("price_text", "السعر", L("٧٨٠ ر.س", "SAR 780"), { max: 30 }),
+      text("compare_text", "السعر قبل الخصم", L("٩٥٠ ر.س", "SAR 950"), { max: 30 }),
+      text("save_text", "شارة التوفير", L("وفّري ١٨٪", "Save 18%"), { max: 30 }),
+      text("save_label", "صيغة التوفير عند ربط منتج", L("وفّري {n}٪", "Save {n}%"), { max: 30, desc: "{n} يُستبدل بنسبة الخصم." }),
+      area("text", "الوصف", L("حرير مغسول بوزن ١٩ ممي، تطريز يدوي على الصدر والأكمام، بطانة قطنية تمنع الشفافية تماماً.", "Washed silk at 19 momme, hand embroidery on the chest and sleeves, and a cotton lining that is never sheer.")),
+      line("ps-photos"),
+      collection("photos", "صورة", [
+        image("image", "الصورة", "المقاس المقترح 900×1200 بكسل. اتركيها فارغة ليظهر الشكل الرملي."),
+        text("caption", "التعليق", L("عباية نَسَق المطرزة", "Nasaq embroidered abaya")),
+      ], [
+        { image: "", caption: L("عباية نَسَق المطرزة", "Nasaq embroidered abaya") },
+        { image: "", caption: L("التطريز", "Embroidery") },
+        { image: "", caption: L("البطانة", "The lining") },
+      ], 1, 4),
+      line("ps-options"),
+      text("size_label", "عنوان المقاس", L("المقاس", "Size"), { max: 40 }),
+      collection("sizes", "مقاس", [
+        text("label", "المقاس", L("54", "54"), { max: 12 }),
+        sw("available", "متوفر", true),
+        sw("picked", "مختار عند الفتح", false),
+      ], [
+        { label: L("52", "52"), available: true, picked: false },
+        { label: L("54", "54"), available: true, picked: true },
+        { label: L("56", "56"), available: true, picked: false },
+        { label: L("58", "58"), available: true, picked: false },
+        { label: L("60", "60"), available: false, picked: false },
+      ], 0, 8),
+      text("color_label", "عنوان اللون", L("اللون", "Color"), { max: 40 }),
+      collection("colors", "لون", [
+        text("label", "الاسم", L("أسود", "Black"), { max: 30 }),
+        plain("hex", "درجة اللون", "#15151a"),
+        sw("picked", "مختار عند الفتح", false),
+      ], [
+        { label: L("أسود", "Black"), hex: "#15151a", picked: true },
+        { label: L("فحمي", "Charcoal"), hex: "#3b3f46", picked: false },
+        { label: L("بني", "Brown"), hex: "#6b5847", picked: false },
+        { label: L("رمادي بيج", "Warm grey"), hex: "#8d7f6d", picked: false },
+      ], 0, 8),
+      collection("tabs", "تبويب", [
+        text("label", "العنوان", L("التفاصيل", "Details"), { max: 40 }),
+        area("lines", "الأسطر", L("حرير مغسول ١٩ ممي + بطانة قطن ١٠٠٪", "19 momme washed silk + 100% cotton lining"), "سطر لكل نقطة."),
+      ], [
+        { label: L("التفاصيل", "Details"), lines: L("حرير مغسول ١٩ ممي + بطانة قطن ١٠٠٪\nتطريز يدوي بخيط حريري مطابق\nسحّاب مخفي جانبي · أزرار صدف", "19 momme washed silk + 100% cotton lining\nHand embroidery in a matching silk thread\nA hidden side zip · shell buttons") },
+        { label: L("القياسات", "Measures"), lines: L("54: الطول ١٤٠ سم · الكتف ٤٠ سم\n56: الطول ١٤٥ سم · الكتف ٤٢ سم\nقياس مخصّص متاح مجاناً", "54: length 140 cm · shoulder 40 cm\n56: length 145 cm · shoulder 42 cm\nCustom measure is free") },
+        { label: L("العناية", "Care"), lines: L("غسيل يدوي بماء بارد أو تنظيف جاف\nكي على حرارة منخفضة من الجهة الداخلية\nتُحفظ معلّقة على علاقة مبطّنة", "Hand wash cold or dry clean\nIron low from the inside\nHang it on a padded hanger") },
+      ], 0, 4),
+      line("ps-buy"),
+      text("primary_label", "نص زر الشراء", L("أضيفي للسلة", "Add to bag")),
+      url("primary_url", "رابط زر الشراء", "#product", buyHint),
+      text("secondary_label", "نص الزر الثاني", L("اطلبي قياساً مخصّصاً", "Request a custom measure")),
+      url("secondary_url", "رابط الزر الثاني", "#faq"),
+      sw("show_bar", "شريط شراء ثابت أسفل الصفحة", true, "يظهر بعد النزول، ويعرض الاسم والسعر والمقاس المختار."),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "عدّاد العرض",
+    icon: "sicon-time",
+    name: "offer-clock",
+    key: "47ba2d9d-8269-445f-ab0b-38c83b33eb2e",
+    image: "",
+    props: { "min-height": "220px" },
+    fields: [
+      text("kicker", "سطر صغير", L("عرض محدود", "A short offer")),
+      text("title", "العنوان", L("خصم ٢٠٪ على التشكيلة + تغليف هدية", "20% off the edit, plus gift wrap")),
+      area("text", "النص", L("ينتهي العرض تلقائياً عند انتهاء العدّاد، ولا يُمدّد.", "The offer ends when the clock does, and it is not extended.")),
+      num("hours", "مدة العدّاد بالساعات", 56, 1, 240, "تبدأ من أول زيارة في المتصفح، وتُحفظ حتى لا يُعاد ضبطها عند كل تحديث."),
+      text("day_label", "تسمية اليوم", L("يوم", "day"), { max: 20 }),
+      text("hour_label", "تسمية الساعة", L("ساعة", "hour"), { max: 20 }),
+      text("minute_label", "تسمية الدقيقة", L("دقيقة", "min"), { max: 20 }),
+      text("second_label", "تسمية الثانية", L("ثانية", "sec"), { max: 20 }),
+      text("button_label", "نص الزر", L("استفيدي من العرض", "Take the offer")),
+      url("button_url", "رابط الزر", "#product", buyHint),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "آراء العميلات",
+    icon: "sicon-star",
+    name: "guest-notes",
+    key: "eb42257e-8e02-4579-8df2-83bc3a5f5d4e",
+    image: "",
+    props: { "min-height": "420px" },
+    fields: [
+      text("kicker", "سطر صغير", L("آراء العميلات", "From clients")),
+      text("title", "العنوان", L("٣٨٢ تقييماً بمعدل ٤.٩", "382 reviews, averaging 4.9")),
+      collection("notes", "رأي", [
+        area("quote", "النص", L("القماش ثقيل بشكل محترم وما يبيّن اللي تحته.", "The cloth has a proper weight and nothing shows through.")),
+        text("name", "الاسم", L("لمى ع.", "Lama A.")),
+        text("meta", "السطر الصغير", L("الرياض · مشترية موثّقة", "Riyadh · verified")),
+        text("initial", "الحرف", L("ل", "L"), { max: 2 }),
+      ], [
+        { quote: L("القماش ثقيل بشكل محترم وما يبيّن اللي تحته. طلبت قياس مخصص ووصلني بالضبط.", "The cloth has a proper weight and nothing shows through. I asked for a custom measure and it arrived exact."), name: L("لمى ع.", "Lama A."), meta: L("الرياض · مشترية موثّقة", "Riyadh · verified"), initial: L("ل", "L") },
+        { quote: L("ثالث عباية أطلبها منهم. التطريز نظيف من الداخل، وهذا اللي يفرّق عن غيرهم.", "This is the third abaya I have ordered. The embroidery is clean on the inside, and that is the difference."), name: L("نورة ا.", "Noura A."), meta: L("جدة · مشترية موثّقة", "Jeddah · verified"), initial: L("ن", "N") },
+        { quote: L("وصلت في ٣٦ ساعة والتغليف يصلح هدية مباشرة. خدمة العملاء ردّت على الواتس بدقيقتين.", "It arrived in 36 hours and the wrap is ready to gift. Support answered on WhatsApp in two minutes."), name: L("ريم س.", "Reem S."), meta: L("الدمام · مشترية موثّقة", "Dammam · verified"), initial: L("ر", "R") },
+      ], 1, 6),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "أسئلة قبل الطلب",
+    icon: "sicon-list",
+    name: "ask-list",
+    key: "beca001a-7963-4760-8ca8-05c86770fbb7",
+    image: "",
+    props: { "min-height": "420px" },
+    fields: [
+      plain("anchor", "معرّف القسم في الرابط", "faq"),
+      text("kicker", "سطر صغير", L("FAQ", "FAQ")),
+      text("title", "العنوان", L("أسئلة قبل الطلب", "Before you order")),
+      area("text", "النص", L("ما لم تجديه هنا، اسألينا على الواتساب ونرد في دقائق.", "If it is not here, ask us on WhatsApp and we reply in minutes.")),
+      collection("items", "سؤال", [
+        text("q", "السؤال", L("كيف أختار مقاسي الصحيح؟", "How do I choose my size?")),
+        area("a", "الجواب", L("قيسي طولك من الكتف حتى الكعب وأضيفي ٢ سم.", "Measure from shoulder to heel and add 2 cm.")),
+      ], [
+        { q: L("كيف أختار مقاسي الصحيح؟", "How do I choose my size?"), a: L("قيسي طولك من الكتف حتى الكعب وأضيفي ٢ سم. أو أرسلي طولك ووزنك لنا ونختار عنك — ٩٦٪ من الطلبات تصل مطابقة.", "Measure from shoulder to heel and add 2 cm. Or send your height and weight and we choose — 96% of orders arrive right.") },
+        { q: L("هل القياس المخصّص بسعر إضافي؟", "Does a custom measure cost more?"), a: L("لا. القياس المخصّص مجاني ويحتاج ٣ أيام عمل إضافية فقط.", "No. A custom measure is free and needs only three extra working days.") },
+        { q: L("كم تستغرق مدة التوصيل؟", "How long is delivery?"), a: L("الرياض ٤٨ ساعة، باقي مناطق المملكة ٢–٤ أيام، ودول الخليج ٥–٧ أيام.", "Riyadh in 48 hours, the rest of the Kingdom in 2–4 days, and the Gulf in 5–7 days.") },
+        { q: L("هل يمكنني الاسترجاع إذا لم يناسبني المقاس؟", "Can I return it if the size is off?"), a: L("نعم، خلال ١٤ يوماً بشرط عدم الاستخدام وبقاء البطاقة. شحن الاستبدال علينا في حال خطأ المقاس.", "Yes, within 14 days if it is unworn and the tag is on. We cover the exchange if the size was wrong.") },
+        { q: L("هل العباية شفافة؟", "Is the abaya sheer?"), a: L("لا. جميع عباياتنا مبطّنة بقطن ١٠٠٪، ونختبرها تحت ضوء مباشر قبل الاعتماد.", "No. Every abaya is lined in 100% cotton, and we test it under direct light before it is approved.") },
+      ], 1, 8),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "دعوة الختام",
+    icon: "sicon-megaphone",
+    name: "close-invite",
+    key: "27ec15c9-328c-438b-9a04-966c9b2b8cae",
+    image: "",
+    props: { "min-height": "360px" },
+    fields: [
+      text("kicker", "سطر صغير", L("جاهزة؟", "Ready?")),
+      text("title", "العنوان", L("اختاري عبايتك اليوم، وتوصلك قبل المناسبة.", "Choose it today, and it arrives before the occasion.")),
+      area("text", "النص", L("الطلبات قبل الرابعة عصراً تُخرج من الورشة في نفس اليوم.", "Orders placed before 4pm leave the workshop the same day.")),
+      text("primary_label", "نص الزر الأساسي", L("تسوّقي الآن", "Shop now")),
+      url("primary_url", "رابط الزر الأساسي", "#product", buyHint),
+      text("secondary_label", "نص الزر الثاني", L("تواصلي واتساب", "WhatsApp us")),
+      url("secondary_url", "رابط الزر الثاني", "#", "ضعي رابط الواتساب."),
+      collection("perks", "ميزة", [
+        text("text", "النص", L("شحن مجاني فوق ٣٠٠ ر.س", "Free shipping over SAR 300")),
+      ], [
+        { text: L("شحن مجاني فوق ٣٠٠ ر.س", "Free shipping over SAR 300") },
+        { text: L("دفع عند الاستلام", "Pay on delivery") },
+        { text: L("تقسيط تمارا وتابي", "Tamara and Tabby") },
+        { text: L("استرجاع ١٤ يوماً", "14-day returns") },
+      ], 0, 6),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
+    title: "فوتر الصفحة",
+    icon: "sicon-link",
+    name: "page-footer",
+    key: "c8fa9e35-19fc-427b-99a0-e6ba7d5a1fb3",
+    image: "",
+    props: { "min-height": "280px" },
+    fields: [
+      image("logo", "شعار", "اتركه فارغاً ليظهر اسم الدار. المقاس المقترح 280×80 بكسل."),
+      text("brand", "اسم الدار", L("دار نَسَق", "Nasaq House")),
+      text("mark", "سطر صغير تحت الاسم", L("NASAQ", "NASAQ")),
+      area("about", "نبذة", L("ورشة خياطة سعودية في الرياض منذ ٢٠١٩. عبايات تُخاط بالطلب.", "A Saudi sewing workshop in Riyadh since 2019. Abayas cut to order.")),
+      collection("payments", "وسيلة دفع", [
+        text("label", "الاسم", L("مدى", "mada"), { max: 20 }),
+      ], [
+        { label: L("مدى", "mada") },
+        { label: L("Visa", "Visa") },
+        { label: L("Apple Pay", "Apple Pay") },
+        { label: L("تابي", "Tabby") },
+      ], 0, 6),
+      line("ft-cols"),
+      text("col1_title", "عنوان العمود الأول", L("التشكيلة", "The edit")),
+      collection("col1", "رابط", [
+        text("label", "النص", L("كلوش", "Flared")),
+        url("url", "الرابط", "#lookbook"),
+      ], [
+        { label: L("كلوش", "Flared"), url: "#lookbook" },
+        { label: L("مستقيمة", "Straight"), url: "#lookbook" },
+        { label: L("مطرزة", "Embroidered"), url: "#product" },
+        { label: L("صلاة وسفر", "Prayer and travel"), url: "#lookbook" },
+      ], 0, 6),
+      text("col2_title", "عنوان العمود الثاني", L("المساعدة", "Help")),
+      collection("col2", "رابط", [
+        text("label", "النص", L("دليل المقاسات", "Size guide")),
+        url("url", "الرابط", "#faq"),
+      ], [
+        { label: L("دليل المقاسات", "Size guide"), url: "#faq" },
+        { label: L("سياسة الاستبدال", "Exchange policy"), url: "#faq" },
+        { label: L("تتبّع الطلب", "Track an order"), url: "#" },
+        { label: L("اتصلي بنا", "Contact"), url: "#" },
+      ], 0, 6),
+      text("col3_title", "عنوان العمود الثالث", L("تابعينا", "Follow")),
+      collection("col3", "رابط", [
+        text("label", "النص", L("إنستغرام", "Instagram")),
+        url("url", "الرابط", "#"),
+      ], [
+        { label: L("إنستغرام", "Instagram"), url: "#" },
+        { label: L("سناب شات", "Snapchat"), url: "#" },
+        { label: L("تيك توك", "TikTok"), url: "#" },
+      ], 0, 6),
+      line("ft-base"),
+      text("copyright", "سطر الحقوق", L("© ٢٠٢٦ دار نَسَق · جميع الحقوق محفوظة", "© 2026 Nasaq House")),
+      text("legal", "السجل والرقم الضريبي", L("س.ت ١٠١٠XXXXXX · الرقم الضريبي ٣٠٠XXXXXXXX", "CR 1010XXXXXX · VAT 300XXXXXXXX")),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+];
+
+const templates = [
+  {
+    name: "nasaq",
+    id: "5f79e7d6-62a7-40a2-b12d-1a6a5988cb62",
+    is_default: true,
+    primary_color: "#101014",
+    order: ["page-bar", "hero-stage", "ribbon-line", "cut-grid", "craft-row", "piece-stage", "offer-clock", "guest-notes", "ask-list", "close-invite", "page-footer"],
+  },
+  {
+    name: "wasl",
+    id: "605cc08e-57b1-46eb-ace2-d6c52dd52d4e",
+    is_default: false,
+    primary_color: "#b8945f",
+    order: ["page-bar", "piece-stage", "offer-clock", "ask-list", "close-invite", "page-footer"],
+  },
+];
+
+const bundlePath = new URL("../twilight-bundle.json", import.meta.url);
+let previous = { templates: [] };
+if (fs.existsSync(bundlePath)) previous = JSON.parse(fs.readFileSync(bundlePath, "utf8"));
+const previousTemplates = new Map((previous.templates || []).map((item) => [item.path, item]));
+
+const bundle = {
+  name: { ar: "دار نَسَق", en: "Nasaq House" },
+  description: {
+    ar: "صفحتان لعبايات. نَسَق تعرض التشكيلة كاملة، ووصل تختصر الطريق إلى المنتج والعرض والأسئلة.",
+    en: "Two abaya landing pages. Nasaq shows the full edit, and Wasl goes straight to the piece, the offer, and the questions.",
+  },
+  author_email: "sajispprt@gmail.com",
+  support_url: "https://github.com/Ashaheen892/tw-nasaq-landing",
+  repository: "https://github.com/Ashaheen892/tw-nasaq-landing",
+  features: ["landing-page-templates"],
+  components,
+  templates: templates.map((template) => {
+    const path = `templates.${template.name}`;
+    const saved = previousTemplates.get(path) || {};
+    return {
+      id: template.id,
+      path,
+      category_id: saved.category_id || "",
+      primary_color: template.primary_color,
+      thumbnail: saved.thumbnail || "",
+      is_default: template.is_default,
+      ...(saved.public_preview_url ? { public_preview_url: saved.public_preview_url } : {}),
+    };
+  }),
+};
+
+fs.writeFileSync(bundlePath, `${JSON.stringify(bundle, null, 4)}\n`);
+fs.mkdirSync(new URL("../templates/", import.meta.url), { recursive: true });
+fs.mkdirSync(new URL("../public/", import.meta.url), { recursive: true });
+const byName = new Map(components.map((component) => [component.name, component]));
+for (const template of templates) {
+  const list = template.order.map((name) => structuredClone(byName.get(name)));
+  fs.writeFileSync(new URL(`../templates/${template.name}.json`, import.meta.url), `${JSON.stringify({ id: template.id, components: list }, null, 2)}\n`);
+}
+fs.writeFileSync(new URL("../public/twilight-bundle.json", import.meta.url), `${JSON.stringify(bundle, null, 4)}\n`);
+console.log("pages:", templates.map((template) => `${template.name}(${template.order.length})`).join(", "));
+console.log("sections:", components.map((component) => component.name).join(", "));

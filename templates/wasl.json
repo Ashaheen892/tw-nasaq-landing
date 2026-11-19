@@ -1,0 +1,1768 @@
+{
+  "id": "605cc08e-57b1-46eb-ace2-d6c52dd52d4e",
+  "components": [
+    {
+      "title": "رأس الصفحة",
+      "icon": "sicon-store",
+      "name": "page-bar",
+      "key": "987655b7-d713-48a7-9760-6700de724ed8",
+      "image": "",
+      "props": {
+        "min-height": "74px"
+      },
+      "fields": [
+        {
+          "id": "logo",
+          "type": "string",
+          "format": "image",
+          "label": "شعار",
+          "icon": "sicon-image",
+          "required": false,
+          "description": "اتركه فارغاً ليظهر اسم الدار بخط العنوان. المقاس المقترح 280×80 بكسل.",
+          "value": ""
+        },
+        {
+          "id": "brand",
+          "type": "string",
+          "format": "text",
+          "label": "اسم الدار",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "دار نَسَق",
+            "en": "Nasaq House"
+          }
+        },
+        {
+          "id": "mark",
+          "type": "string",
+          "format": "text",
+          "label": "سطر صغير تحت الاسم",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "NASAQ",
+            "en": "NASAQ"
+          }
+        },
+        {
+          "id": "home_url",
+          "type": "string",
+          "format": "url",
+          "label": "رابط الشعار",
+          "icon": "sicon-link",
+          "required": false,
+          "description": null,
+          "value": "#"
+        },
+        {
+          "id": "pb-brand",
+          "type": "static",
+          "format": "line"
+        },
+        {
+          "id": "links",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 6,
+          "item_label": "رابط",
+          "fields": [
+            {
+              "id": "links.label",
+              "type": "string",
+              "format": "text",
+              "label": "النص",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 180,
+              "value": {
+                "ar": "التشكيلة",
+                "en": "The edit"
+              }
+            },
+            {
+              "id": "links.url",
+              "type": "string",
+              "format": "url",
+              "label": "الرابط",
+              "icon": "sicon-link",
+              "required": false,
+              "description": null,
+              "value": "#lookbook"
+            }
+          ],
+          "value": [
+            {
+              "links.label": {
+                "ar": "التشكيلة",
+                "en": "The edit"
+              },
+              "links.url": "#lookbook"
+            },
+            {
+              "links.label": {
+                "ar": "الأقمشة",
+                "en": "The cloth"
+              },
+              "links.url": "#quality"
+            },
+            {
+              "links.label": {
+                "ar": "عباية الموسم",
+                "en": "Season piece"
+              },
+              "links.url": "#product"
+            },
+            {
+              "links.label": {
+                "ar": "أسئلة شائعة",
+                "en": "Questions"
+              },
+              "links.url": "#faq"
+            }
+          ]
+        },
+        {
+          "id": "pb-links",
+          "type": "static",
+          "format": "line"
+        },
+        {
+          "id": "cta_label",
+          "type": "string",
+          "format": "text",
+          "label": "نص الزر",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "اطلبي الآن",
+            "en": "Order now"
+          }
+        },
+        {
+          "id": "cta_url",
+          "type": "string",
+          "format": "url",
+          "label": "رابط الزر",
+          "icon": "sicon-link",
+          "required": false,
+          "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
+          "value": "#product"
+        },
+        {
+          "id": "show_search",
+          "type": "boolean",
+          "format": "switch",
+          "label": "أيقونة البحث",
+          "icon": "sicon-toggle-off",
+          "required": false,
+          "description": null,
+          "value": true,
+          "selected": true
+        },
+        {
+          "id": "search_url",
+          "type": "string",
+          "format": "url",
+          "label": "رابط البحث",
+          "icon": "sicon-link",
+          "required": false,
+          "description": null,
+          "value": "#product"
+        },
+        {
+          "id": "pb-bar",
+          "type": "static",
+          "format": "line"
+        },
+        {
+          "id": "sticky",
+          "type": "boolean",
+          "format": "switch",
+          "label": "تثبيت الرأس عند التمرير",
+          "icon": "sicon-toggle-off",
+          "required": false,
+          "description": "يبقى الاسم ظاهراً أثناء نزول الزائرة.",
+          "value": true,
+          "selected": true
+        },
+        {
+          "id": "bg_color",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "لون الخلفية",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": null,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "title": "عباية الموسم",
+      "icon": "sicon-box",
+      "name": "piece-stage",
+      "key": "cf296df4-e4fa-4144-bcbe-3c96e1c42a28",
+      "image": "",
+      "props": {
+        "min-height": "720px"
+      },
+      "fields": [
+        {
+          "id": "anchor",
+          "type": "string",
+          "format": "text",
+          "label": "معرّف القسم في الرابط",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": false,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": "product"
+        },
+        {
+          "id": "product",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "products",
+          "label": "منتج من المتجر",
+          "icon": "sicon-box",
+          "placeholder": "ابحث عن منتج",
+          "required": false,
+          "description": "اتركه فارغاً لاستخدام منتج صفحة الهبوط. عند اختيار منتج تُستبدل الصورة والسعر والاسم.",
+          "options": [],
+          "selected": [],
+          "value": [],
+          "searchable": true,
+          "multichoice": false
+        },
+        {
+          "id": "kicker",
+          "type": "string",
+          "format": "text",
+          "label": "سطر صغير",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "عباية الموسم",
+            "en": "The season piece"
+          }
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "format": "text",
+          "label": "الاسم",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "عباية نَسَق المطرزة",
+            "en": "Nasaq embroidered abaya"
+          }
+        },
+        {
+          "id": "rating_text",
+          "type": "string",
+          "format": "text",
+          "label": "سطر التقييم",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "٤.٩ من ٣٨٢ تقييماً",
+            "en": "4.9 from 382 reviews"
+          }
+        },
+        {
+          "id": "price_text",
+          "type": "string",
+          "format": "text",
+          "label": "السعر",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 30,
+          "value": {
+            "ar": "٧٨٠ ر.س",
+            "en": "SAR 780"
+          }
+        },
+        {
+          "id": "compare_text",
+          "type": "string",
+          "format": "text",
+          "label": "السعر قبل الخصم",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 30,
+          "value": {
+            "ar": "٩٥٠ ر.س",
+            "en": "SAR 950"
+          }
+        },
+        {
+          "id": "save_text",
+          "type": "string",
+          "format": "text",
+          "label": "شارة التوفير",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 30,
+          "value": {
+            "ar": "وفّري ١٨٪",
+            "en": "Save 18%"
+          }
+        },
+        {
+          "id": "save_label",
+          "type": "string",
+          "format": "text",
+          "label": "صيغة التوفير عند ربط منتج",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": "{n} يُستبدل بنسبة الخصم.",
+          "minLength": 0,
+          "maxLength": 30,
+          "value": {
+            "ar": "وفّري {n}٪",
+            "en": "Save {n}%"
+          }
+        },
+        {
+          "id": "text",
+          "type": "string",
+          "format": "textarea",
+          "label": "الوصف",
+          "icon": "sicon-paragraph",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 800,
+          "value": {
+            "ar": "حرير مغسول بوزن ١٩ ممي، تطريز يدوي على الصدر والأكمام، بطانة قطنية تمنع الشفافية تماماً.",
+            "en": "Washed silk at 19 momme, hand embroidery on the chest and sleeves, and a cotton lining that is never sheer."
+          }
+        },
+        {
+          "id": "ps-photos",
+          "type": "static",
+          "format": "line"
+        },
+        {
+          "id": "photos",
+          "type": "collection",
+          "format": "collection",
+          "required": true,
+          "minLength": 1,
+          "maxLength": 4,
+          "item_label": "صورة",
+          "fields": [
+            {
+              "id": "photos.image",
+              "type": "string",
+              "format": "image",
+              "label": "الصورة",
+              "icon": "sicon-image",
+              "required": false,
+              "description": "المقاس المقترح 900×1200 بكسل. اتركيها فارغة ليظهر الشكل الرملي.",
+              "value": ""
+            },
+            {
+              "id": "photos.caption",
+              "type": "string",
+              "format": "text",
+              "label": "التعليق",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 180,
+              "value": {
+                "ar": "عباية نَسَق المطرزة",
+                "en": "Nasaq embroidered abaya"
+              }
+            }
+          ],
+          "value": [
+            {
+              "photos.image": "",
+              "photos.caption": {
+                "ar": "عباية نَسَق المطرزة",
+                "en": "Nasaq embroidered abaya"
+              }
+            },
+            {
+              "photos.image": "",
+              "photos.caption": {
+                "ar": "التطريز",
+                "en": "Embroidery"
+              }
+            },
+            {
+              "photos.image": "",
+              "photos.caption": {
+                "ar": "البطانة",
+                "en": "The lining"
+              }
+            }
+          ]
+        },
+        {
+          "id": "ps-options",
+          "type": "static",
+          "format": "line"
+        },
+        {
+          "id": "size_label",
+          "type": "string",
+          "format": "text",
+          "label": "عنوان المقاس",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 40,
+          "value": {
+            "ar": "المقاس",
+            "en": "Size"
+          }
+        },
+        {
+          "id": "sizes",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 8,
+          "item_label": "مقاس",
+          "fields": [
+            {
+              "id": "sizes.label",
+              "type": "string",
+              "format": "text",
+              "label": "المقاس",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 12,
+              "value": {
+                "ar": "54",
+                "en": "54"
+              }
+            },
+            {
+              "id": "sizes.available",
+              "type": "boolean",
+              "format": "switch",
+              "label": "متوفر",
+              "icon": "sicon-toggle-off",
+              "required": false,
+              "description": null,
+              "value": true,
+              "selected": true
+            },
+            {
+              "id": "sizes.picked",
+              "type": "boolean",
+              "format": "switch",
+              "label": "مختار عند الفتح",
+              "icon": "sicon-toggle-off",
+              "required": false,
+              "description": null,
+              "value": false,
+              "selected": false
+            }
+          ],
+          "value": [
+            {
+              "sizes.label": {
+                "ar": "52",
+                "en": "52"
+              },
+              "sizes.available": true,
+              "sizes.picked": false
+            },
+            {
+              "sizes.label": {
+                "ar": "54",
+                "en": "54"
+              },
+              "sizes.available": true,
+              "sizes.picked": true
+            },
+            {
+              "sizes.label": {
+                "ar": "56",
+                "en": "56"
+              },
+              "sizes.available": true,
+              "sizes.picked": false
+            },
+            {
+              "sizes.label": {
+                "ar": "58",
+                "en": "58"
+              },
+              "sizes.available": true,
+              "sizes.picked": false
+            },
+            {
+              "sizes.label": {
+                "ar": "60",
+                "en": "60"
+              },
+              "sizes.available": false,
+              "sizes.picked": false
+            }
+          ]
+        },
+        {
+          "id": "color_label",
+          "type": "string",
+          "format": "text",
+          "label": "عنوان اللون",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 40,
+          "value": {
+            "ar": "اللون",
+            "en": "Color"
+          }
+        },
+        {
+          "id": "colors",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 8,
+          "item_label": "لون",
+          "fields": [
+            {
+              "id": "colors.label",
+              "type": "string",
+              "format": "text",
+              "label": "الاسم",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 30,
+              "value": {
+                "ar": "أسود",
+                "en": "Black"
+              }
+            },
+            {
+              "id": "colors.hex",
+              "type": "string",
+              "format": "text",
+              "label": "درجة اللون",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": false,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 180,
+              "value": "#15151a"
+            },
+            {
+              "id": "colors.picked",
+              "type": "boolean",
+              "format": "switch",
+              "label": "مختار عند الفتح",
+              "icon": "sicon-toggle-off",
+              "required": false,
+              "description": null,
+              "value": false,
+              "selected": false
+            }
+          ],
+          "value": [
+            {
+              "colors.label": {
+                "ar": "أسود",
+                "en": "Black"
+              },
+              "colors.hex": "#15151a",
+              "colors.picked": true
+            },
+            {
+              "colors.label": {
+                "ar": "فحمي",
+                "en": "Charcoal"
+              },
+              "colors.hex": "#3b3f46",
+              "colors.picked": false
+            },
+            {
+              "colors.label": {
+                "ar": "بني",
+                "en": "Brown"
+              },
+              "colors.hex": "#6b5847",
+              "colors.picked": false
+            },
+            {
+              "colors.label": {
+                "ar": "رمادي بيج",
+                "en": "Warm grey"
+              },
+              "colors.hex": "#8d7f6d",
+              "colors.picked": false
+            }
+          ]
+        },
+        {
+          "id": "tabs",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 4,
+          "item_label": "تبويب",
+          "fields": [
+            {
+              "id": "tabs.label",
+              "type": "string",
+              "format": "text",
+              "label": "العنوان",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 40,
+              "value": {
+                "ar": "التفاصيل",
+                "en": "Details"
+              }
+            },
+            {
+              "id": "tabs.lines",
+              "type": "string",
+              "format": "textarea",
+              "label": "الأسطر",
+              "icon": "sicon-paragraph",
+              "multilanguage": true,
+              "required": false,
+              "description": "سطر لكل نقطة.",
+              "minLength": 0,
+              "maxLength": 800,
+              "value": {
+                "ar": "حرير مغسول ١٩ ممي + بطانة قطن ١٠٠٪",
+                "en": "19 momme washed silk + 100% cotton lining"
+              }
+            }
+          ],
+          "value": [
+            {
+              "tabs.label": {
+                "ar": "التفاصيل",
+                "en": "Details"
+              },
+              "tabs.lines": {
+                "ar": "حرير مغسول ١٩ ممي + بطانة قطن ١٠٠٪\nتطريز يدوي بخيط حريري مطابق\nسحّاب مخفي جانبي · أزرار صدف",
+                "en": "19 momme washed silk + 100% cotton lining\nHand embroidery in a matching silk thread\nA hidden side zip · shell buttons"
+              }
+            },
+            {
+              "tabs.label": {
+                "ar": "القياسات",
+                "en": "Measures"
+              },
+              "tabs.lines": {
+                "ar": "54: الطول ١٤٠ سم · الكتف ٤٠ سم\n56: الطول ١٤٥ سم · الكتف ٤٢ سم\nقياس مخصّص متاح مجاناً",
+                "en": "54: length 140 cm · shoulder 40 cm\n56: length 145 cm · shoulder 42 cm\nCustom measure is free"
+              }
+            },
+            {
+              "tabs.label": {
+                "ar": "العناية",
+                "en": "Care"
+              },
+              "tabs.lines": {
+                "ar": "غسيل يدوي بماء بارد أو تنظيف جاف\nكي على حرارة منخفضة من الجهة الداخلية\nتُحفظ معلّقة على علاقة مبطّنة",
+                "en": "Hand wash cold or dry clean\nIron low from the inside\nHang it on a padded hanger"
+              }
+            }
+          ]
+        },
+        {
+          "id": "ps-buy",
+          "type": "static",
+          "format": "line"
+        },
+        {
+          "id": "primary_label",
+          "type": "string",
+          "format": "text",
+          "label": "نص زر الشراء",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "أضيفي للسلة",
+            "en": "Add to bag"
+          }
+        },
+        {
+          "id": "primary_url",
+          "type": "string",
+          "format": "url",
+          "label": "رابط زر الشراء",
+          "icon": "sicon-link",
+          "required": false,
+          "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
+          "value": "#product"
+        },
+        {
+          "id": "secondary_label",
+          "type": "string",
+          "format": "text",
+          "label": "نص الزر الثاني",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "اطلبي قياساً مخصّصاً",
+            "en": "Request a custom measure"
+          }
+        },
+        {
+          "id": "secondary_url",
+          "type": "string",
+          "format": "url",
+          "label": "رابط الزر الثاني",
+          "icon": "sicon-link",
+          "required": false,
+          "description": null,
+          "value": "#faq"
+        },
+        {
+          "id": "show_bar",
+          "type": "boolean",
+          "format": "switch",
+          "label": "شريط شراء ثابت أسفل الصفحة",
+          "icon": "sicon-toggle-off",
+          "required": false,
+          "description": "يظهر بعد النزول، ويعرض الاسم والسعر والمقاس المختار.",
+          "value": true,
+          "selected": true
+        },
+        {
+          "id": "bg_color",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "لون الخلفية",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": null,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "title": "عدّاد العرض",
+      "icon": "sicon-time",
+      "name": "offer-clock",
+      "key": "47ba2d9d-8269-445f-ab0b-38c83b33eb2e",
+      "image": "",
+      "props": {
+        "min-height": "220px"
+      },
+      "fields": [
+        {
+          "id": "kicker",
+          "type": "string",
+          "format": "text",
+          "label": "سطر صغير",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "عرض محدود",
+            "en": "A short offer"
+          }
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "format": "text",
+          "label": "العنوان",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "خصم ٢٠٪ على التشكيلة + تغليف هدية",
+            "en": "20% off the edit, plus gift wrap"
+          }
+        },
+        {
+          "id": "text",
+          "type": "string",
+          "format": "textarea",
+          "label": "النص",
+          "icon": "sicon-paragraph",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 800,
+          "value": {
+            "ar": "ينتهي العرض تلقائياً عند انتهاء العدّاد، ولا يُمدّد.",
+            "en": "The offer ends when the clock does, and it is not extended."
+          }
+        },
+        {
+          "id": "hours",
+          "type": "number",
+          "format": "number",
+          "inputType": "number",
+          "label": "مدة العدّاد بالساعات",
+          "icon": "sicon-calculator",
+          "required": false,
+          "description": "تبدأ من أول زيارة في المتصفح، وتُحفظ حتى لا يُعاد ضبطها عند كل تحديث.",
+          "minimum": 1,
+          "maximum": 240,
+          "value": 56
+        },
+        {
+          "id": "day_label",
+          "type": "string",
+          "format": "text",
+          "label": "تسمية اليوم",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 20,
+          "value": {
+            "ar": "يوم",
+            "en": "day"
+          }
+        },
+        {
+          "id": "hour_label",
+          "type": "string",
+          "format": "text",
+          "label": "تسمية الساعة",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 20,
+          "value": {
+            "ar": "ساعة",
+            "en": "hour"
+          }
+        },
+        {
+          "id": "minute_label",
+          "type": "string",
+          "format": "text",
+          "label": "تسمية الدقيقة",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 20,
+          "value": {
+            "ar": "دقيقة",
+            "en": "min"
+          }
+        },
+        {
+          "id": "second_label",
+          "type": "string",
+          "format": "text",
+          "label": "تسمية الثانية",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 20,
+          "value": {
+            "ar": "ثانية",
+            "en": "sec"
+          }
+        },
+        {
+          "id": "button_label",
+          "type": "string",
+          "format": "text",
+          "label": "نص الزر",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "استفيدي من العرض",
+            "en": "Take the offer"
+          }
+        },
+        {
+          "id": "button_url",
+          "type": "string",
+          "format": "url",
+          "label": "رابط الزر",
+          "icon": "sicon-link",
+          "required": false,
+          "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
+          "value": "#product"
+        },
+        {
+          "id": "bg_color",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "لون الخلفية",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": null,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "title": "أسئلة قبل الطلب",
+      "icon": "sicon-list",
+      "name": "ask-list",
+      "key": "beca001a-7963-4760-8ca8-05c86770fbb7",
+      "image": "",
+      "props": {
+        "min-height": "420px"
+      },
+      "fields": [
+        {
+          "id": "anchor",
+          "type": "string",
+          "format": "text",
+          "label": "معرّف القسم في الرابط",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": false,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": "faq"
+        },
+        {
+          "id": "kicker",
+          "type": "string",
+          "format": "text",
+          "label": "سطر صغير",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "FAQ",
+            "en": "FAQ"
+          }
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "format": "text",
+          "label": "العنوان",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "أسئلة قبل الطلب",
+            "en": "Before you order"
+          }
+        },
+        {
+          "id": "text",
+          "type": "string",
+          "format": "textarea",
+          "label": "النص",
+          "icon": "sicon-paragraph",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 800,
+          "value": {
+            "ar": "ما لم تجديه هنا، اسألينا على الواتساب ونرد في دقائق.",
+            "en": "If it is not here, ask us on WhatsApp and we reply in minutes."
+          }
+        },
+        {
+          "id": "items",
+          "type": "collection",
+          "format": "collection",
+          "required": true,
+          "minLength": 1,
+          "maxLength": 8,
+          "item_label": "سؤال",
+          "fields": [
+            {
+              "id": "items.q",
+              "type": "string",
+              "format": "text",
+              "label": "السؤال",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 180,
+              "value": {
+                "ar": "كيف أختار مقاسي الصحيح؟",
+                "en": "How do I choose my size?"
+              }
+            },
+            {
+              "id": "items.a",
+              "type": "string",
+              "format": "textarea",
+              "label": "الجواب",
+              "icon": "sicon-paragraph",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 800,
+              "value": {
+                "ar": "قيسي طولك من الكتف حتى الكعب وأضيفي ٢ سم.",
+                "en": "Measure from shoulder to heel and add 2 cm."
+              }
+            }
+          ],
+          "value": [
+            {
+              "items.q": {
+                "ar": "كيف أختار مقاسي الصحيح؟",
+                "en": "How do I choose my size?"
+              },
+              "items.a": {
+                "ar": "قيسي طولك من الكتف حتى الكعب وأضيفي ٢ سم. أو أرسلي طولك ووزنك لنا ونختار عنك — ٩٦٪ من الطلبات تصل مطابقة.",
+                "en": "Measure from shoulder to heel and add 2 cm. Or send your height and weight and we choose — 96% of orders arrive right."
+              }
+            },
+            {
+              "items.q": {
+                "ar": "هل القياس المخصّص بسعر إضافي؟",
+                "en": "Does a custom measure cost more?"
+              },
+              "items.a": {
+                "ar": "لا. القياس المخصّص مجاني ويحتاج ٣ أيام عمل إضافية فقط.",
+                "en": "No. A custom measure is free and needs only three extra working days."
+              }
+            },
+            {
+              "items.q": {
+                "ar": "كم تستغرق مدة التوصيل؟",
+                "en": "How long is delivery?"
+              },
+              "items.a": {
+                "ar": "الرياض ٤٨ ساعة، باقي مناطق المملكة ٢–٤ أيام، ودول الخليج ٥–٧ أيام.",
+                "en": "Riyadh in 48 hours, the rest of the Kingdom in 2–4 days, and the Gulf in 5–7 days."
+              }
+            },
+            {
+              "items.q": {
+                "ar": "هل يمكنني الاسترجاع إذا لم يناسبني المقاس؟",
+                "en": "Can I return it if the size is off?"
+              },
+              "items.a": {
+                "ar": "نعم، خلال ١٤ يوماً بشرط عدم الاستخدام وبقاء البطاقة. شحن الاستبدال علينا في حال خطأ المقاس.",
+                "en": "Yes, within 14 days if it is unworn and the tag is on. We cover the exchange if the size was wrong."
+              }
+            },
+            {
+              "items.q": {
+                "ar": "هل العباية شفافة؟",
+                "en": "Is the abaya sheer?"
+              },
+              "items.a": {
+                "ar": "لا. جميع عباياتنا مبطّنة بقطن ١٠٠٪، ونختبرها تحت ضوء مباشر قبل الاعتماد.",
+                "en": "No. Every abaya is lined in 100% cotton, and we test it under direct light before it is approved."
+              }
+            }
+          ]
+        },
+        {
+          "id": "bg_color",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "لون الخلفية",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": null,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "title": "دعوة الختام",
+      "icon": "sicon-megaphone",
+      "name": "close-invite",
+      "key": "27ec15c9-328c-438b-9a04-966c9b2b8cae",
+      "image": "",
+      "props": {
+        "min-height": "360px"
+      },
+      "fields": [
+        {
+          "id": "kicker",
+          "type": "string",
+          "format": "text",
+          "label": "سطر صغير",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "جاهزة؟",
+            "en": "Ready?"
+          }
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "format": "text",
+          "label": "العنوان",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "اختاري عبايتك اليوم، وتوصلك قبل المناسبة.",
+            "en": "Choose it today, and it arrives before the occasion."
+          }
+        },
+        {
+          "id": "text",
+          "type": "string",
+          "format": "textarea",
+          "label": "النص",
+          "icon": "sicon-paragraph",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 800,
+          "value": {
+            "ar": "الطلبات قبل الرابعة عصراً تُخرج من الورشة في نفس اليوم.",
+            "en": "Orders placed before 4pm leave the workshop the same day."
+          }
+        },
+        {
+          "id": "primary_label",
+          "type": "string",
+          "format": "text",
+          "label": "نص الزر الأساسي",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "تسوّقي الآن",
+            "en": "Shop now"
+          }
+        },
+        {
+          "id": "primary_url",
+          "type": "string",
+          "format": "url",
+          "label": "رابط الزر الأساسي",
+          "icon": "sicon-link",
+          "required": false,
+          "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
+          "value": "#product"
+        },
+        {
+          "id": "secondary_label",
+          "type": "string",
+          "format": "text",
+          "label": "نص الزر الثاني",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "تواصلي واتساب",
+            "en": "WhatsApp us"
+          }
+        },
+        {
+          "id": "secondary_url",
+          "type": "string",
+          "format": "url",
+          "label": "رابط الزر الثاني",
+          "icon": "sicon-link",
+          "required": false,
+          "description": "ضعي رابط الواتساب.",
+          "value": "#"
+        },
+        {
+          "id": "perks",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 6,
+          "item_label": "ميزة",
+          "fields": [
+            {
+              "id": "perks.text",
+              "type": "string",
+              "format": "text",
+              "label": "النص",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 180,
+              "value": {
+                "ar": "شحن مجاني فوق ٣٠٠ ر.س",
+                "en": "Free shipping over SAR 300"
+              }
+            }
+          ],
+          "value": [
+            {
+              "perks.text": {
+                "ar": "شحن مجاني فوق ٣٠٠ ر.س",
+                "en": "Free shipping over SAR 300"
+              }
+            },
+            {
+              "perks.text": {
+                "ar": "دفع عند الاستلام",
+                "en": "Pay on delivery"
+              }
+            },
+            {
+              "perks.text": {
+                "ar": "تقسيط تمارا وتابي",
+                "en": "Tamara and Tabby"
+              }
+            },
+            {
+              "perks.text": {
+                "ar": "استرجاع ١٤ يوماً",
+                "en": "14-day returns"
+              }
+            }
+          ]
+        },
+        {
+          "id": "bg_color",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "لون الخلفية",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": null,
+          "value": ""
+        }
+      ]
+    },
+    {
+      "title": "فوتر الصفحة",
+      "icon": "sicon-link",
+      "name": "page-footer",
+      "key": "c8fa9e35-19fc-427b-99a0-e6ba7d5a1fb3",
+      "image": "",
+      "props": {
+        "min-height": "280px"
+      },
+      "fields": [
+        {
+          "id": "logo",
+          "type": "string",
+          "format": "image",
+          "label": "شعار",
+          "icon": "sicon-image",
+          "required": false,
+          "description": "اتركه فارغاً ليظهر اسم الدار. المقاس المقترح 280×80 بكسل.",
+          "value": ""
+        },
+        {
+          "id": "brand",
+          "type": "string",
+          "format": "text",
+          "label": "اسم الدار",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "دار نَسَق",
+            "en": "Nasaq House"
+          }
+        },
+        {
+          "id": "mark",
+          "type": "string",
+          "format": "text",
+          "label": "سطر صغير تحت الاسم",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "NASAQ",
+            "en": "NASAQ"
+          }
+        },
+        {
+          "id": "about",
+          "type": "string",
+          "format": "textarea",
+          "label": "نبذة",
+          "icon": "sicon-paragraph",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 800,
+          "value": {
+            "ar": "ورشة خياطة سعودية في الرياض منذ ٢٠١٩. عبايات تُخاط بالطلب.",
+            "en": "A Saudi sewing workshop in Riyadh since 2019. Abayas cut to order."
+          }
+        },
+        {
+          "id": "payments",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 6,
+          "item_label": "وسيلة دفع",
+          "fields": [
+            {
+              "id": "payments.label",
+              "type": "string",
+              "format": "text",
+              "label": "الاسم",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 20,
+              "value": {
+                "ar": "مدى",
+                "en": "mada"
+              }
+            }
+          ],
+          "value": [
+            {
+              "payments.label": {
+                "ar": "مدى",
+                "en": "mada"
+              }
+            },
+            {
+              "payments.label": {
+                "ar": "Visa",
+                "en": "Visa"
+              }
+            },
+            {
+              "payments.label": {
+                "ar": "Apple Pay",
+                "en": "Apple Pay"
+              }
+            },
+            {
+              "payments.label": {
+                "ar": "تابي",
+                "en": "Tabby"
+              }
+            }
+          ]
+        },
+        {
+          "id": "ft-cols",
+          "type": "static",
+          "format": "line"
+        },
+        {
+          "id": "col1_title",
+          "type": "string",
+          "format": "text",
+          "label": "عنوان العمود الأول",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "التشكيلة",
+            "en": "The edit"
+          }
+        },
+        {
+          "id": "col1",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 6,
+          "item_label": "رابط",
+          "fields": [
+            {
+              "id": "col1.label",
+              "type": "string",
+              "format": "text",
+              "label": "النص",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 180,
+              "value": {
+                "ar": "كلوش",
+                "en": "Flared"
+              }
+            },
+            {
+              "id": "col1.url",
+              "type": "string",
+              "format": "url",
+              "label": "الرابط",
+              "icon": "sicon-link",
+              "required": false,
+              "description": null,
+              "value": "#lookbook"
+            }
+          ],
+          "value": [
+            {
+              "col1.label": {
+                "ar": "كلوش",
+                "en": "Flared"
+              },
+              "col1.url": "#lookbook"
+            },
+            {
+              "col1.label": {
+                "ar": "مستقيمة",
+                "en": "Straight"
+              },
+              "col1.url": "#lookbook"
+            },
+            {
+              "col1.label": {
+                "ar": "مطرزة",
+                "en": "Embroidered"
+              },
+              "col1.url": "#product"
+            },
+            {
+              "col1.label": {
+                "ar": "صلاة وسفر",
+                "en": "Prayer and travel"
+              },
+              "col1.url": "#lookbook"
+            }
+          ]
+        },
+        {
+          "id": "col2_title",
+          "type": "string",
+          "format": "text",
+          "label": "عنوان العمود الثاني",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "المساعدة",
+            "en": "Help"
+          }
+        },
+        {
+          "id": "col2",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 6,
+          "item_label": "رابط",
+          "fields": [
+            {
+              "id": "col2.label",
+              "type": "string",
+              "format": "text",
+              "label": "النص",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 180,
+              "value": {
+                "ar": "دليل المقاسات",
+                "en": "Size guide"
+              }
+            },
+            {
+              "id": "col2.url",
+              "type": "string",
+              "format": "url",
+              "label": "الرابط",
+              "icon": "sicon-link",
+              "required": false,
+              "description": null,
+              "value": "#faq"
+            }
+          ],
+          "value": [
+            {
+              "col2.label": {
+                "ar": "دليل المقاسات",
+                "en": "Size guide"
+              },
+              "col2.url": "#faq"
+            },
+            {
+              "col2.label": {
+                "ar": "سياسة الاستبدال",
+                "en": "Exchange policy"
+              },
+              "col2.url": "#faq"
+            },
+            {
+              "col2.label": {
+                "ar": "تتبّع الطلب",
+                "en": "Track an order"
+              },
+              "col2.url": "#"
+            },
+            {
+              "col2.label": {
+                "ar": "اتصلي بنا",
+                "en": "Contact"
+              },
+              "col2.url": "#"
+            }
+          ]
+        },
+        {
+          "id": "col3_title",
+          "type": "string",
+          "format": "text",
+          "label": "عنوان العمود الثالث",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "تابعينا",
+            "en": "Follow"
+          }
+        },
+        {
+          "id": "col3",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 6,
+          "item_label": "رابط",
+          "fields": [
+            {
+              "id": "col3.label",
+              "type": "string",
+              "format": "text",
+              "label": "النص",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 180,
+              "value": {
+                "ar": "إنستغرام",
+                "en": "Instagram"
+              }
+            },
+            {
+              "id": "col3.url",
+              "type": "string",
+              "format": "url",
+              "label": "الرابط",
+              "icon": "sicon-link",
+              "required": false,
+              "description": null,
+              "value": "#"
+            }
+          ],
+          "value": [
+            {
+              "col3.label": {
+                "ar": "إنستغرام",
+                "en": "Instagram"
+              },
+              "col3.url": "#"
+            },
+            {
+              "col3.label": {
+                "ar": "سناب شات",
+                "en": "Snapchat"
+              },
+              "col3.url": "#"
+            },
+            {
+              "col3.label": {
+                "ar": "تيك توك",
+                "en": "TikTok"
+              },
+              "col3.url": "#"
+            }
+          ]
+        },
+        {
+          "id": "ft-base",
+          "type": "static",
+          "format": "line"
+        },
+        {
+          "id": "copyright",
+          "type": "string",
+          "format": "text",
+          "label": "سطر الحقوق",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "© ٢٠٢٦ دار نَسَق · جميع الحقوق محفوظة",
+            "en": "© 2026 Nasaq House"
+          }
+        },
+        {
+          "id": "legal",
+          "type": "string",
+          "format": "text",
+          "label": "السجل والرقم الضريبي",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "س.ت ١٠١٠XXXXXX · الرقم الضريبي ٣٠٠XXXXXXXX",
+            "en": "CR 1010XXXXXX · VAT 300XXXXXXXX"
+          }
+        },
+        {
+          "id": "bg_color",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "لون الخلفية",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": null,
+          "value": ""
+        }
+      ]
+    }
+  ]
+}
