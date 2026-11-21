@@ -72,7 +72,7 @@ html.nq-mode-dark body:has(.nq-host) { background: #0e0d0b; }
   ${LIGHT}
   --max:1240px; --pad:clamp(18px,4vw,48px);
   --serif:inherit; --sans:inherit;
-  display: block; box-sizing: border-box; color: var(--ink); font-family: inherit; font-weight: 300; line-height: 1.75;
+  display: block; box-sizing: border-box; color: var(--ink); font-family: var(--font-main, inherit); font-weight: 300; line-height: 1.75;
   -webkit-font-smoothing: antialiased;
 }
 html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif; font-family: var(--sans); }

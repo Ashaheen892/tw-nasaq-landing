@@ -1,6 +1,27 @@
 import fs from "node:fs";
+import { applyLandingExtras } from "./landing-extras.mjs";
 
 const L = (ar, en) => ({ ar, en });
+const px = (id, w = 900) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
+const icon64 = (inner) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#f7f4ef"/>${inner}</svg>`)}`;
+const PAY = {
+  mada: icon64(`<rect x="12" y="20" width="40" height="24" rx="4" fill="none" stroke="#101014" stroke-width="2.5"/><rect x="12" y="26" width="40" height="6" fill="#101014"/>`),
+  card: icon64(`<rect x="10" y="18" width="44" height="28" rx="4" fill="none" stroke="#101014" stroke-width="2.5"/><rect x="16" y="24" width="10" height="8" rx="1" fill="#b8945f"/>`),
+  wallet: icon64(`<rect x="14" y="20" width="36" height="26" rx="4" fill="none" stroke="#101014" stroke-width="2.5"/><path d="M14 28h36" stroke="#101014" stroke-width="2.5"/>`),
+  split: icon64(`<circle cx="20" cy="32" r="4" fill="#101014"/><circle cx="32" cy="32" r="4" fill="#b8945f"/><circle cx="44" cy="32" r="4" fill="#101014"/>`),
+};
+const SOCIAL = [
+  ["instagram", "إنستغرام", "c1a7e6d0-3b24-4f91-8a66-1d2c3e4f5a01"],
+  ["snapchat", "سناب شات", "c2b8f7e1-4c35-4a02-9b77-2e3d4f5a6b12"],
+  ["tiktok", "تيك توك", "c3c9a8f2-5d46-4b13-8c88-3f4e5a6b7c23"],
+  ["whatsapp", "واتساب", "c4dab903-6e57-4c24-9d99-4a5f6b7c8d34"],
+  ["x", "إكس", "c5ebb014-7f68-4d35-8eaa-5b6a7c8d9e45"],
+  ["youtube", "يوتيوب", "c6fcc125-8079-4e46-9fbb-6c7b8d9e0f56"],
+];
+const socialPick = (value) => {
+  const [network, label, key] = SOCIAL.find((item) => item[0] === value);
+  return [{ label, value: network, key }];
+};
 const text = (id, label, value, o = {}) => ({
   id,
   type: "string",
@@ -22,8 +43,23 @@ const color = (id, label, value = "") => ({
 const sw = (id, label, value, desc = null) => ({
   id, type: "boolean", format: "switch", label, icon: "sicon-toggle-off", required: false, description: desc, value, selected: value,
 });
-const image = (id, label, desc, value = "") => ({
-  id, type: "string", format: "image", label, icon: "sicon-image", required: false, description: desc, value,
+const image = (id, label, desc, value = "", labelHTML = "") => ({
+  id, type: "string", format: "image", label, ...(labelHTML ? { labelHTML } : {}), icon: "sicon-image", required: false, description: desc, value,
+});
+const when = (id, label, value, desc) => ({
+  id, type: "string", format: "datetime-local", inputType: "datetime-local",
+  label, icon: "sicon-calendar-date", required: false, description: desc, value,
+});
+const faviconImage = (id, value = "") => ({
+  id,
+  type: "string",
+  format: "image",
+  label: "أيقونة 64×64",
+  labelHTML: "المقاس: 64×64 بكسل، حجم فيف أيقون. PNG بخلفية شفافة.",
+  icon: "sicon-image",
+  required: false,
+  description: "يظهر هذا المقاس فوق الصورة: 64×64 بكسل (فيف أيقون)، بصيغة PNG وخلفية شفافة.",
+  value,
 });
 const url = (id, label, value = "", desc = null) => ({
   id,
@@ -66,6 +102,10 @@ const KEY = {
   modeLight: "2f4c1d57-9b83-4e4a-8ab5-4d0f8b3e7c96",
   modeDark: "4a5d2e68-0c94-4f5b-9bc6-5e1a9c4f8d07",
   modeSystem: "5b6e3f79-1d05-4a6c-8cd7-6f2b0d5a9e18",
+  annMove: "e5c13a92-6d40-4b8c-9f37-4a0d9e2c6b83",
+  annStill: "f6d24b03-7e51-4c9d-8a48-5b1e0f3d7c94",
+  dockStart: "c6e0a3d4-5f78-4b90-9c23-4d5e6f708192",
+  dockEnd: "d7f1b4e5-6089-4ca1-8d34-5e6f708192a3",
 };
 const opt = (value, label, key) => ({ label, value, key });
 const drop = (id, label, options, selected, desc = null) => {
@@ -93,6 +133,9 @@ const components = [
     image: "",
     props: { "min-height": "74px" },
     fields: [
+      text("announce", "الشريط الإعلاني", L("عبايات تُخاط بالطلب · التوصيل داخل المملكة", "Abayas cut to order · delivery across the Kingdom"), { desc: "يظهر فوق الشعار. اتركه فارغاً لإخفاء الشريط." }),
+      drop("announce_mode", "حركة الشريط", [["move", "متحرك", KEY.annMove], ["still", "ثابت", KEY.annStill]], "move", "المتحرك يمرّ الجملة باستمرار. الثابت يُبقيها في الوسط."),
+      line("pb-announce"),
       image("logo", "شعار", "اتركه فارغاً ليظهر اسم الدار بخط العنوان. المقاس المقترح 280×80 بكسل."),
       image("logo_dark", "شعار للوضع الداكن", "يظهر عندما تكون الصفحة داكنة. بدونه يُستخدم الشعار الأساسي."),
       text("brand", "اسم الدار", L("دار نَسَق", "Nasaq House")),
@@ -109,7 +152,7 @@ const components = [
         { label: L("أسئلة العباية", "Abaya questions"), url: "#faq" },
       ], 0, 6),
       line("pb-links"),
-      sw("use_kit_font", "خط الصفحة", true, "عند التفعيل تستخدم كل العناصر خط أميري والمرعي. عند الإيقاف تأخذ خط المتجر في سلة."),
+      sw("use_kit_font", "خط الصفحة", false, "الافتراضي خط المتجر من سلة، مثل سيليا. فعّله فقط إذا أردت خط أميري والمرعي."),
       line("pb-bar"),
       sw("sticky", "تثبيت الرأس عند التمرير", true, "يبقى الاسم ظاهراً أثناء نزول الزائرة."),
       sw("show_mode_toggle", "زر الفاتح والداكن", true, "أيقونة في الرأس تتبدل بين القمر والشمس، وتبدّل الأقسام المضبوطة على حسب الصفحة، وتتذكر اختيار الزائرة."),
@@ -138,12 +181,12 @@ const components = [
       plain("side_tag", "عبارة جانبية", "عبايات ٢٠٢٦ · الرياض"),
       line("hs-media"),
       collection("photos", "صورة", [
-        image("image", "الصورة", "المقاس المقترح 900×1400 بكسل. اتركيها فارغة ليظهر الشكل الرملي."),
+        image("image", "الصورة", "المقاس المقترح 900×1400 بكسل. الصورة الافتراضية مجانية من Pexels ويمكن استبدالها بصورة العباية."),
         text("caption", "التعليق", L("كريب مطفي", "Matte crepe")),
       ], [
-        { image: "", caption: L("عباية كريب مطفي", "Matte crepe abaya") },
-        { image: "", caption: L("عباية حرير مغسول", "Washed silk abaya") },
-        { image: "", caption: L("عباية كلوش", "Flared abaya") },
+        { image: px(32279499, 1000), caption: L("عباية كريب مطفي", "Matte crepe abaya") },
+        { image: px(29188564, 1000), caption: L("عباية حرير مغسول", "Washed silk abaya") },
+        { image: px(29273199, 1000), caption: L("عباية كلوش", "Flared abaya") },
       ], 1, 3),
       collection("stats", "رقم", [
         text("value", "الرقم", L("١٢٤٠٠", "12,400"), { max: 20 }),
@@ -190,7 +233,7 @@ const components = [
       area("text", "النص", L("اخترنا الأكثر طلباً من ٢٨ عباية، وأعدنا ضبط أطوالها على القياس السعودي.", "The three most requested of 28 abayas, with lengths set to the Saudi measure.")),
       collection("cards", "قَصّة", [
         text("tag", "شارة", L("الأكثر طلباً", "Most requested"), { max: 40 }),
-        image("image", "الصورة", "المقاس المقترح 800×1000 بكسل. اتركيها فارغة ليظهر الشكل الرملي."),
+        image("image", "الصورة", "المقاس المقترح 800×1000 بكسل. الصورة الافتراضية مجانية من Pexels ويمكن استبدالها."),
         text("caption", "تعليق الصورة", L("Nasaq 01", "Nasaq 01"), { max: 40 }),
         text("title", "الاسم", L("عباية كلوش", "Flared abaya")),
         text("note", "سطر تحت الاسم", L("كريب مطفي · ٨ ألوان", "Matte crepe · 8 colors")),
@@ -198,9 +241,9 @@ const components = [
         text("compare", "السعر قبل الخصم", L("٦٢٠ ر.س", "SAR 620"), { max: 30 }),
         url("url", "الرابط", "#product"),
       ], [
-        { tag: L("الأكثر طلباً", "Most requested"), image: "", caption: L("عباية كلوش", "Flared abaya"), title: L("عباية كلوش", "Flared abaya"), note: L("كريب مطفي · ٨ ألوان", "Matte crepe · 8 colors"), price: L("٤٩٥ ر.س", "SAR 495"), compare: L("٦٢٠ ر.س", "SAR 620"), url: "#product" },
-        { tag: L("جديدة", "New"), image: "", caption: L("عباية مطرزة", "Embroidered abaya"), title: L("عباية مطرزة", "Embroidered abaya"), note: L("حرير مغسول · تطريز يدوي", "Washed silk · hand embroidery"), price: L("٧٨٠ ر.س", "SAR 780"), compare: L("٩٥٠ ر.س", "SAR 950"), url: "#product" },
-        { tag: L("يومية", "Everyday"), image: "", caption: L("عباية مستقيمة", "Straight abaya"), title: L("عباية مستقيمة", "Straight abaya"), note: L("كريب خفيف · ٦ ألوان", "Light crepe · 6 colors"), price: L("٣٢٠ ر.س", "SAR 320"), compare: L("٤١٠ ر.س", "SAR 410"), url: "#product" },
+        { tag: L("الأكثر طلباً", "Most requested"), image: px(28222774, 900), caption: L("عباية كلوش", "Flared abaya"), title: L("عباية كلوش", "Flared abaya"), note: L("كريب مطفي · ٨ ألوان", "Matte crepe · 8 colors"), price: L("٤٩٥ ر.س", "SAR 495"), compare: L("٦٢٠ ر.س", "SAR 620"), url: "#product" },
+        { tag: L("جديدة", "New"), image: px(37368651, 900), caption: L("عباية مطرزة", "Embroidered abaya"), title: L("عباية مطرزة", "Embroidered abaya"), note: L("حرير مغسول · تطريز يدوي", "Washed silk · hand embroidery"), price: L("٧٨٠ ر.س", "SAR 780"), compare: L("٩٥٠ ر.س", "SAR 950"), url: "#product" },
+        { tag: L("يومية", "Everyday"), image: px(13838840, 900), caption: L("عباية مستقيمة", "Straight abaya"), title: L("عباية مستقيمة", "Straight abaya"), note: L("كريب خفيف · ٦ ألوان", "Light crepe · 6 colors"), price: L("٣٢٠ ر.س", "SAR 320"), compare: L("٤١٠ ر.س", "SAR 410"), url: "#product" },
       ], 1, 6),
       color("bg_color", "لون الخلفية"),
     ],
@@ -248,12 +291,12 @@ const components = [
       area("text", "الوصف", L("حرير مغسول بوزن ١٩ ممي، تطريز يدوي على الصدر والأكمام، بطانة قطنية تمنع الشفافية تماماً.", "Washed silk at 19 momme, hand embroidery on the chest and sleeves, and a cotton lining that is never sheer.")),
       line("ps-photos"),
       collection("photos", "صورة", [
-        image("image", "الصورة", "المقاس المقترح 900×1200 بكسل. اتركيها فارغة ليظهر الشكل الرملي."),
+        image("image", "الصورة", "المقاس المقترح 900×1200 بكسل. الصورة الافتراضية مجانية من Pexels ويمكن استبدالها."),
         text("caption", "التعليق", L("عباية نَسَق المطرزة", "Nasaq embroidered abaya")),
       ], [
-        { image: "", caption: L("عباية نَسَق المطرزة", "Nasaq embroidered abaya") },
-        { image: "", caption: L("التطريز", "Embroidery") },
-        { image: "", caption: L("البطانة", "The lining") },
+        { image: px(29188563, 1000), caption: L("عباية نَسَق المطرزة", "Nasaq embroidered abaya") },
+        { image: px(13791315, 1000), caption: L("التطريز", "Embroidery") },
+        { image: px(35324617, 1000), caption: L("البطانة", "The lining") },
       ], 1, 4),
       line("ps-options"),
       text("size_label", "عنوان المقاس", L("المقاس", "Size"), { max: 40 }),
@@ -305,12 +348,8 @@ const components = [
     fields: [
       text("kicker", "سطر صغير", L("عرض العبايات", "The abaya offer")),
       text("title", "العنوان", L("خصم ٢٠٪ على العبايات + تغليف هدية", "20% off the abayas, plus gift wrap")),
-      area("text", "النص", L("ينتهي عرض العبايات مع العدّاد، ولا يُمدّد.", "The abaya offer ends when the clock does, and it is not extended.")),
-      num("hours", "مدة العدّاد بالساعات", 56, 1, 240, "تبدأ من أول زيارة في المتصفح، وتُحفظ حتى لا يُعاد ضبطها عند كل تحديث."),
-      text("day_label", "تسمية اليوم", L("يوم", "day"), { max: 20 }),
-      text("hour_label", "تسمية الساعة", L("ساعة", "hour"), { max: 20 }),
-      text("minute_label", "تسمية الدقيقة", L("دقيقة", "min"), { max: 20 }),
-      text("second_label", "تسمية الثانية", L("ثانية", "sec"), { max: 20 }),
+      area("text", "النص", L("ينتهي عرض العبايات في التاريخ المحدد، ولا يُمدّد.", "The abaya offer ends on the chosen date, and it is not extended.")),
+      when("ends_at", "تاريخ انتهاء العرض", "2026-12-05T23:59", "يُحسب العدّاد حتى هذا التاريخ والوقت. يوم وساعة ودقيقة وثانية تُعرض وحدها، بلا حقول مدة."),
       sw("show_video", "خلفية فيديو", false, "عند التفعيل يظهر فيديو العباية خلف العدّاد بلا صوت، ويبقى النص فوقه. زر الشراء تضيفه سلة."),
       url("video_url", "رابط خلفية الفيديو", "", "ملف mp4 لعباية، أو رابط يوتيوب أو فيميو. لا يظهر إلا إذا كانت خلفية الفيديو مفعّلة."),
       color("bg_color", "لون الخلفية"),
@@ -404,14 +443,14 @@ const components = [
       area("text", "النص", L("مقطع واحد لعباية في كل مرة. لا يشتغل وحده، والصوت لا يفتح إلا إذا طلبته الزائرة.", "One abaya clip at a time. It does not start on its own, and the sound stays off until she asks.")),
       collection("clips", "مقطع", [
         url("video_url", "رابط الفيديو", "", "ملف mp4 أو رابط يوتيوب أو فيميو."),
-        image("poster", "صورة قبل التشغيل", "تظهر إلى أن تضغط الزائرة على المرآة."),
+        image("poster", "صورة قبل التشغيل", "المقاس المقترح 720×1280 بكسل. تظهر حتى تضغط الزائرة على التشغيل."),
         text("name", "الاسم", L("لمى", "Lama")),
         text("place", "المدينة", L("الرياض", "Riyadh"), { max: 40 }),
         area("quote", "الجملة", L("العباية تمشي مع الخطوة، وما تبين اللي تحتها.", "The abaya moves with the step, and nothing shows through.")),
       ], [
-        { video_url: "", poster: "", name: L("لمى", "Lama"), place: L("الرياض", "Riyadh"), quote: L("العباية تمشي مع الخطوة، وما تبين اللي تحتها.", "The abaya moves with the step, and nothing shows through.") },
-        { video_url: "", poster: "", name: L("هيفاء", "Haifa"), place: L("جدة", "Jeddah"), quote: L("تطريز العباية من الداخل أنظف من الصورة.", "The abaya embroidery is cleaner on the inside than in the photo.") },
-        { video_url: "", poster: "", name: L("نورة", "Noura"), place: L("الخبر", "Khobar"), quote: L("طلبت قياس العباية المخصّص، ووصل الطول على كعبي.", "I asked for a custom abaya measure, and the length met my heel.") },
+        { video_url: "", poster: px(32279508, 800), name: L("لمى", "Lama"), place: L("الرياض", "Riyadh"), quote: L("العباية تمشي مع الخطوة، وما تبين اللي تحتها.", "The abaya moves with the step, and nothing shows through.") },
+        { video_url: "", poster: px(32279505, 800), name: L("هيفاء", "Haifa"), place: L("جدة", "Jeddah"), quote: L("تطريز العباية من الداخل أنظف من الصورة.", "The abaya embroidery is cleaner on the inside than in the photo.") },
+        { video_url: "", poster: px(33713539, 800), name: L("نورة", "Noura"), place: L("الخبر", "Khobar"), quote: L("طلبت قياس العباية المخصّص، ووصل الطول على كعبي.", "I asked for a custom abaya measure, and the length met my heel.") },
       ], 0, 6),
       text("button_label", "نص الزر", L("تسوّقي العبايات", "Shop the abayas")),
       url("button_url", "رابط الزر", "#product", buyHint),
@@ -426,18 +465,29 @@ const components = [
     image: "",
     props: { "min-height": "280px" },
     fields: [
+      text("announce", "الشريط الإعلاني", L("المقاس يُضبط قبل القص · الاستبدال حسب سياسة الورشة", "The size is set before cutting · exchanges follow the workshop policy"), { desc: "يظهر فوق الفوتر. اتركه فارغاً لإخفاء الشريط." }),
+      drop("announce_mode", "حركة الشريط", [["move", "متحرك", KEY.annMove], ["still", "ثابت", KEY.annStill]], "move", "المتحرك يمرّ الجملة باستمرار. الثابت يُبقيها في الوسط."),
+      line("ft-announce"),
       image("logo", "شعار", "اتركه فارغاً ليظهر اسم الدار. المقاس المقترح 280×80 بكسل."),
       image("logo_dark", "شعار للوضع الداكن", "يظهر عندما تكون الصفحة داكنة. بدونه يُستخدم الشعار الأساسي."),
       text("brand", "اسم الدار", L("دار نَسَق", "Nasaq House")),
       text("mark", "سطر صغير تحت الاسم", L("NASAQ", "NASAQ")),
       area("about", "نبذة", L("ورشة خياطة سعودية في الرياض منذ ٢٠١٩. عبايات تُخاط بالطلب.", "A Saudi sewing workshop in Riyadh since 2019. Abayas cut to order.")),
+      {
+        id: "payments-size",
+        type: "static",
+        format: "description",
+        label: "مقاس أيقونات الدفع",
+        value: "كل وسيلة دفع صورة مربعة 64×64 بكسل بحجم فيف أيقون. ارفعي PNG بخلفية شفافة، وهذا التوضيح يظهر فوق الصورة.",
+      },
       collection("payments", "وسيلة دفع", [
+        faviconImage("image"),
         text("label", "الاسم", L("مدى", "mada"), { max: 20 }),
       ], [
-        { label: L("مدى", "mada") },
-        { label: L("Visa", "Visa") },
-        { label: L("Apple Pay", "Apple Pay") },
-        { label: L("تابي", "Tabby") },
+        { image: PAY.mada, label: L("مدى", "mada") },
+        { image: PAY.card, label: L("بطاقة", "Card") },
+        { image: PAY.wallet, label: L("محفظة", "Wallet") },
+        { image: PAY.split, label: L("تقسيط", "Split pay") },
       ], 0, 6),
       line("ft-cols"),
       text("col1_title", "عنوان العمود الأول", L("العبايات", "Abayas")),
@@ -461,13 +511,14 @@ const components = [
         { label: L("اتصلي بنا", "Contact"), url: "#" },
       ], 0, 6),
       text("col3_title", "عنوان العمود الثالث", L("تابعينا", "Follow")),
-      collection("col3", "رابط", [
-        text("label", "النص", L("إنستغرام", "Instagram")),
-        url("url", "الرابط", "#"),
+      collection("social", "حساب", [
+        drop("network", "الأيقونة", SOCIAL, "instagram", "تظهر الأيقونة بجانب الرابط."),
+        url("url", "الرابط", "https://instagram.com/"),
       ], [
-        { label: L("إنستغرام", "Instagram"), url: "#" },
-        { label: L("سناب شات", "Snapchat"), url: "#" },
-        { label: L("تيك توك", "TikTok"), url: "#" },
+        { network: socialPick("instagram"), url: "https://instagram.com/" },
+        { network: socialPick("snapchat"), url: "https://snapchat.com/" },
+        { network: socialPick("tiktok"), url: "https://www.tiktok.com/" },
+        { network: socialPick("whatsapp"), url: "https://wa.me/" },
       ], 0, 6),
       line("ft-base"),
       sw("show_top", "زر العودة للأعلى", true, "يظهر أثناء النزول، وفي أسفل الفوتر. الضغط يعيد الزائرة لبداية الصفحة."),
@@ -498,16 +549,23 @@ const templates = [
   },
 ];
 
+applyLandingExtras({ components, catalog: null, templates, L, text, color, sw, drop, line, collection, image, url, scheme, KEY });
+
 const bundlePath = new URL("../twilight-bundle.json", import.meta.url);
 let previous = { templates: [] };
 if (fs.existsSync(bundlePath)) previous = JSON.parse(fs.readFileSync(bundlePath, "utf8"));
 const previousTemplates = new Map((previous.templates || []).map((item) => [item.path, item]));
 
 const bundle = {
-  name: { ar: "دار نَسَق", en: "Nasaq House" },
+  name: { ar: "مجموعات العبايات", en: "Abaya Collections" },
   description: {
     ar: "صفحتان لعبايات. نَسَق تعرض التشكيلة كاملة، ووصل تختصر الطريق إلى المنتج والعرض والأسئلة.",
     en: "Two abaya landing pages. Nasaq shows the full edit, and Wasl goes straight to the piece, the offer, and the questions.",
+  },
+  author: {
+    name: "Saji",
+    email: "sajispprt@gmail.com",
+    url: "https://saji-tech.com/",
   },
   author_email: "sajispprt@gmail.com",
   support_url: "https://github.com/Ashaheen892/tw-nasaq-landing",

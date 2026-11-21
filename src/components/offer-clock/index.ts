@@ -1,6 +1,6 @@
 import { html, LitElement, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
-import { flag, getConfig, localizedString, watchLocale } from "../../utils/config.js";
+import { flag, getConfig, localizedString, t, unwrapValue, watchLocale } from "../../utils/config.js";
 import { schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { arDigits } from "../../utils/ui.js";
@@ -71,21 +71,10 @@ export default class OfferClock extends LitElement {
   }
 
   private arm() {
-    const cfg = getConfig(this.config);
-    const hours = Math.min(Math.max(Number(cfg.hours) || 56, 1), 240);
-    const key = `nq-offer-end-${hours}`;
-    let end = 0;
-    try {
-      end = Number(sessionStorage.getItem(key)) || 0;
-    } catch {
-      end = 0;
-    }
-    if (!end || end < Date.now() - 1000) {
-      end = Date.now() + hours * 3600000;
-      try { sessionStorage.setItem(key, String(end)); } catch { /* private mode */ }
-    }
-    this.end = end;
-    this.left = Math.max(0, end - Date.now());
+    const raw = String(unwrapValue(getConfig(this.config).ends_at) || "").trim();
+    const end = raw ? Date.parse(raw) : 0;
+    this.end = Number.isFinite(end) ? end : 0;
+    this.left = Math.max(0, this.end - Date.now());
   }
 
   render() {
@@ -93,10 +82,10 @@ export default class OfferClock extends LitElement {
     const title = localizedString(cfg.title);
     const seconds = Math.floor(this.left / 1000);
     const parts = [
-      [Math.floor(seconds / 86400), localizedString(cfg.day_label) || "يوم"],
-      [Math.floor((seconds % 86400) / 3600), localizedString(cfg.hour_label) || "ساعة"],
-      [Math.floor((seconds % 3600) / 60), localizedString(cfg.minute_label) || "دقيقة"],
-      [seconds % 60, localizedString(cfg.second_label) || "ثانية"],
+      [Math.floor(seconds / 86400), t({ ar: "يوم", en: "day" })],
+      [Math.floor((seconds % 86400) / 3600), t({ ar: "ساعة", en: "hour" })],
+      [Math.floor((seconds % 3600) / 60), t({ ar: "دقيقة", en: "min" })],
+      [seconds % 60, t({ ar: "ثانية", en: "sec" })],
     ];
     const video = flag(cfg.show_video) ? clipUrl(cfg.video_url) : "";
     const file = video && (isFileClip(video) || !/youtube|youtu\.be|vimeo/i.test(video));

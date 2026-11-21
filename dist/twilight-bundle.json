@@ -1,7 +1,7 @@
 {
     "name": {
-        "ar": "دار نَسَق",
-        "en": "Nasaq House"
+        "ar": "مجموعات العبايات",
+        "en": "Abaya Collections"
     },
     "description": {
         "ar": "صفحتان لعبايات. نَسَق تعرض التشكيلة كاملة، ووصل تختصر الطريق إلى المنتج والعرض والأسئلة.",
@@ -500,7 +500,7 @@
                             "label": "الصورة",
                             "icon": "sicon-image",
                             "required": false,
-                            "description": "المقاس المقترح 900×1400 بكسل. اتركيها فارغة ليظهر الشكل الرملي.",
+                            "description": "المقاس المقترح 900×1400 بكسل. الصورة الافتراضية مجانية من Pexels ويمكن استبدالها بصورة العباية.",
                             "value": ""
                         },
                         {
@@ -522,21 +522,21 @@
                     ],
                     "value": [
                         {
-                            "photos.image": "",
+                            "photos.image": "https://images.pexels.com/photos/32279499/pexels-photo-32279499.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "عباية كريب مطفي",
                                 "en": "Matte crepe abaya"
                             }
                         },
                         {
-                            "photos.image": "",
+                            "photos.image": "https://images.pexels.com/photos/29188564/pexels-photo-29188564.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "عباية حرير مغسول",
                                 "en": "Washed silk abaya"
                             }
                         },
                         {
-                            "photos.image": "",
+                            "photos.image": "https://images.pexels.com/photos/29273199/pexels-photo-29273199.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "عباية كلوش",
                                 "en": "Flared abaya"
@@ -899,7 +899,7 @@
                             "label": "الصورة",
                             "icon": "sicon-image",
                             "required": false,
-                            "description": "المقاس المقترح 800×1000 بكسل. اتركيها فارغة ليظهر الشكل الرملي.",
+                            "description": "المقاس المقترح 800×1000 بكسل. الصورة الافتراضية مجانية من Pexels ويمكن استبدالها.",
                             "value": ""
                         },
                         {
@@ -1002,7 +1002,7 @@
                                 "ar": "الأكثر طلباً",
                                 "en": "Most requested"
                             },
-                            "cards.image": "",
+                            "cards.image": "https://images.pexels.com/photos/28222774/pexels-photo-28222774.jpeg?auto=compress&cs=tinysrgb&w=900",
                             "cards.caption": {
                                 "ar": "عباية كلوش",
                                 "en": "Flared abaya"
@@ -1030,7 +1030,7 @@
                                 "ar": "جديدة",
                                 "en": "New"
                             },
-                            "cards.image": "",
+                            "cards.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=900",
                             "cards.caption": {
                                 "ar": "عباية مطرزة",
                                 "en": "Embroidered abaya"
@@ -1058,7 +1058,7 @@
                                 "ar": "يومية",
                                 "en": "Everyday"
                             },
-                            "cards.image": "",
+                            "cards.image": "https://images.pexels.com/photos/13838840/pexels-photo-13838840.jpeg?auto=compress&cs=tinysrgb&w=900",
                             "cards.caption": {
                                 "ar": "عباية مستقيمة",
                                 "en": "Straight abaya"
@@ -1535,7 +1535,7 @@
                             "label": "الصورة",
                             "icon": "sicon-image",
                             "required": false,
-                            "description": "المقاس المقترح 900×1200 بكسل. اتركيها فارغة ليظهر الشكل الرملي.",
+                            "description": "المقاس المقترح 900×1200 بكسل. الصورة الافتراضية مجانية من Pexels ويمكن استبدالها.",
                             "value": ""
                         },
                         {
@@ -1557,21 +1557,21 @@
                     ],
                     "value": [
                         {
-                            "photos.image": "",
+                            "photos.image": "https://images.pexels.com/photos/29188563/pexels-photo-29188563.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "عباية نَسَق المطرزة",
                                 "en": "Nasaq embroidered abaya"
                             }
                         },
                         {
-                            "photos.image": "",
+                            "photos.image": "https://images.pexels.com/photos/13791315/pexels-photo-13791315.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "التطريز",
                                 "en": "Embroidery"
                             }
                         },
                         {
-                            "photos.image": "",
+                            "photos.image": "https://images.pexels.com/photos/35324617/pexels-photo-35324617.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "البطانة",
                                 "en": "The lining"
@@ -2038,86 +2038,20 @@
                     "minLength": 0,
                     "maxLength": 800,
                     "value": {
-                        "ar": "ينتهي عرض العبايات مع العدّاد، ولا يُمدّد.",
-                        "en": "The abaya offer ends when the clock does, and it is not extended."
+                        "ar": "ينتهي عرض العبايات في التاريخ المحدد، ولا يُمدّد.",
+                        "en": "The abaya offer ends on the chosen date, and it is not extended."
                     }
                 },
                 {
-                    "id": "hours",
-                    "type": "number",
-                    "format": "number",
-                    "inputType": "number",
-                    "label": "مدة العدّاد بالساعات",
-                    "icon": "sicon-calculator",
-                    "required": false,
-                    "description": "تبدأ من أول زيارة في المتصفح، وتُحفظ حتى لا يُعاد ضبطها عند كل تحديث.",
-                    "minimum": 1,
-                    "maximum": 240,
-                    "value": 56
-                },
-                {
-                    "id": "day_label",
+                    "id": "ends_at",
                     "type": "string",
-                    "format": "text",
-                    "label": "تسمية اليوم",
-                    "icon": "sicon-format-text-alt",
-                    "multilanguage": true,
+                    "format": "datetime-local",
+                    "inputType": "datetime-local",
+                    "label": "تاريخ انتهاء العرض",
+                    "icon": "sicon-calendar-date",
                     "required": false,
-                    "description": null,
-                    "minLength": 0,
-                    "maxLength": 20,
-                    "value": {
-                        "ar": "يوم",
-                        "en": "day"
-                    }
-                },
-                {
-                    "id": "hour_label",
-                    "type": "string",
-                    "format": "text",
-                    "label": "تسمية الساعة",
-                    "icon": "sicon-format-text-alt",
-                    "multilanguage": true,
-                    "required": false,
-                    "description": null,
-                    "minLength": 0,
-                    "maxLength": 20,
-                    "value": {
-                        "ar": "ساعة",
-                        "en": "hour"
-                    }
-                },
-                {
-                    "id": "minute_label",
-                    "type": "string",
-                    "format": "text",
-                    "label": "تسمية الدقيقة",
-                    "icon": "sicon-format-text-alt",
-                    "multilanguage": true,
-                    "required": false,
-                    "description": null,
-                    "minLength": 0,
-                    "maxLength": 20,
-                    "value": {
-                        "ar": "دقيقة",
-                        "en": "min"
-                    }
-                },
-                {
-                    "id": "second_label",
-                    "type": "string",
-                    "format": "text",
-                    "label": "تسمية الثانية",
-                    "icon": "sicon-format-text-alt",
-                    "multilanguage": true,
-                    "required": false,
-                    "description": null,
-                    "minLength": 0,
-                    "maxLength": 20,
-                    "value": {
-                        "ar": "ثانية",
-                        "en": "sec"
-                    }
+                    "description": "يُحسب العدّاد حتى هذا التاريخ والوقت. يوم وساعة ودقيقة وثانية تُعرض وحدها، بلا حقول مدة.",
+                    "value": "2026-12-05T23:59"
                 },
                 {
                     "id": "show_video",
@@ -2967,7 +2901,7 @@
                             "label": "صورة قبل التشغيل",
                             "icon": "sicon-image",
                             "required": false,
-                            "description": "تظهر إلى أن تضغط الزائرة على المرآة.",
+                            "description": "المقاس المقترح 720×1280 بكسل. تظهر حتى تضغط الزائرة على التشغيل.",
                             "value": ""
                         },
                         {
@@ -3022,7 +2956,7 @@
                     "value": [
                         {
                             "clips.video_url": "",
-                            "clips.poster": "",
+                            "clips.poster": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=800",
                             "clips.name": {
                                 "ar": "لمى",
                                 "en": "Lama"
@@ -3038,7 +2972,7 @@
                         },
                         {
                             "clips.video_url": "",
-                            "clips.poster": "",
+                            "clips.poster": "https://images.pexels.com/photos/32279505/pexels-photo-32279505.jpeg?auto=compress&cs=tinysrgb&w=800",
                             "clips.name": {
                                 "ar": "هيفاء",
                                 "en": "Haifa"
@@ -3054,7 +2988,7 @@
                         },
                         {
                             "clips.video_url": "",
-                            "clips.poster": "",
+                            "clips.poster": "https://images.pexels.com/photos/33713539/pexels-photo-33713539.jpeg?auto=compress&cs=tinysrgb&w=800",
                             "clips.name": {
                                 "ar": "نورة",
                                 "en": "Noura"
@@ -3232,6 +3166,13 @@
                     }
                 },
                 {
+                    "id": "payments-size",
+                    "type": "static",
+                    "format": "description",
+                    "label": "مقاس أيقونات الدفع",
+                    "value": "كل وسيلة دفع صورة مربعة 64×64 بكسل بحجم فيف أيقون. ارفعي PNG بخلفية شفافة، وهذا التوضيح يظهر فوق الصورة."
+                },
+                {
                     "id": "payments",
                     "type": "collection",
                     "format": "collection",
@@ -3240,6 +3181,17 @@
                     "maxLength": 6,
                     "item_label": "وسيلة دفع",
                     "fields": [
+                        {
+                            "id": "payments.image",
+                            "type": "string",
+                            "format": "image",
+                            "label": "أيقونة 64×64",
+                            "labelHTML": "المقاس: 64×64 بكسل، حجم فيف أيقون. PNG بخلفية شفافة.",
+                            "icon": "sicon-image",
+                            "required": false,
+                            "description": "يظهر هذا المقاس فوق الصورة: 64×64 بكسل (فيف أيقون)، بصيغة PNG وخلفية شفافة.",
+                            "value": ""
+                        },
                         {
                             "id": "payments.label",
                             "type": "string",
@@ -3259,27 +3211,31 @@
                     ],
                     "value": [
                         {
+                            "payments.image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%23f7f4ef%22%2F%3E%3Crect%20x%3D%2212%22%20y%3D%2220%22%20width%3D%2240%22%20height%3D%2224%22%20rx%3D%224%22%20fill%3D%22none%22%20stroke%3D%22%23101014%22%20stroke-width%3D%222.5%22%2F%3E%3Crect%20x%3D%2212%22%20y%3D%2226%22%20width%3D%2240%22%20height%3D%226%22%20fill%3D%22%23101014%22%2F%3E%3C%2Fsvg%3E",
                             "payments.label": {
                                 "ar": "مدى",
                                 "en": "mada"
                             }
                         },
                         {
+                            "payments.image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%23f7f4ef%22%2F%3E%3Crect%20x%3D%2210%22%20y%3D%2218%22%20width%3D%2244%22%20height%3D%2228%22%20rx%3D%224%22%20fill%3D%22none%22%20stroke%3D%22%23101014%22%20stroke-width%3D%222.5%22%2F%3E%3Crect%20x%3D%2216%22%20y%3D%2224%22%20width%3D%2210%22%20height%3D%228%22%20rx%3D%221%22%20fill%3D%22%23b8945f%22%2F%3E%3C%2Fsvg%3E",
                             "payments.label": {
-                                "ar": "Visa",
-                                "en": "Visa"
+                                "ar": "بطاقة",
+                                "en": "Card"
                             }
                         },
                         {
+                            "payments.image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%23f7f4ef%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2220%22%20width%3D%2236%22%20height%3D%2226%22%20rx%3D%224%22%20fill%3D%22none%22%20stroke%3D%22%23101014%22%20stroke-width%3D%222.5%22%2F%3E%3Cpath%20d%3D%22M14%2028h36%22%20stroke%3D%22%23101014%22%20stroke-width%3D%222.5%22%2F%3E%3C%2Fsvg%3E",
                             "payments.label": {
-                                "ar": "Apple Pay",
-                                "en": "Apple Pay"
+                                "ar": "محفظة",
+                                "en": "Wallet"
                             }
                         },
                         {
+                            "payments.image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2264%22%20height%3D%2264%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2212%22%20fill%3D%22%23f7f4ef%22%2F%3E%3Ccircle%20cx%3D%2220%22%20cy%3D%2232%22%20r%3D%224%22%20fill%3D%22%23101014%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%224%22%20fill%3D%22%23b8945f%22%2F%3E%3Ccircle%20cx%3D%2244%22%20cy%3D%2232%22%20r%3D%224%22%20fill%3D%22%23101014%22%2F%3E%3C%2Fsvg%3E",
                             "payments.label": {
-                                "ar": "تابي",
-                                "en": "Tabby"
+                                "ar": "تقسيط",
+                                "en": "Split pay"
                             }
                         }
                     ]
@@ -3478,32 +3434,72 @@
                     }
                 },
                 {
-                    "id": "col3",
+                    "id": "social",
                     "type": "collection",
                     "format": "collection",
                     "required": false,
                     "minLength": 0,
                     "maxLength": 6,
-                    "item_label": "رابط",
+                    "item_label": "حساب",
                     "fields": [
                         {
-                            "id": "col3.label",
-                            "type": "string",
-                            "format": "text",
-                            "label": "النص",
-                            "icon": "sicon-format-text-alt",
-                            "multilanguage": true,
+                            "id": "social.network",
+                            "type": "items",
+                            "format": "dropdown-list",
+                            "source": "Manual",
+                            "label": "الأيقونة",
+                            "icon": "sicon-list",
                             "required": false,
-                            "description": null,
-                            "minLength": 0,
-                            "maxLength": 180,
-                            "value": {
-                                "ar": "إنستغرام",
-                                "en": "Instagram"
-                            }
+                            "description": "تظهر الأيقونة بجانب الرابط.",
+                            "options": [
+                                {
+                                    "label": "إنستغرام",
+                                    "value": "instagram",
+                                    "key": "c1a7e6d0-3b24-4f91-8a66-1d2c3e4f5a01"
+                                },
+                                {
+                                    "label": "سناب شات",
+                                    "value": "snapchat",
+                                    "key": "c2b8f7e1-4c35-4a02-9b77-2e3d4f5a6b12"
+                                },
+                                {
+                                    "label": "تيك توك",
+                                    "value": "tiktok",
+                                    "key": "c3c9a8f2-5d46-4b13-8c88-3f4e5a6b7c23"
+                                },
+                                {
+                                    "label": "واتساب",
+                                    "value": "whatsapp",
+                                    "key": "c4dab903-6e57-4c24-9d99-4a5f6b7c8d34"
+                                },
+                                {
+                                    "label": "إكس",
+                                    "value": "x",
+                                    "key": "c5ebb014-7f68-4d35-8eaa-5b6a7c8d9e45"
+                                },
+                                {
+                                    "label": "يوتيوب",
+                                    "value": "youtube",
+                                    "key": "c6fcc125-8079-4e46-9fbb-6c7b8d9e0f56"
+                                }
+                            ],
+                            "selected": [
+                                {
+                                    "label": "إنستغرام",
+                                    "value": "instagram",
+                                    "key": "c1a7e6d0-3b24-4f91-8a66-1d2c3e4f5a01"
+                                }
+                            ],
+                            "value": [
+                                {
+                                    "label": "إنستغرام",
+                                    "value": "instagram",
+                                    "key": "c1a7e6d0-3b24-4f91-8a66-1d2c3e4f5a01"
+                                }
+                            ]
                         },
                         {
-                            "id": "col3.url",
+                            "id": "social.url",
                             "type": "string",
                             "format": "text",
                             "label": "الرابط",
@@ -3513,30 +3509,49 @@
                             "description": "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
                             "minLength": 0,
                             "maxLength": 500,
-                            "value": "#"
+                            "value": "https://instagram.com/"
                         }
                     ],
                     "value": [
                         {
-                            "col3.label": {
-                                "ar": "إنستغرام",
-                                "en": "Instagram"
-                            },
-                            "col3.url": "#"
+                            "social.network": [
+                                {
+                                    "label": "إنستغرام",
+                                    "value": "instagram",
+                                    "key": "c1a7e6d0-3b24-4f91-8a66-1d2c3e4f5a01"
+                                }
+                            ],
+                            "social.url": "https://instagram.com/"
                         },
                         {
-                            "col3.label": {
-                                "ar": "سناب شات",
-                                "en": "Snapchat"
-                            },
-                            "col3.url": "#"
+                            "social.network": [
+                                {
+                                    "label": "سناب شات",
+                                    "value": "snapchat",
+                                    "key": "c2b8f7e1-4c35-4a02-9b77-2e3d4f5a6b12"
+                                }
+                            ],
+                            "social.url": "https://snapchat.com/"
                         },
                         {
-                            "col3.label": {
-                                "ar": "تيك توك",
-                                "en": "TikTok"
-                            },
-                            "col3.url": "#"
+                            "social.network": [
+                                {
+                                    "label": "تيك توك",
+                                    "value": "tiktok",
+                                    "key": "c3c9a8f2-5d46-4b13-8c88-3f4e5a6b7c23"
+                                }
+                            ],
+                            "social.url": "https://www.tiktok.com/"
+                        },
+                        {
+                            "social.network": [
+                                {
+                                    "label": "واتساب",
+                                    "value": "whatsapp",
+                                    "key": "c4dab903-6e57-4c24-9d99-4a5f6b7c8d34"
+                                }
+                            ],
+                            "social.url": "https://wa.me/"
                         }
                     ]
                 },

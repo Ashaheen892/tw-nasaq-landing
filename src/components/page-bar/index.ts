@@ -1,6 +1,7 @@
 import { html, LitElement, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { flag, getCollectionItems, getConfig, linkHref, localizedString, t, unwrapValue, watchLocale } from "../../utils/config.js";
+import { announceBar, announceCss } from "../../utils/announce.js";
 import { applyTone, currentTone, savedTone, schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, setKitFont, watchReveal } from "../../utils/styles.js";
 
@@ -46,6 +47,7 @@ export default class PageBar extends LitElement {
     this.classList.add("nq-host");
     injectFonts();
     injectStyles("nq-base", baseCss);
+    injectStyles("nq-announce", announceCss("nq"));
     injectStyles("nq-page-bar", css);
     const stopLocale = watchLocale(this);
     const stopReveal = watchReveal(this);
@@ -83,9 +85,9 @@ export default class PageBar extends LitElement {
     return flag(cfg.show_mode_toggle);
   }
 
-  /** Missing value keeps the page font. An explicit off inherits the Salla store font. */
+  /** Missing or off inherits the Salla store font. On uses the kit typeface. */
   private kitFont(cfg: Record<string, any>): boolean {
-    if (cfg.use_kit_font == null || cfg.use_kit_font === "") return true;
+    if (cfg.use_kit_font == null || cfg.use_kit_font === "") return false;
     return flag(cfg.use_kit_font);
   }
 
@@ -180,7 +182,8 @@ export default class PageBar extends LitElement {
       .map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" }))
       .filter((item) => item.label);
     const logo = (this.dark && cfg.logo_dark) || cfg.logo;
-    return html`<header class=${`nq-root nq-bar ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
+    return html`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, "--ann-bg:var(--ink);--ann-ink:var(--ivory)")}
+    <header class=${`nq-root nq-bar ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
       <nav class="nq-nav nq-wrap ${this.open ? "is-open" : ""}">
         <a href=${linkHref(cfg.home_url) || "#"} class="nq-logo" aria-label=${brand}>
           ${logo
