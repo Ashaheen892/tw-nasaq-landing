@@ -26,7 +26,17 @@ const image = (id, label, desc, value = "") => ({
   id, type: "string", format: "image", label, icon: "sicon-image", required: false, description: desc, value,
 });
 const url = (id, label, value = "", desc = null) => ({
-  id, type: "string", format: "url", label, icon: "sicon-link", required: false, description: desc, value,
+  id,
+  type: "string",
+  format: "text",
+  label,
+  icon: "sicon-link",
+  multilanguage: false,
+  required: false,
+  description: desc || "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
+  minLength: 0,
+  maxLength: 500,
+  value,
 });
 const line = (id) => ({ id, type: "static", format: "line" });
 const num = (id, label, value, min, max, desc = null) => ({
@@ -49,6 +59,30 @@ const collection = (id, itemLabel, fields, value, min, max) => ({
   }),
 });
 const buyHint = "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.";
+const KEY = {
+  schemeAuto: "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63",
+  schemeLight: "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74",
+  schemeDark: "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85",
+  modeLight: "2f4c1d57-9b83-4e4a-8ab5-4d0f8b3e7c96",
+  modeDark: "4a5d2e68-0c94-4f5b-9bc6-5e1a9c4f8d07",
+  modeSystem: "5b6e3f79-1d05-4a6c-8cd7-6f2b0d5a9e18",
+};
+const opt = (value, label, key) => ({ label, value, key });
+const drop = (id, label, options, selected, desc = null) => {
+  const opts = options.map(([value, name, key]) => opt(value, name, key));
+  const picked = opts.filter((item) => item.value === selected);
+  return {
+    id, type: "items", format: "dropdown-list", source: "Manual", label, icon: "sicon-list",
+    required: false, description: desc, options: opts, selected: picked, value: picked,
+  };
+};
+const scheme = (selected = "auto") => drop(
+  "color_scheme",
+  "وضع الألوان",
+  [["auto", "حسب رأس الصفحة", KEY.schemeAuto], ["light", "فاتح دائماً", KEY.schemeLight], ["dark", "داكن دائماً", KEY.schemeDark]],
+  selected,
+  "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+);
 
 const components = [
   {
@@ -60,26 +94,26 @@ const components = [
     props: { "min-height": "74px" },
     fields: [
       image("logo", "شعار", "اتركه فارغاً ليظهر اسم الدار بخط العنوان. المقاس المقترح 280×80 بكسل."),
+      image("logo_dark", "شعار للوضع الداكن", "يظهر عندما تكون الصفحة داكنة. بدونه يُستخدم الشعار الأساسي."),
       text("brand", "اسم الدار", L("دار نَسَق", "Nasaq House")),
       text("mark", "سطر صغير تحت الاسم", L("NASAQ", "NASAQ")),
       url("home_url", "رابط الشعار", "#"),
       line("pb-brand"),
       collection("links", "رابط", [
-        text("label", "النص", L("التشكيلة", "The edit")),
+        text("label", "النص", L("العبايات", "Abayas")),
         url("url", "الرابط", "#lookbook"),
       ], [
-        { label: L("التشكيلة", "The edit"), url: "#lookbook" },
-        { label: L("الأقمشة", "The cloth"), url: "#quality" },
-        { label: L("عباية الموسم", "Season piece"), url: "#product" },
-        { label: L("أسئلة شائعة", "Questions"), url: "#faq" },
+        { label: L("العبايات", "Abayas"), url: "#lookbook" },
+        { label: L("أقمشة العباية", "Abaya cloth"), url: "#quality" },
+        { label: L("عباية الموسم", "Season abaya"), url: "#product" },
+        { label: L("أسئلة العباية", "Abaya questions"), url: "#faq" },
       ], 0, 6),
       line("pb-links"),
-      text("cta_label", "نص الزر", L("اطلبي الآن", "Order now")),
-      url("cta_url", "رابط الزر", "#product", buyHint),
-      sw("show_search", "أيقونة البحث", true),
-      url("search_url", "رابط البحث", "#product"),
+      sw("use_kit_font", "خط الصفحة", true, "عند التفعيل تستخدم كل العناصر خط أميري والمرعي. عند الإيقاف تأخذ خط المتجر في سلة."),
       line("pb-bar"),
       sw("sticky", "تثبيت الرأس عند التمرير", true, "يبقى الاسم ظاهراً أثناء نزول الزائرة."),
+      sw("show_mode_toggle", "زر الفاتح والداكن", true, "أيقونة في الرأس تتبدل بين القمر والشمس، وتبدّل الأقسام المضبوطة على حسب الصفحة، وتتذكر اختيار الزائرة."),
+      drop("default_mode", "وضع الصفحة عند الفتح", [["light", "فاتح", KEY.modeLight], ["dark", "داكن", KEY.modeDark], ["system", "حسب جهاز الزائرة", KEY.modeSystem]], "light"),
       color("bg_color", "لون الخلفية"),
     ],
   },
@@ -91,25 +125,25 @@ const components = [
     image: "",
     props: { "min-height": "640px" },
     fields: [
-      text("kicker", "سطر صغير", L("تشكيلة شتاء ٢٠٢٦", "Winter 2026")),
-      text("title_line", "سطر العنوان الأول", L("أناقة ساكنة", "A quiet elegance"), { max: 80 }),
+      text("kicker", "سطر صغير", L("عبايات شتاء ٢٠٢٦", "Abayas, winter 2026")),
+      text("title_line", "سطر العنوان الأول", L("عباية ساكنة", "A quiet abaya"), { max: 80 }),
       text("title_before", "ما قبل الكلمة المميزة", L("في", "in the"), { max: 40 }),
       text("title_accent", "الكلمة المميزة", L("تفاصيل", "details"), { max: 40 }),
       text("title_after", "ما بعد الكلمة المميزة", L("القَصّة.", "of the cut."), { max: 80 }),
       area("text", "النص", L("عبايات مخيطة بأيدٍ سعودية من كريب مطفي وحرير مغسول، بقَصّات مدروسة تُحافظ على انسيابها بعد كل غسلة.", "Abayas sewn in Saudi hands from matte crepe and washed silk, cut so the fall stays after every wash.")),
-      text("primary_label", "نص الزر الأساسي", L("تسوّقي التشكيلة", "Shop the edit")),
-      url("primary_url", "رابط الزر الأساسي", "#product", buyHint),
-      text("secondary_label", "نص الزر الثاني", L("تعرّفي على الأقمشة", "See the cloth")),
+      text("primary_label", "نص الزر الأساسي", L("تسوّقي العبايات", "Shop the abayas")),
+      url("primary_url", "رابط الزر الأساسي", "#lookbook", buyHint),
+      text("secondary_label", "نص الزر الثاني", L("تعرّفي على قماش العباية", "See the abaya cloth")),
       url("secondary_url", "رابط الزر الثاني", "#quality"),
-      plain("side_tag", "عبارة جانبية", "Collection 2026 · Riyadh"),
+      plain("side_tag", "عبارة جانبية", "عبايات ٢٠٢٦ · الرياض"),
       line("hs-media"),
       collection("photos", "صورة", [
         image("image", "الصورة", "المقاس المقترح 900×1400 بكسل. اتركيها فارغة ليظهر الشكل الرملي."),
         text("caption", "التعليق", L("كريب مطفي", "Matte crepe")),
       ], [
-        { image: "", caption: L("كريب مطفي", "Matte crepe") },
-        { image: "", caption: L("حرير مغسول", "Washed silk") },
-        { image: "", caption: L("كلوش", "Flared") },
+        { image: "", caption: L("عباية كريب مطفي", "Matte crepe abaya") },
+        { image: "", caption: L("عباية حرير مغسول", "Washed silk abaya") },
+        { image: "", caption: L("عباية كلوش", "Flared abaya") },
       ], 1, 3),
       collection("stats", "رقم", [
         text("value", "الرقم", L("١٢٤٠٠", "12,400"), { max: 20 }),
@@ -133,11 +167,11 @@ const components = [
       collection("items", "عبارة", [
         text("text", "العبارة", L("خياطة سعودية", "Sewn in Saudi Arabia")),
       ], [
+        { text: L("عبايات مبطّنة", "Lined abayas") },
+        { text: L("قماش لا يشف", "Cloth that is never sheer") },
+        { text: L("قَصّة على مقاسك", "Cut to your measure") },
         { text: L("خياطة سعودية", "Sewn in Saudi Arabia") },
-        { text: L("قياسات مخصّصة", "Custom measurements") },
         { text: L("استرجاع ١٤ يوماً", "14-day returns") },
-        { text: L("تغليف هدية", "Gift wrap") },
-        { text: L("دفع عند الاستلام", "Pay on delivery") },
       ], 1, 8),
       color("bg_color", "لون الخلفية"),
     ],
@@ -151,9 +185,9 @@ const components = [
     props: { "min-height": "640px" },
     fields: [
       plain("anchor", "معرّف القسم في الرابط", "lookbook", "يُستخدم في روابط الرأس، مثل #lookbook."),
-      text("kicker", "سطر صغير", L("Lookbook", "Lookbook")),
-      text("title", "العنوان", L("ثلاث قَصّات تكفي خزانتك", "Three cuts are enough")),
-      area("text", "النص", L("اخترنا الأكثر طلباً من ٢٨ قَصّة، وأعدنا ضبط أطوالها على القياس السعودي.", "The three most requested of 28 cuts, with lengths set to the Saudi measure.")),
+      text("kicker", "سطر صغير", L("تشكيلة العبايات", "The abaya edit")),
+      text("title", "العنوان", L("ثلاث عبايات تكفي خزانتك", "Three abayas are enough")),
+      area("text", "النص", L("اخترنا الأكثر طلباً من ٢٨ عباية، وأعدنا ضبط أطوالها على القياس السعودي.", "The three most requested of 28 abayas, with lengths set to the Saudi measure.")),
       collection("cards", "قَصّة", [
         text("tag", "شارة", L("الأكثر طلباً", "Most requested"), { max: 40 }),
         image("image", "الصورة", "المقاس المقترح 800×1000 بكسل. اتركيها فارغة ليظهر الشكل الرملي."),
@@ -164,9 +198,9 @@ const components = [
         text("compare", "السعر قبل الخصم", L("٦٢٠ ر.س", "SAR 620"), { max: 30 }),
         url("url", "الرابط", "#product"),
       ], [
-        { tag: L("الأكثر طلباً", "Most requested"), image: "", caption: L("Nasaq 01", "Nasaq 01"), title: L("عباية كلوش", "Flared abaya"), note: L("كريب مطفي · ٨ ألوان", "Matte crepe · 8 colors"), price: L("٤٩٥", "495"), compare: L("٦٢٠ ر.س", "SAR 620"), url: "#product" },
-        { tag: L("جديد", "New"), image: "", caption: L("Nasaq 02", "Nasaq 02"), title: L("عباية مطرزة", "Embroidered abaya"), note: L("حرير مغسول · تطريز يدوي", "Washed silk · hand embroidery"), price: L("٧٨٠", "780"), compare: L("٩٥٠ ر.س", "SAR 950"), url: "#product" },
-        { tag: L("يومية", "Everyday"), image: "", caption: L("Nasaq 03", "Nasaq 03"), title: L("عباية مستقيمة", "Straight abaya"), note: L("كريب خفيف · ٦ ألوان", "Light crepe · 6 colors"), price: L("٣٢٠", "320"), compare: L("٤١٠ ر.س", "SAR 410"), url: "#product" },
+        { tag: L("الأكثر طلباً", "Most requested"), image: "", caption: L("عباية كلوش", "Flared abaya"), title: L("عباية كلوش", "Flared abaya"), note: L("كريب مطفي · ٨ ألوان", "Matte crepe · 8 colors"), price: L("٤٩٥ ر.س", "SAR 495"), compare: L("٦٢٠ ر.س", "SAR 620"), url: "#product" },
+        { tag: L("جديدة", "New"), image: "", caption: L("عباية مطرزة", "Embroidered abaya"), title: L("عباية مطرزة", "Embroidered abaya"), note: L("حرير مغسول · تطريز يدوي", "Washed silk · hand embroidery"), price: L("٧٨٠ ر.س", "SAR 780"), compare: L("٩٥٠ ر.س", "SAR 950"), url: "#product" },
+        { tag: L("يومية", "Everyday"), image: "", caption: L("عباية مستقيمة", "Straight abaya"), title: L("عباية مستقيمة", "Straight abaya"), note: L("كريب خفيف · ٦ ألوان", "Light crepe · 6 colors"), price: L("٣٢٠ ر.س", "SAR 320"), compare: L("٤١٠ ر.س", "SAR 410"), url: "#product" },
       ], 1, 6),
       color("bg_color", "لون الخلفية"),
     ],
@@ -180,7 +214,7 @@ const components = [
     props: { "min-height": "220px" },
     fields: [
       plain("anchor", "معرّف القسم في الرابط", "quality"),
-      text("title", "وصف للقارئ", L("الأقمشة", "The cloth")),
+      text("title", "وصف للقارئ", L("أقمشة العباية", "Abaya cloth")),
       collection("items", "سبب", [
         text("mark", "الرقم", L("١", "1"), { max: 4 }),
         text("title", "العنوان", L("قماش يُختبر أولاً", "Cloth is tested first")),
@@ -258,7 +292,6 @@ const components = [
       url("primary_url", "رابط زر الشراء", "#product", buyHint),
       text("secondary_label", "نص الزر الثاني", L("اطلبي قياساً مخصّصاً", "Request a custom measure")),
       url("secondary_url", "رابط الزر الثاني", "#faq"),
-      sw("show_bar", "شريط شراء ثابت أسفل الصفحة", true, "يظهر بعد النزول، ويعرض الاسم والسعر والمقاس المختار."),
       color("bg_color", "لون الخلفية"),
     ],
   },
@@ -270,16 +303,16 @@ const components = [
     image: "",
     props: { "min-height": "220px" },
     fields: [
-      text("kicker", "سطر صغير", L("عرض محدود", "A short offer")),
-      text("title", "العنوان", L("خصم ٢٠٪ على التشكيلة + تغليف هدية", "20% off the edit, plus gift wrap")),
-      area("text", "النص", L("ينتهي العرض تلقائياً عند انتهاء العدّاد، ولا يُمدّد.", "The offer ends when the clock does, and it is not extended.")),
+      text("kicker", "سطر صغير", L("عرض العبايات", "The abaya offer")),
+      text("title", "العنوان", L("خصم ٢٠٪ على العبايات + تغليف هدية", "20% off the abayas, plus gift wrap")),
+      area("text", "النص", L("ينتهي عرض العبايات مع العدّاد، ولا يُمدّد.", "The abaya offer ends when the clock does, and it is not extended.")),
       num("hours", "مدة العدّاد بالساعات", 56, 1, 240, "تبدأ من أول زيارة في المتصفح، وتُحفظ حتى لا يُعاد ضبطها عند كل تحديث."),
       text("day_label", "تسمية اليوم", L("يوم", "day"), { max: 20 }),
       text("hour_label", "تسمية الساعة", L("ساعة", "hour"), { max: 20 }),
       text("minute_label", "تسمية الدقيقة", L("دقيقة", "min"), { max: 20 }),
       text("second_label", "تسمية الثانية", L("ثانية", "sec"), { max: 20 }),
-      text("button_label", "نص الزر", L("استفيدي من العرض", "Take the offer")),
-      url("button_url", "رابط الزر", "#product", buyHint),
+      sw("show_video", "خلفية فيديو", false, "عند التفعيل يظهر فيديو العباية خلف العدّاد بلا صوت، ويبقى النص فوقه. زر الشراء تضيفه سلة."),
+      url("video_url", "رابط خلفية الفيديو", "", "ملف mp4 لعباية، أو رابط يوتيوب أو فيميو. لا يظهر إلا إذا كانت خلفية الفيديو مفعّلة."),
       color("bg_color", "لون الخلفية"),
     ],
   },
@@ -299,7 +332,7 @@ const components = [
         text("meta", "السطر الصغير", L("الرياض · مشترية موثّقة", "Riyadh · verified")),
         text("initial", "الحرف", L("ل", "L"), { max: 2 }),
       ], [
-        { quote: L("القماش ثقيل بشكل محترم وما يبيّن اللي تحته. طلبت قياس مخصص ووصلني بالضبط.", "The cloth has a proper weight and nothing shows through. I asked for a custom measure and it arrived exact."), name: L("لمى ع.", "Lama A."), meta: L("الرياض · مشترية موثّقة", "Riyadh · verified"), initial: L("ل", "L") },
+        { quote: L("العباية ثقيلة بشكل محترم وما تبين اللي تحتها. طلبت قياس مخصص ووصلني الطول على كعبي.", "The abaya has a proper weight and nothing shows through. I asked for a custom measure and the length met my heel."), name: L("لمى ع.", "Lama A."), meta: L("الرياض · مشترية موثّقة", "Riyadh · verified"), initial: L("ل", "L") },
         { quote: L("ثالث عباية أطلبها منهم. التطريز نظيف من الداخل، وهذا اللي يفرّق عن غيرهم.", "This is the third abaya I have ordered. The embroidery is clean on the inside, and that is the difference."), name: L("نورة ا.", "Noura A."), meta: L("جدة · مشترية موثّقة", "Jeddah · verified"), initial: L("ن", "N") },
         { quote: L("وصلت في ٣٦ ساعة والتغليف يصلح هدية مباشرة. خدمة العملاء ردّت على الواتس بدقيقتين.", "It arrived in 36 hours and the wrap is ready to gift. Support answered on WhatsApp in two minutes."), name: L("ريم س.", "Reem S."), meta: L("الدمام · مشترية موثّقة", "Dammam · verified"), initial: L("ر", "R") },
       ], 1, 6),
@@ -315,9 +348,9 @@ const components = [
     props: { "min-height": "420px" },
     fields: [
       plain("anchor", "معرّف القسم في الرابط", "faq"),
-      text("kicker", "سطر صغير", L("FAQ", "FAQ")),
-      text("title", "العنوان", L("أسئلة قبل الطلب", "Before you order")),
-      area("text", "النص", L("ما لم تجديه هنا، اسألينا على الواتساب ونرد في دقائق.", "If it is not here, ask us on WhatsApp and we reply in minutes.")),
+      text("kicker", "سطر صغير", L("عن العباية", "About the abaya")),
+      text("title", "العنوان", L("أسئلة قبل طلب العباية", "Before you order an abaya")),
+      area("text", "النص", L("ما لم تجديه عن العباية هنا، اسألينا على الواتساب ونرد في دقائق.", "If it is not here, ask us about the abaya on WhatsApp and we reply in minutes.")),
       collection("items", "سؤال", [
         text("q", "السؤال", L("كيف أختار مقاسي الصحيح؟", "How do I choose my size?")),
         area("a", "الجواب", L("قيسي طولك من الكتف حتى الكعب وأضيفي ٢ سم.", "Measure from shoulder to heel and add 2 cm.")),
@@ -340,9 +373,9 @@ const components = [
     props: { "min-height": "360px" },
     fields: [
       text("kicker", "سطر صغير", L("جاهزة؟", "Ready?")),
-      text("title", "العنوان", L("اختاري عبايتك اليوم، وتوصلك قبل المناسبة.", "Choose it today, and it arrives before the occasion.")),
-      area("text", "النص", L("الطلبات قبل الرابعة عصراً تُخرج من الورشة في نفس اليوم.", "Orders placed before 4pm leave the workshop the same day.")),
-      text("primary_label", "نص الزر الأساسي", L("تسوّقي الآن", "Shop now")),
+      text("title", "العنوان", L("اختاري عبايتك اليوم، وتوصلك قبل المناسبة.", "Choose your abaya today, and it arrives before the occasion.")),
+      area("text", "النص", L("طلبات العباية قبل الرابعة عصراً تُخرج من الورشة في نفس اليوم.", "Abaya orders placed before 4pm leave the workshop the same day.")),
+      text("primary_label", "نص الزر الأساسي", L("تسوّقي العبايات", "Shop the abayas")),
       url("primary_url", "رابط الزر الأساسي", "#product", buyHint),
       text("secondary_label", "نص الزر الثاني", L("تواصلي واتساب", "WhatsApp us")),
       url("secondary_url", "رابط الزر الثاني", "#", "ضعي رابط الواتساب."),
@@ -358,6 +391,34 @@ const components = [
     ],
   },
   {
+    title: "مرآة العميلات",
+    icon: "sicon-play",
+    name: "mirror-reels",
+    key: "6c7f4a80-2e16-4b7d-9de8-7a3c1e6b0f29",
+    image: "",
+    props: { "min-height": "640px" },
+    fields: [
+      plain("anchor", "معرّف القسم في الرابط", "reels", "يُستخدم في روابط الرأس، مثل #reels."),
+      text("kicker", "سطر صغير", L("من ورشة العبايات", "From the abaya workshop")),
+      text("title", "العنوان", L("العميلات يَرَين العباية", "Clients show the abaya")),
+      area("text", "النص", L("مقطع واحد لعباية في كل مرة. لا يشتغل وحده، والصوت لا يفتح إلا إذا طلبته الزائرة.", "One abaya clip at a time. It does not start on its own, and the sound stays off until she asks.")),
+      collection("clips", "مقطع", [
+        url("video_url", "رابط الفيديو", "", "ملف mp4 أو رابط يوتيوب أو فيميو."),
+        image("poster", "صورة قبل التشغيل", "تظهر إلى أن تضغط الزائرة على المرآة."),
+        text("name", "الاسم", L("لمى", "Lama")),
+        text("place", "المدينة", L("الرياض", "Riyadh"), { max: 40 }),
+        area("quote", "الجملة", L("العباية تمشي مع الخطوة، وما تبين اللي تحتها.", "The abaya moves with the step, and nothing shows through.")),
+      ], [
+        { video_url: "", poster: "", name: L("لمى", "Lama"), place: L("الرياض", "Riyadh"), quote: L("العباية تمشي مع الخطوة، وما تبين اللي تحتها.", "The abaya moves with the step, and nothing shows through.") },
+        { video_url: "", poster: "", name: L("هيفاء", "Haifa"), place: L("جدة", "Jeddah"), quote: L("تطريز العباية من الداخل أنظف من الصورة.", "The abaya embroidery is cleaner on the inside than in the photo.") },
+        { video_url: "", poster: "", name: L("نورة", "Noura"), place: L("الخبر", "Khobar"), quote: L("طلبت قياس العباية المخصّص، ووصل الطول على كعبي.", "I asked for a custom abaya measure, and the length met my heel.") },
+      ], 0, 6),
+      text("button_label", "نص الزر", L("تسوّقي العبايات", "Shop the abayas")),
+      url("button_url", "رابط الزر", "#product", buyHint),
+      color("bg_color", "لون الخلفية"),
+    ],
+  },
+  {
     title: "فوتر الصفحة",
     icon: "sicon-link",
     name: "page-footer",
@@ -366,6 +427,7 @@ const components = [
     props: { "min-height": "280px" },
     fields: [
       image("logo", "شعار", "اتركه فارغاً ليظهر اسم الدار. المقاس المقترح 280×80 بكسل."),
+      image("logo_dark", "شعار للوضع الداكن", "يظهر عندما تكون الصفحة داكنة. بدونه يُستخدم الشعار الأساسي."),
       text("brand", "اسم الدار", L("دار نَسَق", "Nasaq House")),
       text("mark", "سطر صغير تحت الاسم", L("NASAQ", "NASAQ")),
       area("about", "نبذة", L("ورشة خياطة سعودية في الرياض منذ ٢٠١٩. عبايات تُخاط بالطلب.", "A Saudi sewing workshop in Riyadh since 2019. Abayas cut to order.")),
@@ -378,7 +440,7 @@ const components = [
         { label: L("تابي", "Tabby") },
       ], 0, 6),
       line("ft-cols"),
-      text("col1_title", "عنوان العمود الأول", L("التشكيلة", "The edit")),
+      text("col1_title", "عنوان العمود الأول", L("العبايات", "Abayas")),
       collection("col1", "رابط", [
         text("label", "النص", L("كلوش", "Flared")),
         url("url", "الرابط", "#lookbook"),
@@ -408,6 +470,8 @@ const components = [
         { label: L("تيك توك", "TikTok"), url: "#" },
       ], 0, 6),
       line("ft-base"),
+      sw("show_top", "زر العودة للأعلى", true, "يظهر أثناء النزول، وفي أسفل الفوتر. الضغط يعيد الزائرة لبداية الصفحة."),
+      text("top_label", "نص زر العودة", L("العودة للأعلى", "Back to top"), { max: 40 }),
       text("copyright", "سطر الحقوق", L("© ٢٠٢٦ دار نَسَق · جميع الحقوق محفوظة", "© 2026 Nasaq House")),
       text("legal", "السجل والرقم الضريبي", L("س.ت ١٠١٠XXXXXX · الرقم الضريبي ٣٠٠XXXXXXXX", "CR 1010XXXXXX · VAT 300XXXXXXXX")),
       color("bg_color", "لون الخلفية"),
@@ -415,13 +479,15 @@ const components = [
   },
 ];
 
+for (const component of components) component.fields.push(scheme());
+
 const templates = [
   {
     name: "nasaq",
     id: "5f79e7d6-62a7-40a2-b12d-1a6a5988cb62",
     is_default: true,
     primary_color: "#101014",
-    order: ["page-bar", "hero-stage", "ribbon-line", "cut-grid", "craft-row", "piece-stage", "offer-clock", "guest-notes", "ask-list", "close-invite", "page-footer"],
+    order: ["page-bar", "hero-stage", "ribbon-line", "cut-grid", "craft-row", "piece-stage", "mirror-reels", "offer-clock", "guest-notes", "ask-list", "close-invite", "page-footer"],
   },
   {
     name: "wasl",

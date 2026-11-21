@@ -22,6 +22,16 @@
           "value": ""
         },
         {
+          "id": "logo_dark",
+          "type": "string",
+          "format": "image",
+          "label": "شعار للوضع الداكن",
+          "icon": "sicon-image",
+          "required": false,
+          "description": "يظهر عندما تكون الصفحة داكنة. بدونه يُستخدم الشعار الأساسي.",
+          "value": ""
+        },
+        {
           "id": "brand",
           "type": "string",
           "format": "text",
@@ -56,11 +66,14 @@
         {
           "id": "home_url",
           "type": "string",
-          "format": "url",
+          "format": "text",
           "label": "رابط الشعار",
           "icon": "sicon-link",
+          "multilanguage": false,
           "required": false,
-          "description": null,
+          "description": "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
+          "minLength": 0,
+          "maxLength": 500,
           "value": "#"
         },
         {
@@ -89,47 +102,50 @@
               "minLength": 0,
               "maxLength": 180,
               "value": {
-                "ar": "التشكيلة",
-                "en": "The edit"
+                "ar": "العبايات",
+                "en": "Abayas"
               }
             },
             {
               "id": "links.url",
               "type": "string",
-              "format": "url",
+              "format": "text",
               "label": "الرابط",
               "icon": "sicon-link",
+              "multilanguage": false,
               "required": false,
-              "description": null,
+              "description": "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
+              "minLength": 0,
+              "maxLength": 500,
               "value": "#lookbook"
             }
           ],
           "value": [
             {
               "links.label": {
-                "ar": "التشكيلة",
-                "en": "The edit"
+                "ar": "العبايات",
+                "en": "Abayas"
               },
               "links.url": "#lookbook"
             },
             {
               "links.label": {
-                "ar": "الأقمشة",
-                "en": "The cloth"
+                "ar": "أقمشة العباية",
+                "en": "Abaya cloth"
               },
               "links.url": "#quality"
             },
             {
               "links.label": {
                 "ar": "عباية الموسم",
-                "en": "Season piece"
+                "en": "Season abaya"
               },
               "links.url": "#product"
             },
             {
               "links.label": {
-                "ar": "أسئلة شائعة",
-                "en": "Questions"
+                "ar": "أسئلة العباية",
+                "en": "Abaya questions"
               },
               "links.url": "#faq"
             }
@@ -141,51 +157,15 @@
           "format": "line"
         },
         {
-          "id": "cta_label",
-          "type": "string",
-          "format": "text",
-          "label": "نص الزر",
-          "icon": "sicon-format-text-alt",
-          "multilanguage": true,
-          "required": false,
-          "description": null,
-          "minLength": 0,
-          "maxLength": 180,
-          "value": {
-            "ar": "اطلبي الآن",
-            "en": "Order now"
-          }
-        },
-        {
-          "id": "cta_url",
-          "type": "string",
-          "format": "url",
-          "label": "رابط الزر",
-          "icon": "sicon-link",
-          "required": false,
-          "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
-          "value": "#product"
-        },
-        {
-          "id": "show_search",
+          "id": "use_kit_font",
           "type": "boolean",
           "format": "switch",
-          "label": "أيقونة البحث",
+          "label": "خط الصفحة",
           "icon": "sicon-toggle-off",
           "required": false,
-          "description": null,
+          "description": "عند التفعيل تستخدم كل العناصر خط أميري والمرعي. عند الإيقاف تأخذ خط المتجر في سلة.",
           "value": true,
           "selected": true
-        },
-        {
-          "id": "search_url",
-          "type": "string",
-          "format": "url",
-          "label": "رابط البحث",
-          "icon": "sicon-link",
-          "required": false,
-          "description": null,
-          "value": "#product"
         },
         {
           "id": "pb-bar",
@@ -204,6 +184,58 @@
           "selected": true
         },
         {
+          "id": "show_mode_toggle",
+          "type": "boolean",
+          "format": "switch",
+          "label": "زر الفاتح والداكن",
+          "icon": "sicon-toggle-off",
+          "required": false,
+          "description": "أيقونة في الرأس تتبدل بين القمر والشمس، وتبدّل الأقسام المضبوطة على حسب الصفحة، وتتذكر اختيار الزائرة.",
+          "value": true,
+          "selected": true
+        },
+        {
+          "id": "default_mode",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الصفحة عند الفتح",
+          "icon": "sicon-list",
+          "required": false,
+          "description": null,
+          "options": [
+            {
+              "label": "فاتح",
+              "value": "light",
+              "key": "2f4c1d57-9b83-4e4a-8ab5-4d0f8b3e7c96"
+            },
+            {
+              "label": "داكن",
+              "value": "dark",
+              "key": "4a5d2e68-0c94-4f5b-9bc6-5e1a9c4f8d07"
+            },
+            {
+              "label": "حسب جهاز الزائرة",
+              "value": "system",
+              "key": "5b6e3f79-1d05-4a6c-8cd7-6f2b0d5a9e18"
+            }
+          ],
+          "selected": [
+            {
+              "label": "فاتح",
+              "value": "light",
+              "key": "2f4c1d57-9b83-4e4a-8ab5-4d0f8b3e7c96"
+            }
+          ],
+          "value": [
+            {
+              "label": "فاتح",
+              "value": "light",
+              "key": "2f4c1d57-9b83-4e4a-8ab5-4d0f8b3e7c96"
+            }
+          ]
+        },
+        {
           "id": "bg_color",
           "type": "string",
           "format": "color",
@@ -213,6 +245,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -238,8 +311,8 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "تشكيلة شتاء ٢٠٢٦",
-            "en": "Winter 2026"
+            "ar": "عبايات شتاء ٢٠٢٦",
+            "en": "Abayas, winter 2026"
           }
         },
         {
@@ -254,8 +327,8 @@
           "minLength": 0,
           "maxLength": 80,
           "value": {
-            "ar": "أناقة ساكنة",
-            "en": "A quiet elegance"
+            "ar": "عباية ساكنة",
+            "en": "A quiet abaya"
           }
         },
         {
@@ -334,19 +407,22 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "تسوّقي التشكيلة",
-            "en": "Shop the edit"
+            "ar": "تسوّقي العبايات",
+            "en": "Shop the abayas"
           }
         },
         {
           "id": "primary_url",
           "type": "string",
-          "format": "url",
+          "format": "text",
           "label": "رابط الزر الأساسي",
           "icon": "sicon-link",
+          "multilanguage": false,
           "required": false,
           "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
-          "value": "#product"
+          "minLength": 0,
+          "maxLength": 500,
+          "value": "#lookbook"
         },
         {
           "id": "secondary_label",
@@ -360,18 +436,21 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "تعرّفي على الأقمشة",
-            "en": "See the cloth"
+            "ar": "تعرّفي على قماش العباية",
+            "en": "See the abaya cloth"
           }
         },
         {
           "id": "secondary_url",
           "type": "string",
-          "format": "url",
+          "format": "text",
           "label": "رابط الزر الثاني",
           "icon": "sicon-link",
+          "multilanguage": false,
           "required": false,
-          "description": null,
+          "description": "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
+          "minLength": 0,
+          "maxLength": 500,
           "value": "#quality"
         },
         {
@@ -385,7 +464,7 @@
           "description": null,
           "minLength": 0,
           "maxLength": 180,
-          "value": "Collection 2026 · Riyadh"
+          "value": "عبايات ٢٠٢٦ · الرياض"
         },
         {
           "id": "hs-media",
@@ -432,22 +511,22 @@
             {
               "photos.image": "",
               "photos.caption": {
-                "ar": "كريب مطفي",
-                "en": "Matte crepe"
+                "ar": "عباية كريب مطفي",
+                "en": "Matte crepe abaya"
               }
             },
             {
               "photos.image": "",
               "photos.caption": {
-                "ar": "حرير مغسول",
-                "en": "Washed silk"
+                "ar": "عباية حرير مغسول",
+                "en": "Washed silk abaya"
               }
             },
             {
               "photos.image": "",
               "photos.caption": {
-                "ar": "كلوش",
-                "en": "Flared"
+                "ar": "عباية كلوش",
+                "en": "Flared abaya"
               }
             }
           ]
@@ -537,6 +616,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -579,32 +699,32 @@
           "value": [
             {
               "items.text": {
+                "ar": "عبايات مبطّنة",
+                "en": "Lined abayas"
+              }
+            },
+            {
+              "items.text": {
+                "ar": "قماش لا يشف",
+                "en": "Cloth that is never sheer"
+              }
+            },
+            {
+              "items.text": {
+                "ar": "قَصّة على مقاسك",
+                "en": "Cut to your measure"
+              }
+            },
+            {
+              "items.text": {
                 "ar": "خياطة سعودية",
                 "en": "Sewn in Saudi Arabia"
               }
             },
             {
               "items.text": {
-                "ar": "قياسات مخصّصة",
-                "en": "Custom measurements"
-              }
-            },
-            {
-              "items.text": {
                 "ar": "استرجاع ١٤ يوماً",
                 "en": "14-day returns"
-              }
-            },
-            {
-              "items.text": {
-                "ar": "تغليف هدية",
-                "en": "Gift wrap"
-              }
-            },
-            {
-              "items.text": {
-                "ar": "دفع عند الاستلام",
-                "en": "Pay on delivery"
               }
             }
           ]
@@ -619,6 +739,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -657,8 +818,8 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "Lookbook",
-            "en": "Lookbook"
+            "ar": "تشكيلة العبايات",
+            "en": "The abaya edit"
           }
         },
         {
@@ -673,8 +834,8 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "ثلاث قَصّات تكفي خزانتك",
-            "en": "Three cuts are enough"
+            "ar": "ثلاث عبايات تكفي خزانتك",
+            "en": "Three abayas are enough"
           }
         },
         {
@@ -689,8 +850,8 @@
           "minLength": 0,
           "maxLength": 800,
           "value": {
-            "ar": "اخترنا الأكثر طلباً من ٢٨ قَصّة، وأعدنا ضبط أطوالها على القياس السعودي.",
-            "en": "The three most requested of 28 cuts, with lengths set to the Saudi measure."
+            "ar": "اخترنا الأكثر طلباً من ٢٨ عباية، وأعدنا ضبط أطوالها على القياس السعودي.",
+            "en": "The three most requested of 28 abayas, with lengths set to the Saudi measure."
           }
         },
         {
@@ -811,11 +972,14 @@
             {
               "id": "cards.url",
               "type": "string",
-              "format": "url",
+              "format": "text",
               "label": "الرابط",
               "icon": "sicon-link",
+              "multilanguage": false,
               "required": false,
-              "description": null,
+              "description": "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
+              "minLength": 0,
+              "maxLength": 500,
               "value": "#product"
             }
           ],
@@ -827,8 +991,8 @@
               },
               "cards.image": "",
               "cards.caption": {
-                "ar": "Nasaq 01",
-                "en": "Nasaq 01"
+                "ar": "عباية كلوش",
+                "en": "Flared abaya"
               },
               "cards.title": {
                 "ar": "عباية كلوش",
@@ -839,8 +1003,8 @@
                 "en": "Matte crepe · 8 colors"
               },
               "cards.price": {
-                "ar": "٤٩٥",
-                "en": "495"
+                "ar": "٤٩٥ ر.س",
+                "en": "SAR 495"
               },
               "cards.compare": {
                 "ar": "٦٢٠ ر.س",
@@ -850,13 +1014,13 @@
             },
             {
               "cards.tag": {
-                "ar": "جديد",
+                "ar": "جديدة",
                 "en": "New"
               },
               "cards.image": "",
               "cards.caption": {
-                "ar": "Nasaq 02",
-                "en": "Nasaq 02"
+                "ar": "عباية مطرزة",
+                "en": "Embroidered abaya"
               },
               "cards.title": {
                 "ar": "عباية مطرزة",
@@ -867,8 +1031,8 @@
                 "en": "Washed silk · hand embroidery"
               },
               "cards.price": {
-                "ar": "٧٨٠",
-                "en": "780"
+                "ar": "٧٨٠ ر.س",
+                "en": "SAR 780"
               },
               "cards.compare": {
                 "ar": "٩٥٠ ر.س",
@@ -883,8 +1047,8 @@
               },
               "cards.image": "",
               "cards.caption": {
-                "ar": "Nasaq 03",
-                "en": "Nasaq 03"
+                "ar": "عباية مستقيمة",
+                "en": "Straight abaya"
               },
               "cards.title": {
                 "ar": "عباية مستقيمة",
@@ -895,8 +1059,8 @@
                 "en": "Light crepe · 6 colors"
               },
               "cards.price": {
-                "ar": "٣٢٠",
-                "en": "320"
+                "ar": "٣٢٠ ر.س",
+                "en": "SAR 320"
               },
               "cards.compare": {
                 "ar": "٤١٠ ر.س",
@@ -916,6 +1080,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -954,8 +1159,8 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "الأقمشة",
-            "en": "The cloth"
+            "ar": "أقمشة العباية",
+            "en": "Abaya cloth"
           }
         },
         {
@@ -1085,6 +1290,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -1632,11 +1878,14 @@
         {
           "id": "primary_url",
           "type": "string",
-          "format": "url",
+          "format": "text",
           "label": "رابط زر الشراء",
           "icon": "sicon-link",
+          "multilanguage": false,
           "required": false,
           "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
+          "minLength": 0,
+          "maxLength": 500,
           "value": "#product"
         },
         {
@@ -1658,23 +1907,15 @@
         {
           "id": "secondary_url",
           "type": "string",
-          "format": "url",
+          "format": "text",
           "label": "رابط الزر الثاني",
           "icon": "sicon-link",
+          "multilanguage": false,
           "required": false,
-          "description": null,
+          "description": "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
+          "minLength": 0,
+          "maxLength": 500,
           "value": "#faq"
-        },
-        {
-          "id": "show_bar",
-          "type": "boolean",
-          "format": "switch",
-          "label": "شريط شراء ثابت أسفل الصفحة",
-          "icon": "sicon-toggle-off",
-          "required": false,
-          "description": "يظهر بعد النزول، ويعرض الاسم والسعر والمقاس المختار.",
-          "value": true,
-          "selected": true
         },
         {
           "id": "bg_color",
@@ -1686,6 +1927,333 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "مرآة العميلات",
+      "icon": "sicon-play",
+      "name": "mirror-reels",
+      "key": "6c7f4a80-2e16-4b7d-9de8-7a3c1e6b0f29",
+      "image": "",
+      "props": {
+        "min-height": "640px"
+      },
+      "fields": [
+        {
+          "id": "anchor",
+          "type": "string",
+          "format": "text",
+          "label": "معرّف القسم في الرابط",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": false,
+          "required": false,
+          "description": "يُستخدم في روابط الرأس، مثل #reels.",
+          "minLength": 0,
+          "maxLength": 180,
+          "value": "reels"
+        },
+        {
+          "id": "kicker",
+          "type": "string",
+          "format": "text",
+          "label": "سطر صغير",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "من ورشة العبايات",
+            "en": "From the abaya workshop"
+          }
+        },
+        {
+          "id": "title",
+          "type": "string",
+          "format": "text",
+          "label": "العنوان",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "العميلات يَرَين العباية",
+            "en": "Clients show the abaya"
+          }
+        },
+        {
+          "id": "text",
+          "type": "string",
+          "format": "textarea",
+          "label": "النص",
+          "icon": "sicon-paragraph",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 800,
+          "value": {
+            "ar": "مقطع واحد لعباية في كل مرة. لا يشتغل وحده، والصوت لا يفتح إلا إذا طلبته الزائرة.",
+            "en": "One abaya clip at a time. It does not start on its own, and the sound stays off until she asks."
+          }
+        },
+        {
+          "id": "clips",
+          "type": "collection",
+          "format": "collection",
+          "required": false,
+          "minLength": 0,
+          "maxLength": 6,
+          "item_label": "مقطع",
+          "fields": [
+            {
+              "id": "clips.video_url",
+              "type": "string",
+              "format": "text",
+              "label": "رابط الفيديو",
+              "icon": "sicon-link",
+              "multilanguage": false,
+              "required": false,
+              "description": "ملف mp4 أو رابط يوتيوب أو فيميو.",
+              "minLength": 0,
+              "maxLength": 500,
+              "value": ""
+            },
+            {
+              "id": "clips.poster",
+              "type": "string",
+              "format": "image",
+              "label": "صورة قبل التشغيل",
+              "icon": "sicon-image",
+              "required": false,
+              "description": "تظهر إلى أن تضغط الزائرة على المرآة.",
+              "value": ""
+            },
+            {
+              "id": "clips.name",
+              "type": "string",
+              "format": "text",
+              "label": "الاسم",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 180,
+              "value": {
+                "ar": "لمى",
+                "en": "Lama"
+              }
+            },
+            {
+              "id": "clips.place",
+              "type": "string",
+              "format": "text",
+              "label": "المدينة",
+              "icon": "sicon-format-text-alt",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 40,
+              "value": {
+                "ar": "الرياض",
+                "en": "Riyadh"
+              }
+            },
+            {
+              "id": "clips.quote",
+              "type": "string",
+              "format": "textarea",
+              "label": "الجملة",
+              "icon": "sicon-paragraph",
+              "multilanguage": true,
+              "required": false,
+              "description": null,
+              "minLength": 0,
+              "maxLength": 800,
+              "value": {
+                "ar": "العباية تمشي مع الخطوة، وما تبين اللي تحتها.",
+                "en": "The abaya moves with the step, and nothing shows through."
+              }
+            }
+          ],
+          "value": [
+            {
+              "clips.video_url": "",
+              "clips.poster": "",
+              "clips.name": {
+                "ar": "لمى",
+                "en": "Lama"
+              },
+              "clips.place": {
+                "ar": "الرياض",
+                "en": "Riyadh"
+              },
+              "clips.quote": {
+                "ar": "العباية تمشي مع الخطوة، وما تبين اللي تحتها.",
+                "en": "The abaya moves with the step, and nothing shows through."
+              }
+            },
+            {
+              "clips.video_url": "",
+              "clips.poster": "",
+              "clips.name": {
+                "ar": "هيفاء",
+                "en": "Haifa"
+              },
+              "clips.place": {
+                "ar": "جدة",
+                "en": "Jeddah"
+              },
+              "clips.quote": {
+                "ar": "تطريز العباية من الداخل أنظف من الصورة.",
+                "en": "The abaya embroidery is cleaner on the inside than in the photo."
+              }
+            },
+            {
+              "clips.video_url": "",
+              "clips.poster": "",
+              "clips.name": {
+                "ar": "نورة",
+                "en": "Noura"
+              },
+              "clips.place": {
+                "ar": "الخبر",
+                "en": "Khobar"
+              },
+              "clips.quote": {
+                "ar": "طلبت قياس العباية المخصّص، ووصل الطول على كعبي.",
+                "en": "I asked for a custom abaya measure, and the length met my heel."
+              }
+            }
+          ]
+        },
+        {
+          "id": "button_label",
+          "type": "string",
+          "format": "text",
+          "label": "نص الزر",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 180,
+          "value": {
+            "ar": "تسوّقي العبايات",
+            "en": "Shop the abayas"
+          }
+        },
+        {
+          "id": "button_url",
+          "type": "string",
+          "format": "text",
+          "label": "رابط الزر",
+          "icon": "sicon-link",
+          "multilanguage": false,
+          "required": false,
+          "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
+          "minLength": 0,
+          "maxLength": 500,
+          "value": "#product"
+        },
+        {
+          "id": "bg_color",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "لون الخلفية",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": null,
+          "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -1711,8 +2279,8 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "عرض محدود",
-            "en": "A short offer"
+            "ar": "عرض العبايات",
+            "en": "The abaya offer"
           }
         },
         {
@@ -1727,8 +2295,8 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "خصم ٢٠٪ على التشكيلة + تغليف هدية",
-            "en": "20% off the edit, plus gift wrap"
+            "ar": "خصم ٢٠٪ على العبايات + تغليف هدية",
+            "en": "20% off the abayas, plus gift wrap"
           }
         },
         {
@@ -1743,8 +2311,8 @@
           "minLength": 0,
           "maxLength": 800,
           "value": {
-            "ar": "ينتهي العرض تلقائياً عند انتهاء العدّاد، ولا يُمدّد.",
-            "en": "The offer ends when the clock does, and it is not extended."
+            "ar": "ينتهي عرض العبايات مع العدّاد، ولا يُمدّد.",
+            "en": "The abaya offer ends when the clock does, and it is not extended."
           }
         },
         {
@@ -1825,30 +2393,28 @@
           }
         },
         {
-          "id": "button_label",
-          "type": "string",
-          "format": "text",
-          "label": "نص الزر",
-          "icon": "sicon-format-text-alt",
-          "multilanguage": true,
+          "id": "show_video",
+          "type": "boolean",
+          "format": "switch",
+          "label": "خلفية فيديو",
+          "icon": "sicon-toggle-off",
           "required": false,
-          "description": null,
-          "minLength": 0,
-          "maxLength": 180,
-          "value": {
-            "ar": "استفيدي من العرض",
-            "en": "Take the offer"
-          }
+          "description": "عند التفعيل يظهر فيديو العباية خلف العدّاد بلا صوت، ويبقى النص فوقه. زر الشراء تضيفه سلة.",
+          "value": false,
+          "selected": false
         },
         {
-          "id": "button_url",
+          "id": "video_url",
           "type": "string",
-          "format": "url",
-          "label": "رابط الزر",
+          "format": "text",
+          "label": "رابط خلفية الفيديو",
           "icon": "sicon-link",
+          "multilanguage": false,
           "required": false,
-          "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
-          "value": "#product"
+          "description": "ملف mp4 لعباية، أو رابط يوتيوب أو فيميو. لا يظهر إلا إذا كانت خلفية الفيديو مفعّلة.",
+          "minLength": 0,
+          "maxLength": 500,
+          "value": ""
         },
         {
           "id": "bg_color",
@@ -1860,6 +2426,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -1982,8 +2589,8 @@
           "value": [
             {
               "notes.quote": {
-                "ar": "القماش ثقيل بشكل محترم وما يبيّن اللي تحته. طلبت قياس مخصص ووصلني بالضبط.",
-                "en": "The cloth has a proper weight and nothing shows through. I asked for a custom measure and it arrived exact."
+                "ar": "العباية ثقيلة بشكل محترم وما تبين اللي تحتها. طلبت قياس مخصص ووصلني الطول على كعبي.",
+                "en": "The abaya has a proper weight and nothing shows through. I asked for a custom measure and the length met my heel."
               },
               "notes.name": {
                 "ar": "لمى ع.",
@@ -2046,6 +2653,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -2084,8 +2732,8 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "FAQ",
-            "en": "FAQ"
+            "ar": "عن العباية",
+            "en": "About the abaya"
           }
         },
         {
@@ -2100,8 +2748,8 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "أسئلة قبل الطلب",
-            "en": "Before you order"
+            "ar": "أسئلة قبل طلب العباية",
+            "en": "Before you order an abaya"
           }
         },
         {
@@ -2116,8 +2764,8 @@
           "minLength": 0,
           "maxLength": 800,
           "value": {
-            "ar": "ما لم تجديه هنا، اسألينا على الواتساب ونرد في دقائق.",
-            "en": "If it is not here, ask us on WhatsApp and we reply in minutes."
+            "ar": "ما لم تجديه عن العباية هنا، اسألينا على الواتساب ونرد في دقائق.",
+            "en": "If it is not here, ask us about the abaya on WhatsApp and we reply in minutes."
           }
         },
         {
@@ -2225,6 +2873,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -2267,7 +2956,7 @@
           "maxLength": 180,
           "value": {
             "ar": "اختاري عبايتك اليوم، وتوصلك قبل المناسبة.",
-            "en": "Choose it today, and it arrives before the occasion."
+            "en": "Choose your abaya today, and it arrives before the occasion."
           }
         },
         {
@@ -2282,8 +2971,8 @@
           "minLength": 0,
           "maxLength": 800,
           "value": {
-            "ar": "الطلبات قبل الرابعة عصراً تُخرج من الورشة في نفس اليوم.",
-            "en": "Orders placed before 4pm leave the workshop the same day."
+            "ar": "طلبات العباية قبل الرابعة عصراً تُخرج من الورشة في نفس اليوم.",
+            "en": "Abaya orders placed before 4pm leave the workshop the same day."
           }
         },
         {
@@ -2298,18 +2987,21 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "تسوّقي الآن",
-            "en": "Shop now"
+            "ar": "تسوّقي العبايات",
+            "en": "Shop the abayas"
           }
         },
         {
           "id": "primary_url",
           "type": "string",
-          "format": "url",
+          "format": "text",
           "label": "رابط الزر الأساسي",
           "icon": "sicon-link",
+          "multilanguage": false,
           "required": false,
           "description": "في صفحة منتج يفتح الشراء السريع. في صفحة العروض يتبع رابط زر الصفحة، أو هذا الرابط إن وضعته.",
+          "minLength": 0,
+          "maxLength": 500,
           "value": "#product"
         },
         {
@@ -2331,11 +3023,14 @@
         {
           "id": "secondary_url",
           "type": "string",
-          "format": "url",
+          "format": "text",
           "label": "رابط الزر الثاني",
           "icon": "sicon-link",
+          "multilanguage": false,
           "required": false,
           "description": "ضعي رابط الواتساب.",
+          "minLength": 0,
+          "maxLength": 500,
           "value": "#"
         },
         {
@@ -2401,6 +3096,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     },
@@ -2422,6 +3158,16 @@
           "icon": "sicon-image",
           "required": false,
           "description": "اتركه فارغاً ليظهر اسم الدار. المقاس المقترح 280×80 بكسل.",
+          "value": ""
+        },
+        {
+          "id": "logo_dark",
+          "type": "string",
+          "format": "image",
+          "label": "شعار للوضع الداكن",
+          "icon": "sicon-image",
+          "required": false,
+          "description": "يظهر عندما تكون الصفحة داكنة. بدونه يُستخدم الشعار الأساسي.",
           "value": ""
         },
         {
@@ -2542,8 +3288,8 @@
           "minLength": 0,
           "maxLength": 180,
           "value": {
-            "ar": "التشكيلة",
-            "en": "The edit"
+            "ar": "العبايات",
+            "en": "Abayas"
           }
         },
         {
@@ -2574,11 +3320,14 @@
             {
               "id": "col1.url",
               "type": "string",
-              "format": "url",
+              "format": "text",
               "label": "الرابط",
               "icon": "sicon-link",
+              "multilanguage": false,
               "required": false,
-              "description": null,
+              "description": "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
+              "minLength": 0,
+              "maxLength": 500,
               "value": "#lookbook"
             }
           ],
@@ -2657,11 +3406,14 @@
             {
               "id": "col2.url",
               "type": "string",
-              "format": "url",
+              "format": "text",
               "label": "الرابط",
               "icon": "sicon-link",
+              "multilanguage": false,
               "required": false,
-              "description": null,
+              "description": "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
+              "minLength": 0,
+              "maxLength": 500,
               "value": "#faq"
             }
           ],
@@ -2740,11 +3492,14 @@
             {
               "id": "col3.url",
               "type": "string",
-              "format": "url",
+              "format": "text",
               "label": "الرابط",
               "icon": "sicon-link",
+              "multilanguage": false,
               "required": false,
-              "description": null,
+              "description": "رابط داخل الصفحة مثل #product، أو رابط كامل يبدأ بـ https.",
+              "minLength": 0,
+              "maxLength": 500,
               "value": "#"
             }
           ],
@@ -2776,6 +3531,33 @@
           "id": "ft-base",
           "type": "static",
           "format": "line"
+        },
+        {
+          "id": "show_top",
+          "type": "boolean",
+          "format": "switch",
+          "label": "زر العودة للأعلى",
+          "icon": "sicon-toggle-off",
+          "required": false,
+          "description": "يظهر أثناء النزول، وفي أسفل الفوتر. الضغط يعيد الزائرة لبداية الصفحة.",
+          "value": true,
+          "selected": true
+        },
+        {
+          "id": "top_label",
+          "type": "string",
+          "format": "text",
+          "label": "نص زر العودة",
+          "icon": "sicon-format-text-alt",
+          "multilanguage": true,
+          "required": false,
+          "description": null,
+          "minLength": 0,
+          "maxLength": 40,
+          "value": {
+            "ar": "العودة للأعلى",
+            "en": "Back to top"
+          }
         },
         {
           "id": "copyright",
@@ -2819,6 +3601,47 @@
           "required": false,
           "description": null,
           "value": ""
+        },
+        {
+          "id": "color_scheme",
+          "type": "items",
+          "format": "dropdown-list",
+          "source": "Manual",
+          "label": "وضع الألوان",
+          "icon": "sicon-list",
+          "required": false,
+          "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
+          "options": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            },
+            {
+              "label": "فاتح دائماً",
+              "value": "light",
+              "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
+            },
+            {
+              "label": "داكن دائماً",
+              "value": "dark",
+              "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
+            }
+          ],
+          "selected": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ],
+          "value": [
+            {
+              "label": "حسب رأس الصفحة",
+              "value": "auto",
+              "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
+            }
+          ]
         }
       ]
     }

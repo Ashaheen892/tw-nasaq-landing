@@ -1,7 +1,7 @@
 import { html, LitElement, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
-import { flag, getCollectionItems, getConfig, linkHref, localizedString, t, watchLocale } from "../../utils/config.js";
-import { fetchProduct, landingProductId, money, openCheckout, pickedId, renderCta } from "../../utils/landing.js";
+import { getCollectionItems, getConfig, linkHref, localizedString, t, watchLocale } from "../../utils/config.js";
+import { fetchProduct, landingProductId, money, pickedId, renderCta, schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { amountOf, linesOf, silhouette, textOf } from "../../utils/ui.js";
 
@@ -24,7 +24,7 @@ const css = `
 .nq-opts h4 { font-size: .78rem; letter-spacing: .16em; color: var(--muted); margin: 0 0 10px; font-weight: 400; }
 .nq-sizes, .nq-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
 .nq-swatches { gap: 10px; }
-.nq-size { min-width: 46px; padding: 10px 12px; text-align: center; border: 1px solid var(--line); background: #fff; font-family: var(--sans); font-size: .86rem; cursor: pointer; transition: .25s; }
+.nq-size { min-width: 46px; padding: 10px 12px; text-align: center; border: 1px solid var(--line); background: var(--card); font-family: var(--sans); font-size: .86rem; cursor: pointer; transition: .25s; }
 .nq-size[aria-pressed="true"] { background: var(--ink); color: var(--ivory); border-color: var(--ink); }
 .nq-size[disabled] { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
 .nq-sw { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); cursor: pointer; position: relative; padding: 0; }
@@ -36,16 +36,7 @@ const css = `
 .nq-panel[hidden] { display: none; }
 .nq-panel ul { margin: 0; padding-inline-start: 18px; }
 .nq-hero-cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-.nq-sbb { position: fixed; inset-inline: 0; bottom: 0; z-index: 60; background: rgba(16,16,20,.95); backdrop-filter: blur(12px); color: var(--ivory); transform: translateY(110%); transition: transform .4s cubic-bezier(.2,.7,.2,1); padding-bottom: env(safe-area-inset-bottom, 0); }
-.nq-sbb.show { transform: none; }
-.nq-sbb-in { display: flex; align-items: center; gap: 18px; padding-block: 12px; }
-.nq-sbb-th { width: 48px; height: 60px; background: linear-gradient(150deg, var(--sand), var(--sand-2)); flex: none; position: relative; overflow: hidden; }
-.nq-sbb-th img { width: 100%; height: 100%; object-fit: cover; }
-.nq-sbb b { font-family: var(--serif); font-size: 1.05rem; display: block; font-weight: 700; }
-.nq-sbb small { color: #b9b2a7; font-size: .78rem; }
-.nq-sbb .pr { margin-inline-start: auto; font-family: var(--serif); font-size: 1.3rem; white-space: nowrap; }
 @container (max-width: 880px) { .nq-sp-g { grid-template-columns: 1fr; } }
-@container (max-width: 560px) { .nq-sbb-th, .nq-sbb small { display: none; } .nq-sbb .pr { font-size: 1.1rem; } }
 `;
 
 type Choice = { label: string; disabled: boolean; picked: boolean };
@@ -59,7 +50,6 @@ export default class PieceStage extends LitElement {
   @state() private size = "";
   @state() private color = "";
   @state() private tab = 0;
-  @state() private bar = false;
   private loadedId = "";
   private stop = () => {};
 
@@ -75,11 +65,9 @@ export default class PieceStage extends LitElement {
     injectStyles("nq-piece-stage", css);
     const stopLocale = watchLocale(this);
     const stopReveal = watchReveal(this);
-    document.addEventListener("scroll", this.onScroll, { capture: true, passive: true });
     this.stop = () => {
       stopLocale();
       stopReveal();
-      document.removeEventListener("scroll", this.onScroll, { capture: true });
     };
   }
 
@@ -103,18 +91,6 @@ export default class PieceStage extends LitElement {
     }
   }
 
-  private onScroll = (event?: Event) => {
-    const target = event?.target;
-    const nested = target && target !== document && target !== document.documentElement && "scrollTop" in (target as Element)
-      ? (target as Element).scrollTop
-      : 0;
-    const top = Math.max(window.scrollY || 0, document.documentElement.scrollTop || 0, nested);
-    const next = top > 900;
-    if (next !== this.bar) this.bar = next;
-  };
-
-  private buy = () => openCheckout();
-
   render() {
     const cfg = getConfig(this.config);
     const photos = this.photos(cfg);
@@ -128,8 +104,7 @@ export default class PieceStage extends LitElement {
     const sizeLabel = this.size || sizes.find((item) => item.picked && !item.disabled)?.label || sizes.find((item) => !item.disabled)?.label || "";
     const colorLabel = this.color || colors.find((item) => item.picked)?.label || colors[0]?.label || "";
     const id = String(cfg.anchor || "product");
-    const note = [sizeLabel, colorLabel].filter(Boolean).join(" · ");
-    return html`<section class="nq-root nq-sec nq-piece" id=${id} style=${sectionStyle(cfg)} aria-label=${title || "product"}>
+    return html`<section class=${`nq-root nq-sec nq-piece ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "product"}>
       <div class="nq-wrap nq-sp-g">
         <div class="nq-gal nq-rev">
           ${photos.length > 1 ? html`<div class="nq-thumbs">
@@ -177,14 +152,6 @@ export default class PieceStage extends LitElement {
           ${tabs.map((item, index) => html`<div class="nq-panel" role="tabpanel" ?hidden=${this.tab !== index}><ul>${item.lines.map((line) => html`<li>${line}</li>`)}</ul></div>`)}` : nothing}
         </div>
       </div>
-      ${flag(cfg.show_bar) ? html`<div class="nq-sbb ${this.bar ? "show" : ""}">
-        <div class="nq-wrap nq-sbb-in">
-          <div class="nq-sbb-th">${active?.image ? html`<img src=${active.image} alt="" />` : nothing}</div>
-          <div><b>${title}</b>${note ? html`<small>${note}</small>` : nothing}</div>
-          ${price.current ? html`<div class="pr">${price.current}</div>` : nothing}
-          <button type="button" class="nq-btn light" @click=${this.buy}>${localizedString(cfg.primary_label) || t({ ar: "أضيفي للسلة", en: "Add to bag" })}</button>
-        </div>
-      </div>` : nothing}
     </section>`;
   }
 

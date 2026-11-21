@@ -7,11 +7,11 @@ const bundle = JSON.parse(fs.readFileSync(new URL("../twilight-bundle.json", imp
 const errors = [];
 const names = bundle.components.map((item) => item.name);
 if (!bundle.features?.includes("landing-page-templates")) errors.push("missing landing-page-templates");
-if (names.length !== 11) errors.push(`expected 11 sections, found ${names.length}`);
+if (names.length !== 12) errors.push(`expected 12 sections, found ${names.length}`);
 for (const template of bundle.templates || []) {
   const file = template.path.replace("templates.", "");
   const page = JSON.parse(fs.readFileSync(new URL(`../templates/${file}.json`, import.meta.url), "utf8"));
-  const expected = { nasaq: 11, wasl: 6 };
+  const expected = { nasaq: 12, wasl: 6 };
   if (page.components.length !== expected[file]) errors.push(`${file} should have ${expected[file]} sections`);
   if (page.components[0]?.name !== "page-bar") errors.push(`${file} should open with the page header`);
   if (page.components.at(-1)?.name !== "page-footer") errors.push(`${file} should end with the page footer`);

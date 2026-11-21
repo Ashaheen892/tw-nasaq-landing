@@ -1,6 +1,6 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
-import { nothing, html, LitElement } from "lit";
+import { LitElement, nothing, html } from "lit";
 import { property, state } from "lit/decorators.js";
 function getConfig(raw) {
   return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
@@ -46,7 +46,12 @@ function linkHref(value) {
 __name(linkHref, "linkHref");
 function flag(value) {
   const raw = unwrapValue(value);
-  return raw === !0 || raw === "true" || raw === 1 || raw === "1";
+  if (raw === !0 || raw === 1) return !0;
+  if (typeof raw == "string") {
+    const text = raw.trim().toLowerCase();
+    return text === "true" || text === "1" || text === "on" || text === "yes";
+  }
+  return !1;
 }
 __name(flag, "flag");
 function getCollectionItems(items, prefix) {
@@ -64,66 +69,54 @@ function watchLocale(host) {
   return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
-function salla() {
-  return window.Salla;
-}
-__name(salla, "salla");
-function landingSettings() {
-  var _a, _b;
-  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("theme.settings")) || {};
-}
-__name(landingSettings, "landingSettings");
-function isLandingPage() {
-  var _a, _b;
-  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("page.is_landing_page")) === !0;
-}
-__name(isLandingPage, "isLandingPage");
-function pageMode() {
-  var _a;
-  const value = landingSettings().page_for_product;
-  return typeof value == "boolean" || value == null ? value === !1 ? "promotion" : "product" : typeof value == "string" ? value === "promotion" ? "promotion" : "product" : Array.isArray(value) && ((_a = value[0]) == null ? void 0 : _a.value) === "promotion" ? "promotion" : "product";
-}
-__name(pageMode, "pageMode");
-function landingProductId() {
-  var _a, _b;
-  if (!isLandingPage() || pageMode() !== "product") return null;
-  const id = (_b = (_a = landingSettings().product) == null ? void 0 : _a.value) == null ? void 0 : _b[0];
-  return id ? String(id) : null;
-}
-__name(landingProductId, "landingProductId");
-function mainButton() {
-  const settings = landingSettings();
-  return { text: String(settings.main_btn_text || ""), url: String(settings.main_btn_url || "") };
-}
-__name(mainButton, "mainButton");
-function openCheckout() {
-  const checkout = document.querySelector(".s-block--fast-checkout"), layout = checkout == null ? void 0 : checkout.getAttribute("data-layout");
-  if (window.innerWidth < 1024 || layout === "side-drawer" || !checkout) {
-    window.dispatchEvent(new CustomEvent("open-checkout-drawer"));
-    return;
+const TONE_KEY = "nq-landing-tone";
+function applyTone(mode) {
+  document.documentElement.classList.remove("nq-mode-light", "nq-mode-dark"), document.documentElement.classList.add(mode === "dark" ? "nq-mode-dark" : "nq-mode-light");
+  try {
+    localStorage.setItem(TONE_KEY, mode);
+  } catch {
   }
-  checkout.scrollIntoView({ behavior: "smooth", block: "center" });
+  window.dispatchEvent(new CustomEvent("nq-tone"));
 }
-__name(openCheckout, "openCheckout");
-function renderCta(labelValue, fallbackUrl = "", tone = "solid") {
-  const label = localizedString(labelValue).trim();
-  if (!label) return nothing;
-  const cls = tone === "ghost" ? "nq-btn ghost" : tone === "light" ? "nq-btn light" : "nq-btn", productPage = !!landingProductId(), demo = !isLandingPage();
-  if (productPage || demo && !fallbackUrl)
-    return html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
-  const href = (isLandingPage() && pageMode() === "promotion" ? mainButton().url : "") || fallbackUrl;
-  return href ? html`<a class=${cls} href=${href}>${label}</a>` : html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
+__name(applyTone, "applyTone");
+function currentTone() {
+  return document.documentElement.classList.contains("nq-mode-dark") ? "dark" : "light";
 }
-__name(renderCta, "renderCta");
+__name(currentTone, "currentTone");
+function savedTone() {
+  try {
+    const saved = localStorage.getItem(TONE_KEY);
+    return saved === "dark" || saved === "light" ? saved : "";
+  } catch {
+    return "";
+  }
+}
+__name(savedTone, "savedTone");
+function schemeOf(cfg) {
+  const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
+  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
+}
+__name(schemeOf, "schemeOf");
 function injectStyles(id, css2) {
   let style = document.getElementById(id);
   style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
 }
 __name(injectStyles, "injectStyles");
+const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+function setKitFont(on) {
+  document.documentElement.classList.toggle("nq-kit-font", on);
+  const current = document.getElementById("nq-fonts");
+  if (!on) {
+    current == null || current.remove();
+    return;
+  }
+  if (current) return;
+  const link = document.createElement("link");
+  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
+}
+__name(setKitFont, "setKitFont");
 function injectFonts() {
-  if (document.getElementById("nq-fonts")) return;
-  const preconnect = document.createElement("link");
-  preconnect.id = "nq-fonts", preconnect.rel = "stylesheet", preconnect.href = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap", document.head.appendChild(preconnect);
+  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -144,17 +137,26 @@ function watchReveal(host) {
   };
 }
 __name(watchReveal, "watchReveal");
-const baseCss = `
+const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
+html.nq-mode-light { ${LIGHT} }
+html.nq-mode-dark { ${DARK} }
+html.nq-mode-dark body:has(.nq-host) { background: #0e0d0b; }
 .component-card:has(> .nq-host:not(:empty)) { min-height: 0; }
 .nq-root {
-  --ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb;
-  --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468;
+  ${LIGHT}
   --max:1240px; --pad:clamp(18px,4vw,48px);
-  --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif;
-  display: block; box-sizing: border-box; color: var(--ink); font-family: var(--sans); font-weight: 300; line-height: 1.75;
+  --serif:inherit; --sans:inherit;
+  display: block; box-sizing: border-box; color: var(--ink); font-family: inherit; font-weight: 300; line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+}
+html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif; font-family: var(--sans); }
+.nq-root.nq-light { ${LIGHT} }
+.nq-root.nq-dark, html.nq-mode-dark .nq-root.nq-auto { ${DARK} }
+@media (prefers-color-scheme: dark) {
+  html:not(.nq-mode-light) body:has(.nq-host) { background: #0e0d0b; }
+  html:not(.nq-mode-light) .nq-root.nq-auto { ${DARK} }
 }
 .nq-root *, .nq-root *::before, .nq-root *::after { box-sizing: border-box; }
 .nq-root img { max-width: 100%; display: block; }
@@ -200,7 +202,7 @@ var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name
   return result && __defProp2(target, key, result), result;
 }, "__decorateClass");
 const css = `
-.nq-bar { position: relative; background: var(--nq-section-bg, rgba(247,244,239,.86)); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.nq-bar { position: relative; background: var(--nq-section-bg, color-mix(in srgb, var(--ivory) 86%, transparent)); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
 .nq-nav { display: flex; align-items: center; gap: 26px; min-height: 74px; }
 .nq-logo { font-family: var(--serif); font-weight: 700; font-size: 1.5rem; letter-spacing: .02em; line-height: 1; }
 .nq-logo small { display: block; font-family: var(--sans); font-size: .6rem; letter-spacing: .4em; color: var(--gold); font-weight: 400; margin-top: 4px; }
@@ -210,12 +212,12 @@ const css = `
 .nq-nav ul a::after { content: ""; position: absolute; inset-inline: 0; bottom: 0; height: 1px; background: var(--ink); transform: scaleX(0); transform-origin: right; transition: .35s; }
 .nq-nav ul a:hover::after { transform: scaleX(1); }
 .nq-sp { margin-inline-start: auto; }
-.nq-ico, .nq-menu { display: inline-grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: inherit; cursor: pointer; font-size: .95rem; }
+.nq-menu, .nq-tone { display: inline-grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; background: transparent; color: inherit; cursor: pointer; font-size: .95rem; padding: 0; }
+.nq-tone svg { width: 18px; height: 18px; }
 .nq-menu { display: none; }
 @container (max-width: 860px) {
   .nq-nav { gap: 10px; }
   .nq-logo { font-size: 1.15rem; white-space: nowrap; }
-  .nq-nav .nq-btn { padding: 10px 14px; min-height: 44px; white-space: nowrap; }
   .nq-nav ul { display: none; position: absolute; inset-inline: 0; top: 100%; z-index: 5; flex-direction: column; gap: 0; padding: 8px 0 14px; background: var(--ivory); border-bottom: 1px solid var(--line); }
   .nq-nav.is-open ul { display: flex; }
   .nq-nav ul a { display: block; padding: 12px var(--pad); }
@@ -223,24 +225,67 @@ const css = `
 }
 `, _PageBar = class _PageBar extends LitElement {
   constructor() {
-    super(...arguments), this.open = !1, this.stop = () => {
-    }, this.pinned = null, this.opened = [];
+    super(...arguments), this.open = !1, this.dark = !1, this.stop = () => {
+    }, this.pinned = null, this.opened = [], this.modeKey = "";
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
     super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-page-bar", css);
-    const stopLocale = watchLocale(this), stopReveal = watchReveal(this);
-    this.stop = () => {
-      stopLocale(), stopReveal(), this.release();
+    const stopLocale = watchLocale(this), stopReveal = watchReveal(this), onTone = /* @__PURE__ */ __name(() => {
+      this.dark = currentTone() === "dark";
+    }, "onTone");
+    window.addEventListener("nq-tone", onTone), this.stop = () => {
+      stopLocale(), stopReveal(), window.removeEventListener("nq-tone", onTone), this.release();
     };
+  }
+  willUpdate() {
+    const cfg = getConfig(this.config);
+    setKitFont(this.kitFont(cfg));
+    const key = `${unwrapValue(cfg.default_mode) || "light"}|${this.showMode(cfg)}`;
+    key !== this.modeKey && (this.modeKey = key, applyTone(this.openingMode(cfg)), this.dark = currentTone() === "dark");
   }
   disconnectedCallback() {
     this.stop(), super.disconnectedCallback();
   }
   updated() {
     this.pin();
+  }
+  showMode(cfg) {
+    return cfg.show_mode_toggle == null || cfg.show_mode_toggle === "" ? !0 : flag(cfg.show_mode_toggle);
+  }
+  /** Missing value keeps the page font. An explicit off inherits the Salla store font. */
+  kitFont(cfg) {
+    return cfg.use_kit_font == null || cfg.use_kit_font === "" ? !0 : flag(cfg.use_kit_font);
+  }
+  openingMode(cfg) {
+    const base = String(unwrapValue(cfg.default_mode) || "light");
+    if (this.showMode(cfg)) {
+      const saved = savedTone();
+      if (saved) return saved;
+    }
+    return base === "system" ? window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : base === "dark" ? "dark" : "light";
+  }
+  /** Keep the page where it was. Focusing the sticky header otherwise jumps to the top. */
+  place(run) {
+    const view = this.ownerDocument.defaultView;
+    if (!view) {
+      run();
+      return;
+    }
+    const nodes = /* @__PURE__ */ new Set([this.ownerDocument.documentElement, this.ownerDocument.body]);
+    this.ownerDocument.scrollingElement && nodes.add(this.ownerDocument.scrollingElement);
+    let node = this;
+    for (; node; )
+      nodes.add(node), node = node.parentElement;
+    const marks = [...nodes].map((el) => [el, el.scrollTop]), x = view.scrollX, y = view.scrollY, put = /* @__PURE__ */ __name(() => {
+      for (const [el, top] of marks) el.scrollTop !== top && (el.scrollTop = top);
+      (Math.abs(view.scrollY - y) > 1 || Math.abs(view.scrollX - x) > 1) && view.scrollTo(x, y);
+    }, "put");
+    run(), put(), view.requestAnimationFrame(() => {
+      put(), view.requestAnimationFrame(put);
+    });
   }
   outerBox() {
     let node = this;
@@ -269,21 +314,24 @@ const css = `
     }), this.opened = [];
   }
   render() {
-    const cfg = getConfig(this.config), brand = localizedString(cfg.brand) || t({ ar: "المتجر", en: "Store" }), mark = localizedString(cfg.mark), links = getCollectionItems(cfg.links, "links").map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" })).filter((item) => item.label), search = linkHref(cfg.search_url);
-    return html`<header class="nq-root nq-bar" style=${sectionStyle(cfg)}>
+    const cfg = getConfig(this.config), brand = localizedString(cfg.brand) || t({ ar: "المتجر", en: "Store" }), mark = localizedString(cfg.mark), links = getCollectionItems(cfg.links, "links").map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" })).filter((item) => item.label), logo = this.dark && cfg.logo_dark || cfg.logo;
+    return html`<header class=${`nq-root nq-bar ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
       <nav class="nq-nav nq-wrap ${this.open ? "is-open" : ""}">
         <a href=${linkHref(cfg.home_url) || "#"} class="nq-logo" aria-label=${brand}>
-          ${cfg.logo ? html`<img src=${cfg.logo} alt=${brand} />` : html`${brand}${mark ? html`<small>${mark}</small>` : nothing}`}
+          ${logo ? html`<img src=${logo} alt=${brand} />` : html`${brand}${mark ? html`<small>${mark}</small>` : nothing}`}
         </a>
         ${links.length ? html`<ul>${links.map((item) => html`<li><a href=${item.url} @click=${() => {
       this.open = !1;
     }}>${item.label}</a></li>`)}</ul>` : nothing}
         <span class="nq-sp"></span>
-        ${flag(cfg.show_search) && search ? html`<a href=${search} class="nq-ico" aria-label=${t({ ar: "البحث", en: "Search" })}>⌕</a>` : nothing}
+        ${this.showMode(cfg) ? html`<button type="button" class="nq-tone" aria-pressed=${this.dark ? "true" : "false"} aria-label=${this.dark ? t({ ar: "التبديل إلى الوضع الفاتح", en: "Switch to light mode" }) : t({ ar: "التبديل إلى الوضع الداكن", en: "Switch to dark mode" })} @mousedown=${(event) => event.preventDefault()} @click=${() => this.place(() => {
+      applyTone(this.dark ? "light" : "dark"), this.dark = currentTone() === "dark";
+    })}>
+          ${this.dark ? html`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor" /><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6" /></g></svg>` : html`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.5 2.4a9 9 0 1 0 7.1 13.6A8 8 0 0 1 14.5 2.4z" /></svg>`}
+        </button>` : nothing}
         <button type="button" class="nq-menu" aria-expanded=${this.open ? "true" : "false"} aria-label=${t({ ar: "القائمة", en: "Menu" })} @click=${() => {
       this.open = !this.open;
     }}>☰</button>
-        ${renderCta(cfg.cta_label, linkHref(cfg.cta_url))}
       </nav>
     </header>`;
   }
@@ -296,6 +344,9 @@ __decorateClass([
 __decorateClass([
   state()
 ], PageBar.prototype, "open");
+__decorateClass([
+  state()
+], PageBar.prototype, "dark");
 typeof PageBar < "u" && PageBar.registerSallaComponent("salla-page-bar");
 export {
   PageBar as default

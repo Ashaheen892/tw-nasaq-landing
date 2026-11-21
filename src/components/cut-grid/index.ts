@@ -1,13 +1,14 @@
 import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { getCollectionItems, getConfig, linkHref, localizedString, watchLocale } from "../../utils/config.js";
+import { schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { emptyCopy, frame } from "../../utils/ui.js";
 
 const css = `
 .nq-cuts { background: var(--nq-section-bg, var(--ivory)); }
 .nq-lb { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 2.4vw, 26px); margin-top: 46px; }
-.nq-card { position: relative; overflow: hidden; background: #fff; border: 1px solid var(--line); color: inherit; display: block; }
+.nq-card { position: relative; overflow: hidden; background: var(--card); border: 1px solid var(--line); color: inherit; display: block; }
 .nq-card .nq-ph { aspect-ratio: 4/5; transition: transform 1.1s cubic-bezier(.2,.7,.2,1); }
 .nq-card:hover .nq-ph { transform: scale(1.05); }
 .nq-card-b { padding: 20px 22px 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; }
@@ -60,7 +61,7 @@ export default class CutGrid extends LitElement {
       }))
       .filter((item) => item.title);
     const id = String(cfg.anchor || "lookbook");
-    return html`<section class="nq-root nq-sec nq-cuts" id=${id} style=${sectionStyle(cfg)} aria-label=${title || "lookbook"}>
+    return html`<section class=${`nq-root nq-sec nq-cuts ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "lookbook"}>
       <div class="nq-wrap">
         <div class="nq-rev">
           ${localizedString(cfg.kicker) ? html`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing}

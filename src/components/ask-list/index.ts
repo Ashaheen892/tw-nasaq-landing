@@ -1,6 +1,7 @@
 import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { getCollectionItems, getConfig, localizedString, watchLocale } from "../../utils/config.js";
+import { schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { emptyCopy } from "../../utils/ui.js";
 
@@ -48,7 +49,7 @@ export default class AskList extends LitElement {
       .map((item) => ({ q: localizedString(item.q), a: localizedString(item.a) }))
       .filter((item) => item.q && item.a);
     const id = String(cfg.anchor || "faq");
-    return html`<section class="nq-root nq-sec nq-faq" id=${id} style=${sectionStyle(cfg)} aria-label=${title || "faq"}>
+    return html`<section class=${`nq-root nq-sec nq-faq ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "faq"}>
       <div class="nq-wrap nq-faq-g">
         <div class="nq-rev">
           ${localizedString(cfg.kicker) ? html`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing}

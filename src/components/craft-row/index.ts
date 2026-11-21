@@ -1,11 +1,12 @@
 import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { getCollectionItems, getConfig, localizedString, watchLocale } from "../../utils/config.js";
+import { schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { emptyCopy } from "../../utils/ui.js";
 
 const css = `
-.nq-feat { background: var(--nq-section-bg, #fff); border-block: 1px solid var(--line); }
+.nq-feat { background: var(--nq-section-bg, var(--card)); border-block: 1px solid var(--line); }
 .nq-fg { display: grid; grid-template-columns: repeat(4, 1fr); }
 .nq-fi { padding: clamp(28px, 4vw, 46px) clamp(18px, 2.4vw, 32px); border-inline-start: 1px solid var(--line); }
 .nq-fi:first-child { border-inline-start: 0; }
@@ -58,7 +59,7 @@ export default class CraftRow extends LitElement {
       }))
       .filter((item) => item.title);
     const id = String(cfg.anchor || "quality");
-    return html`<section class="nq-root nq-feat" id=${id} style=${sectionStyle(cfg)} aria-label=${localizedString(cfg.title) || "quality"}>
+    return html`<section class=${`nq-root nq-feat ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${localizedString(cfg.title) || "quality"}>
       <div class="nq-wrap">
         ${items.length
           ? html`<div class="nq-fg">${items.map((item) => html`<article class="nq-fi nq-rev">

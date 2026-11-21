@@ -1,7 +1,7 @@
 import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { getCollectionItems, getConfig, linkHref, localizedString, watchLocale } from "../../utils/config.js";
-import { renderCta } from "../../utils/landing.js";
+import { renderCta, schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 
 const css = `
@@ -47,7 +47,7 @@ export default class CloseInvite extends LitElement {
       .filter(Boolean);
     const secondary = localizedString(cfg.secondary_label);
     const secondaryUrl = linkHref(cfg.secondary_url);
-    return html`<section class="nq-root nq-sec nq-fin" style=${sectionStyle(cfg)} aria-label=${title || "close"}>
+    return html`<section class=${`nq-root nq-sec nq-fin ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${title || "close"}>
       <div class="nq-wrap nq-fin-in nq-rev">
         ${localizedString(cfg.kicker) ? html`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing}
         ${title ? html`<h2>${title}</h2>` : nothing}

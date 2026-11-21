@@ -44,11 +44,6 @@ function linkHref(value) {
   return "";
 }
 __name(linkHref, "linkHref");
-function flag(value) {
-  const raw = unwrapValue(value);
-  return raw === !0 || raw === "true" || raw === 1 || raw === "1";
-}
-__name(flag, "flag");
 function getCollectionItems(items, prefix) {
   return Array.isArray(items) ? items.map((item) => {
     if (!item || typeof item != "object") return {};
@@ -143,15 +138,25 @@ function renderCta(labelValue, fallbackUrl = "", tone = "solid") {
   return href ? html`<a class=${cls} href=${href}>${label}</a>` : html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
 }
 __name(renderCta, "renderCta");
+function schemeOf(cfg) {
+  const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
+  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
+}
+__name(schemeOf, "schemeOf");
 function injectStyles(id, css2) {
   let style = document.getElementById(id);
   style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
 }
 __name(injectStyles, "injectStyles");
+const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+function setKitFont(on) {
+  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
+  const link = document.createElement("link");
+  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
+}
+__name(setKitFont, "setKitFont");
 function injectFonts() {
-  if (document.getElementById("nq-fonts")) return;
-  const preconnect = document.createElement("link");
-  preconnect.id = "nq-fonts", preconnect.rel = "stylesheet", preconnect.href = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap", document.head.appendChild(preconnect);
+  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -172,17 +177,26 @@ function watchReveal(host) {
   };
 }
 __name(watchReveal, "watchReveal");
-const baseCss = `
+const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
+html.nq-mode-light { ${LIGHT} }
+html.nq-mode-dark { ${DARK} }
+html.nq-mode-dark body:has(.nq-host) { background: #0e0d0b; }
 .component-card:has(> .nq-host:not(:empty)) { min-height: 0; }
 .nq-root {
-  --ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb;
-  --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468;
+  ${LIGHT}
   --max:1240px; --pad:clamp(18px,4vw,48px);
-  --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif;
-  display: block; box-sizing: border-box; color: var(--ink); font-family: var(--sans); font-weight: 300; line-height: 1.75;
+  --serif:inherit; --sans:inherit;
+  display: block; box-sizing: border-box; color: var(--ink); font-family: inherit; font-weight: 300; line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+}
+html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif; font-family: var(--sans); }
+.nq-root.nq-light { ${LIGHT} }
+.nq-root.nq-dark, html.nq-mode-dark .nq-root.nq-auto { ${DARK} }
+@media (prefers-color-scheme: dark) {
+  html:not(.nq-mode-light) body:has(.nq-host) { background: #0e0d0b; }
+  html:not(.nq-mode-light) .nq-root.nq-auto { ${DARK} }
 }
 .nq-root *, .nq-root *::before, .nq-root *::after { box-sizing: border-box; }
 .nq-root img { max-width: 100%; display: block; }
@@ -268,7 +282,7 @@ const css = `
 .nq-opts h4 { font-size: .78rem; letter-spacing: .16em; color: var(--muted); margin: 0 0 10px; font-weight: 400; }
 .nq-sizes, .nq-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
 .nq-swatches { gap: 10px; }
-.nq-size { min-width: 46px; padding: 10px 12px; text-align: center; border: 1px solid var(--line); background: #fff; font-family: var(--sans); font-size: .86rem; cursor: pointer; transition: .25s; }
+.nq-size { min-width: 46px; padding: 10px 12px; text-align: center; border: 1px solid var(--line); background: var(--card); font-family: var(--sans); font-size: .86rem; cursor: pointer; transition: .25s; }
 .nq-size[aria-pressed="true"] { background: var(--ink); color: var(--ivory); border-color: var(--ink); }
 .nq-size[disabled] { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
 .nq-sw { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); cursor: pointer; position: relative; padding: 0; }
@@ -280,23 +294,11 @@ const css = `
 .nq-panel[hidden] { display: none; }
 .nq-panel ul { margin: 0; padding-inline-start: 18px; }
 .nq-hero-cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
-.nq-sbb { position: fixed; inset-inline: 0; bottom: 0; z-index: 60; background: rgba(16,16,20,.95); backdrop-filter: blur(12px); color: var(--ivory); transform: translateY(110%); transition: transform .4s cubic-bezier(.2,.7,.2,1); padding-bottom: env(safe-area-inset-bottom, 0); }
-.nq-sbb.show { transform: none; }
-.nq-sbb-in { display: flex; align-items: center; gap: 18px; padding-block: 12px; }
-.nq-sbb-th { width: 48px; height: 60px; background: linear-gradient(150deg, var(--sand), var(--sand-2)); flex: none; position: relative; overflow: hidden; }
-.nq-sbb-th img { width: 100%; height: 100%; object-fit: cover; }
-.nq-sbb b { font-family: var(--serif); font-size: 1.05rem; display: block; font-weight: 700; }
-.nq-sbb small { color: #b9b2a7; font-size: .78rem; }
-.nq-sbb .pr { margin-inline-start: auto; font-family: var(--serif); font-size: 1.3rem; white-space: nowrap; }
 @container (max-width: 880px) { .nq-sp-g { grid-template-columns: 1fr; } }
-@container (max-width: 560px) { .nq-sbb-th, .nq-sbb small { display: none; } .nq-sbb .pr { font-size: 1.1rem; } }
 `, _PieceStage = class _PieceStage extends LitElement {
   constructor() {
-    super(...arguments), this.product = null, this.photo = 0, this.size = "", this.color = "", this.tab = 0, this.bar = !1, this.loadedId = "", this.stop = () => {
-    }, this.onScroll = (event) => {
-      const target = event == null ? void 0 : event.target, nested = target && target !== document && target !== document.documentElement && "scrollTop" in target ? target.scrollTop : 0, next = Math.max(window.scrollY || 0, document.documentElement.scrollTop || 0, nested) > 900;
-      next !== this.bar && (this.bar = next);
-    }, this.buy = () => openCheckout();
+    super(...arguments), this.product = null, this.photo = 0, this.size = "", this.color = "", this.tab = 0, this.loadedId = "", this.stop = () => {
+    };
   }
   createRenderRoot() {
     return this;
@@ -304,8 +306,8 @@ const css = `
   connectedCallback() {
     super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-piece-stage", css);
     const stopLocale = watchLocale(this), stopReveal = watchReveal(this);
-    document.addEventListener("scroll", this.onScroll, { capture: !0, passive: !0 }), this.stop = () => {
-      stopLocale(), stopReveal(), document.removeEventListener("scroll", this.onScroll, { capture: !0 });
+    this.stop = () => {
+      stopLocale(), stopReveal();
     };
   }
   disconnectedCallback() {
@@ -319,8 +321,8 @@ const css = `
   }
   render() {
     var _a, _b, _c, _d, _e;
-    const cfg = getConfig(this.config), photos = this.photos(cfg), sizes = this.sizes(cfg), colors = this.colors(cfg), tabs = this.tabs(cfg), active = photos[this.photo] || photos[0], title = textOf((_a = this.product) == null ? void 0 : _a.name) || localizedString(cfg.title), price = this.price(cfg), rating = this.rating(cfg), sizeLabel = this.size || ((_b = sizes.find((item) => item.picked && !item.disabled)) == null ? void 0 : _b.label) || ((_c = sizes.find((item) => !item.disabled)) == null ? void 0 : _c.label) || "", colorLabel = this.color || ((_d = colors.find((item) => item.picked)) == null ? void 0 : _d.label) || ((_e = colors[0]) == null ? void 0 : _e.label) || "", id = String(cfg.anchor || "product"), note = [sizeLabel, colorLabel].filter(Boolean).join(" · ");
-    return html`<section class="nq-root nq-sec nq-piece" id=${id} style=${sectionStyle(cfg)} aria-label=${title || "product"}>
+    const cfg = getConfig(this.config), photos = this.photos(cfg), sizes = this.sizes(cfg), colors = this.colors(cfg), tabs = this.tabs(cfg), active = photos[this.photo] || photos[0], title = textOf((_a = this.product) == null ? void 0 : _a.name) || localizedString(cfg.title), price = this.price(cfg), rating = this.rating(cfg), sizeLabel = this.size || ((_b = sizes.find((item) => item.picked && !item.disabled)) == null ? void 0 : _b.label) || ((_c = sizes.find((item) => !item.disabled)) == null ? void 0 : _c.label) || "", colorLabel = this.color || ((_d = colors.find((item) => item.picked)) == null ? void 0 : _d.label) || ((_e = colors[0]) == null ? void 0 : _e.label) || "", id = String(cfg.anchor || "product");
+    return html`<section class=${`nq-root nq-sec nq-piece ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "product"}>
       <div class="nq-wrap nq-sp-g">
         <div class="nq-gal nq-rev">
           ${photos.length > 1 ? html`<div class="nq-thumbs">
@@ -374,14 +376,6 @@ const css = `
           ${tabs.map((item, index) => html`<div class="nq-panel" role="tabpanel" ?hidden=${this.tab !== index}><ul>${item.lines.map((line) => html`<li>${line}</li>`)}</ul></div>`)}` : nothing}
         </div>
       </div>
-      ${flag(cfg.show_bar) ? html`<div class="nq-sbb ${this.bar ? "show" : ""}">
-        <div class="nq-wrap nq-sbb-in">
-          <div class="nq-sbb-th">${active != null && active.image ? html`<img src=${active.image} alt="" />` : nothing}</div>
-          <div><b>${title}</b>${note ? html`<small>${note}</small>` : nothing}</div>
-          ${price.current ? html`<div class="pr">${price.current}</div>` : nothing}
-          <button type="button" class="nq-btn light" @click=${this.buy}>${localizedString(cfg.primary_label) || t({ ar: "أضيفي للسلة", en: "Add to bag" })}</button>
-        </div>
-      </div>` : nothing}
     </section>`;
   }
   photos(cfg) {
@@ -466,9 +460,6 @@ __decorateClass([
 __decorateClass([
   state()
 ], PieceStage.prototype, "tab");
-__decorateClass([
-  state()
-], PieceStage.prototype, "bar");
 typeof PieceStage < "u" && PieceStage.registerSallaComponent("salla-piece-stage");
 export {
   PieceStage as default

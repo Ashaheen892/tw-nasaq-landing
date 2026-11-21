@@ -22,6 +22,11 @@ function localizedString(value) {
   return String(value);
 }
 __name(localizedString, "localizedString");
+function unwrapValue(value) {
+  var _a;
+  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
+}
+__name(unwrapValue, "unwrapValue");
 function linkHref(value) {
   if (value == null || value === "") return "";
   if (typeof value == "string") return value.trim();
@@ -101,15 +106,25 @@ function renderCta(labelValue, fallbackUrl = "", tone = "solid") {
   return href ? html`<a class=${cls} href=${href}>${label}</a>` : html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
 }
 __name(renderCta, "renderCta");
+function schemeOf(cfg) {
+  const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
+  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
+}
+__name(schemeOf, "schemeOf");
 function injectStyles(id, css2) {
   let style = document.getElementById(id);
   style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
 }
 __name(injectStyles, "injectStyles");
+const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+function setKitFont(on) {
+  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
+  const link = document.createElement("link");
+  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
+}
+__name(setKitFont, "setKitFont");
 function injectFonts() {
-  if (document.getElementById("nq-fonts")) return;
-  const preconnect = document.createElement("link");
-  preconnect.id = "nq-fonts", preconnect.rel = "stylesheet", preconnect.href = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap", document.head.appendChild(preconnect);
+  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -130,17 +145,26 @@ function watchReveal(host) {
   };
 }
 __name(watchReveal, "watchReveal");
-const baseCss = `
+const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
+html.nq-mode-light { ${LIGHT} }
+html.nq-mode-dark { ${DARK} }
+html.nq-mode-dark body:has(.nq-host) { background: #0e0d0b; }
 .component-card:has(> .nq-host:not(:empty)) { min-height: 0; }
 .nq-root {
-  --ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb;
-  --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468;
+  ${LIGHT}
   --max:1240px; --pad:clamp(18px,4vw,48px);
-  --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif;
-  display: block; box-sizing: border-box; color: var(--ink); font-family: var(--sans); font-weight: 300; line-height: 1.75;
+  --serif:inherit; --sans:inherit;
+  display: block; box-sizing: border-box; color: var(--ink); font-family: inherit; font-weight: 300; line-height: 1.75;
   -webkit-font-smoothing: antialiased;
+}
+html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif; font-family: var(--sans); }
+.nq-root.nq-light { ${LIGHT} }
+.nq-root.nq-dark, html.nq-mode-dark .nq-root.nq-auto { ${DARK} }
+@media (prefers-color-scheme: dark) {
+  html:not(.nq-mode-light) body:has(.nq-host) { background: #0e0d0b; }
+  html:not(.nq-mode-light) .nq-root.nq-auto { ${DARK} }
 }
 .nq-root *, .nq-root *::before, .nq-root *::after { box-sizing: border-box; }
 .nq-root img { max-width: 100%; display: block; }
@@ -234,7 +258,7 @@ const css = `
   }
   render() {
     const cfg = getConfig(this.config), line = localizedString(cfg.title_line), before = localizedString(cfg.title_before), accent = localizedString(cfg.title_accent), after = localizedString(cfg.title_after), photos = getCollectionItems(cfg.photos, "photos").slice(0, 3), stats = getCollectionItems(cfg.stats, "stats").map((item) => ({ value: localizedString(item.value), label: localizedString(item.label) })).filter((item) => item.value), secondary = localizedString(cfg.secondary_label), secondaryUrl = linkHref(cfg.secondary_url), tag = localizedString(cfg.side_tag);
-    return html`<section class="nq-root nq-hero" style=${sectionStyle(cfg)} aria-label=${line || "hero"}>
+    return html`<section class=${`nq-root nq-hero ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${line || "hero"}>
       ${tag ? html`<span class="nq-hero-tag">${tag}</span>` : nothing}
       <div class="nq-wrap nq-hero-g">
         <div class="nq-rev">

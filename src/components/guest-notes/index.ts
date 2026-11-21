@@ -1,6 +1,7 @@
 import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { getCollectionItems, getConfig, localizedString, watchLocale } from "../../utils/config.js";
+import { schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { emptyCopy } from "../../utils/ui.js";
 
@@ -9,7 +10,7 @@ const css = `
 .nq-notes .nq-intro { text-align: center; }
 .nq-notes .nq-lead { margin-inline: auto; }
 .nq-rv { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2.6vw, 28px); margin-top: 46px; }
-.nq-q { background: #fff; border: 1px solid var(--line); padding: clamp(24px, 3vw, 34px); }
+.nq-q { background: var(--card); border: 1px solid var(--line); padding: clamp(24px, 3vw, 34px); }
 .nq-q .mark { font-family: var(--serif); font-size: 3rem; line-height: .6; color: var(--gold); display: block; margin-bottom: 14px; }
 .nq-q p { margin: 0 0 20px; font-size: .96rem; }
 .nq-who { display: flex; align-items: center; gap: 12px; padding-top: 18px; border-top: 1px solid var(--line); }
@@ -54,7 +55,7 @@ export default class GuestNotes extends LitElement {
         initial: localizedString(item.initial),
       }))
       .filter((item) => item.quote);
-    return html`<section class="nq-root nq-sec nq-notes" style=${sectionStyle(cfg)} aria-label=${title || "reviews"}>
+    return html`<section class=${`nq-root nq-sec nq-notes ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${title || "reviews"}>
       <div class="nq-wrap">
         <div class="nq-rev nq-intro">
           ${localizedString(cfg.kicker) ? html`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing}

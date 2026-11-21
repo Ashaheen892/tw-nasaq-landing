@@ -54,7 +54,12 @@ export function linkHref(value: unknown): string {
 
 export function flag(value: unknown): boolean {
   const raw = unwrapValue(value);
-  return raw === true || raw === "true" || raw === 1 || raw === "1";
+  if (raw === true || raw === 1) return true;
+  if (typeof raw === "string") {
+    const text = raw.trim().toLowerCase();
+    return text === "true" || text === "1" || text === "on" || text === "yes";
+  }
+  return false;
 }
 
 export function getCollectionItems<T extends Record<string, any>>(items: unknown, prefix: string): T[] {

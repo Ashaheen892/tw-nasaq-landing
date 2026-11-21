@@ -1,7 +1,7 @@
 import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { getCollectionItems, getConfig, linkHref, localizedString, watchLocale } from "../../utils/config.js";
-import { renderCta } from "../../utils/landing.js";
+import { renderCta, schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { frame } from "../../utils/ui.js";
 
@@ -65,7 +65,7 @@ export default class HeroStage extends LitElement {
     const secondary = localizedString(cfg.secondary_label);
     const secondaryUrl = linkHref(cfg.secondary_url);
     const tag = localizedString(cfg.side_tag);
-    return html`<section class="nq-root nq-hero" style=${sectionStyle(cfg)} aria-label=${line || "hero"}>
+    return html`<section class=${`nq-root nq-hero ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${line || "hero"}>
       ${tag ? html`<span class="nq-hero-tag">${tag}</span>` : nothing}
       <div class="nq-wrap nq-hero-g">
         <div class="nq-rev">

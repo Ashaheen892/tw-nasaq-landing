@@ -88,7 +88,36 @@ export function renderCta(labelValue: unknown, fallbackUrl = "", tone: "solid" |
   return html`<a class=${cls} href=${href}>${label}</a>`;
 }
 
+const TONE_KEY = "nq-landing-tone";
+
+export function applyTone(mode: "light" | "dark"): void {
+  document.documentElement.classList.remove("nq-mode-light", "nq-mode-dark");
+  document.documentElement.classList.add(mode === "dark" ? "nq-mode-dark" : "nq-mode-light");
+  try {
+    localStorage.setItem(TONE_KEY, mode);
+  } catch {
+    /* private mode */
+  }
+  window.dispatchEvent(new CustomEvent("nq-tone"));
+}
+
+export function currentTone(): "light" | "dark" {
+  return document.documentElement.classList.contains("nq-mode-dark") ? "dark" : "light";
+}
+
+export function savedTone(): "light" | "dark" | "" {
+  try {
+    const saved = localStorage.getItem(TONE_KEY);
+    return saved === "dark" || saved === "light" ? saved : "";
+  } catch {
+    return "";
+  }
+}
+
+/** `auto` follows the header toggle. `light` and `dark` pin the section. */
 export function schemeOf(cfg: Record<string, any>): string {
-  const scheme = String(unwrapValue(cfg.color_scheme) || "");
-  return scheme ? `nq-scheme-${scheme}` : "";
+  const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
+  if (scheme === "dark") return "nq-dark";
+  if (scheme === "light") return "nq-light";
+  return "nq-auto";
 }
