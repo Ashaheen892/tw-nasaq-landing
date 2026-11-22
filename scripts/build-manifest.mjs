@@ -86,7 +86,7 @@ const products = (id, label, desc) => ({
   options: [], selected: [], value: [], searchable: true, multichoice: false,
 });
 const icon = (id, label, value) => ({
-  id, type: "string", format: "icon", label, icon: "sicon-star2", required: false, class: "form--inline", value,
+  id, type: "string", format: "icon", label, icon: "sicon-star2", required: false, value,
 });
 const collection = (id, itemLabel, fields, value, min, max) => ({
   id, type: "collection", format: "collection", required: min > 0, minLength: min, maxLength: max,
@@ -140,7 +140,7 @@ const components = [
       collection("bars", "شريط", [
         text("text", "نص الشريط", L("", ""), { max: 140 }),
         drop("media", "بجانب النص", [["none", "بدون", "767bce96-fd9b-4603-bbf9-bef7df05377c"], ["icon", "أيقونة", "e92f6793-5d24-4a85-a037-0ce8b0e50bd9"], ["image", "صورة مصغرة", "70cb26e0-b117-4bb2-abdd-ce70e72aaec3"]], "icon", "اختر أيقونة من مكتبة سلة أو صورة صغيرة لمنتج أو شعار."),
-        { ...icon("icon", "الأيقونة", "sicon-megaphone"), class: undefined },
+        icon("icon", "الأيقونة", "sicon-megaphone"),
         image("image", "الصورة المصغرة", "المقاس المقترح 96×120 بكسل، طولية، تُقص على شكل قوس، PNG أو WebP بخلفية شفافة أو صورة منتج. تظهر بحجم ٢٤×٣٠ بكسل بأعلى مقوس، فاجعل القطعة في منتصف الصورة. تُستخدم عند اختيار «صورة مصغرة» في «بجانب النص»."),
         drop("motion", "حركة الشريط", [["right", "متحرك لليمين →", "6f7d92e9-7e18-474a-a893-a4251092e3a2"], ["left", "متحرك لليسار ←", "a9e02f87-7c32-4249-9ea3-dede8627200e"], ["still", "ثابت", "03f1a091-c316-4f5a-84e2-a8e5b5a0fed2"]], "right", "المتحرك يمرّ الجملة باستمرار في الاتجاه المختار ويتوقف عند مرور المؤشر. الثابت يُبقيها في الوسط."),
         url("link", "رابط الشريط", "", "اختياري. يفتح عند الضغط على الشريط."),
@@ -591,7 +591,8 @@ components.splice(1, 0, {
   ],
 });
 
-for (const component of components) component.fields.push(scheme());
+// The lookbook always sets white words on its photo, so a light/dark choice would do nothing there.
+for (const component of components) if (component.name !== "look-slider") component.fields.push(scheme());
 
 const templates = [
   {

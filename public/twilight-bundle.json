@@ -1059,47 +1059,6 @@
                     "required": false,
                     "description": null,
                     "value": ""
-                },
-                {
-                    "id": "color_scheme",
-                    "type": "items",
-                    "format": "dropdown-list",
-                    "source": "Manual",
-                    "label": "وضع الألوان",
-                    "icon": "sicon-list",
-                    "required": false,
-                    "description": "حسب رأس الصفحة يتبع زر الفاتح والداكن. الفاتح أو الداكن يثبت القسم ولا يتأثر بالزر.",
-                    "options": [
-                        {
-                            "label": "حسب رأس الصفحة",
-                            "value": "auto",
-                            "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
-                        },
-                        {
-                            "label": "فاتح دائماً",
-                            "value": "light",
-                            "key": "7d2a9b35-7f61-4c28-8e93-2b8d6f1c5a74"
-                        },
-                        {
-                            "label": "داكن دائماً",
-                            "value": "dark",
-                            "key": "8e3b0c46-8a72-4d39-9fa4-3c9e7a2d6b85"
-                        }
-                    ],
-                    "selected": [
-                        {
-                            "label": "حسب رأس الصفحة",
-                            "value": "auto",
-                            "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
-                        }
-                    ],
-                    "value": [
-                        {
-                            "label": "حسب رأس الصفحة",
-                            "value": "auto",
-                            "key": "3c1f8a24-6e50-4b17-9d82-1a7c5e0b4f63"
-                        }
-                    ]
                 }
             ]
         },

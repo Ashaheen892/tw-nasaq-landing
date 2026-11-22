@@ -7,8 +7,8 @@ function getConfig(raw) {
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  var _a, _b, _c;
-  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
+  var _a2, _b, _c;
+  const lang = ((_c = (_b = (_a2 = window.Salla) == null ? void 0 : _a2.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
@@ -31,8 +31,8 @@ function t(strings) {
 }
 __name(t, "t");
 function unwrapValue(value) {
-  var _a;
-  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
+  var _a2;
+  return Array.isArray(value) ? unwrapValue(((_a2 = value[0]) == null ? void 0 : _a2.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function getCollectionItems(items, prefix) {
@@ -76,7 +76,7 @@ function kindOf(url) {
 }
 __name(kindOf, "kindOf");
 function frameSrc(url) {
-  var _a, _b;
+  var _a2, _b;
   let frame = url;
   const kind = kindOf(url);
   try {
@@ -84,7 +84,7 @@ function frameSrc(url) {
     if (kind === "youtube") {
       const host = parsed.hostname.replace(/^www\./, "");
       let id = "";
-      host === "youtu.be" ? id = parsed.pathname.split("/").filter(Boolean)[0] || "" : parsed.pathname.includes("/embed/") ? id = ((_a = parsed.pathname.split("/embed/")[1]) == null ? void 0 : _a.split("/")[0]) || "" : parsed.pathname.includes("/shorts/") ? id = ((_b = parsed.pathname.split("/shorts/")[1]) == null ? void 0 : _b.split("/")[0]) || "" : id = parsed.searchParams.get("v") || "", id && (frame = `https://www.youtube-nocookie.com/embed/${id}`);
+      host === "youtu.be" ? id = parsed.pathname.split("/").filter(Boolean)[0] || "" : parsed.pathname.includes("/embed/") ? id = ((_a2 = parsed.pathname.split("/embed/")[1]) == null ? void 0 : _a2.split("/")[0]) || "" : parsed.pathname.includes("/shorts/") ? id = ((_b = parsed.pathname.split("/shorts/")[1]) == null ? void 0 : _b.split("/")[0]) || "" : id = parsed.searchParams.get("v") || "", id && (frame = `https://www.youtube-nocookie.com/embed/${id}`);
     } else if (kind === "vimeo") {
       const id = parsed.pathname.split("/").filter(Boolean).pop() || "";
       /^\d+$/.test(id) && (frame = `https://player.vimeo.com/video/${id}`);
@@ -97,7 +97,8 @@ function frameSrc(url) {
   return params.set("autoplay", "1"), params.set("playsinline", "1"), kind === "youtube" ? (params.set("mute", "1"), params.set("rel", "0"), params.set("enablejsapi", "1")) : (kind === "vimeo" || params.set("mute", "1"), params.set("muted", "1")), `${frame}${frame.includes("?") ? "&" : "?"}${params.toString()}`;
 }
 __name(frameSrc, "frameSrc");
-const _Deck = class _Deck {
+var _a;
+const Deck = (_a = class {
   constructor(host, imageMs = 6500, frameMs = 18e3) {
     this.host = host, this.imageMs = imageMs, this.frameMs = frameMs, this.index = 0, this.sound = !1, this.paused = !1, this.reduced = !1, this.kinds = [], this.failed = /* @__PURE__ */ new Set(), this.timer = 0, this.left = 0, this.since = 0, this.point = 0, this.pointing = !1, this.pause = () => {
       this.paused || (this.paused = !0, this.timer && (window.clearTimeout(this.timer), this.timer = 0, this.left = Math.max(400, this.left - (performance.now() - this.since))), this.host.requestUpdate());
@@ -164,34 +165,31 @@ const _Deck = class _Deck {
   toggleSound() {
     this.sound = !this.sound, this.host.requestUpdate();
   }
-};
-__name(_Deck, "Deck");
-let Deck = _Deck;
-typeof Deck < "u" && Deck.registerSallaComponent("salla-look-slider");
+}, __name(_a, "Deck"), _a);
 function salla() {
   return window.Salla;
 }
 __name(salla, "salla");
 function landingSettings() {
-  var _a, _b;
-  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("theme.settings")) || {};
+  var _a2, _b;
+  return ((_b = (_a2 = salla()) == null ? void 0 : _a2.config) == null ? void 0 : _b.get("theme.settings")) || {};
 }
 __name(landingSettings, "landingSettings");
 function isLandingPage() {
-  var _a, _b;
-  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("page.is_landing_page")) === !0;
+  var _a2, _b;
+  return ((_b = (_a2 = salla()) == null ? void 0 : _a2.config) == null ? void 0 : _b.get("page.is_landing_page")) === !0;
 }
 __name(isLandingPage, "isLandingPage");
 function pageMode() {
-  var _a;
+  var _a2;
   const value = landingSettings().page_for_product;
-  return typeof value == "boolean" || value == null ? value === !1 ? "promotion" : "product" : typeof value == "string" ? value === "promotion" ? "promotion" : "product" : Array.isArray(value) && ((_a = value[0]) == null ? void 0 : _a.value) === "promotion" ? "promotion" : "product";
+  return typeof value == "boolean" || value == null ? value === !1 ? "promotion" : "product" : typeof value == "string" ? value === "promotion" ? "promotion" : "product" : Array.isArray(value) && ((_a2 = value[0]) == null ? void 0 : _a2.value) === "promotion" ? "promotion" : "product";
 }
 __name(pageMode, "pageMode");
 function landingProductId() {
-  var _a, _b;
+  var _a2, _b;
   if (!isLandingPage() || pageMode() !== "product") return null;
-  const id = (_b = (_a = landingSettings().product) == null ? void 0 : _a.value) == null ? void 0 : _b[0];
+  const id = (_b = (_a2 = landingSettings().product) == null ? void 0 : _a2.value) == null ? void 0 : _b[0];
   return id ? String(id) : null;
 }
 __name(landingProductId, "landingProductId");
@@ -220,13 +218,13 @@ function renderCta(labelValue, fallbackUrl = "", tone = "solid") {
 }
 __name(renderCta, "renderCta");
 function markEditing() {
-  var _a, _b;
+  var _a2, _b;
   const root = document.documentElement, read = /* @__PURE__ */ __name(() => {
-    var _a2, _b2;
+    var _a3, _b2;
     let on = !0;
     try {
       const salla2 = window.Salla;
-      on = window.self !== window.top || ((_b2 = (_a2 = salla2 == null ? void 0 : salla2.config) == null ? void 0 : _a2.get) == null ? void 0 : _b2.call(_a2, "page.is_landing_page")) !== !0;
+      on = window.self !== window.top || ((_b2 = (_a3 = salla2 == null ? void 0 : salla2.config) == null ? void 0 : _a3.get) == null ? void 0 : _b2.call(_a3, "page.is_landing_page")) !== !0;
     } catch {
       on = !0;
     }
@@ -235,7 +233,7 @@ function markEditing() {
   if (!root.dataset.lpEditing) {
     read();
     try {
-      (_b = (_a = window.Salla) == null ? void 0 : _a.onReady) == null || _b.call(_a, read);
+      (_b = (_a2 = window.Salla) == null ? void 0 : _a2.onReady) == null || _b.call(_a2, read);
     } catch {
     }
   }
