@@ -84,7 +84,6 @@
               "label": "الأيقونة",
               "icon": "sicon-star2",
               "required": false,
-              "class": "form--inline",
               "value": "sicon-megaphone"
             },
             {
@@ -105,12 +104,17 @@
               "label": "حركة الشريط",
               "icon": "sicon-list",
               "required": false,
-              "description": "المتحرك يمرّ الجملة باستمرار. الثابت يُبقيها في الوسط.",
+              "description": "المتحرك يمرّ الجملة باستمرار في الاتجاه المختار ويتوقف عند مرور المؤشر. الثابت يُبقيها في الوسط.",
               "options": [
                 {
-                  "label": "متحرك",
-                  "value": "move",
-                  "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                  "label": "متحرك لليمين →",
+                  "value": "right",
+                  "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
+                },
+                {
+                  "label": "متحرك لليسار ←",
+                  "value": "left",
+                  "key": "a9e02f87-7c32-4249-9ea3-dede8627200e"
                 },
                 {
                   "label": "ثابت",
@@ -120,16 +124,16 @@
               ],
               "selected": [
                 {
-                  "label": "متحرك",
-                  "value": "move",
-                  "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                  "label": "متحرك لليمين →",
+                  "value": "right",
+                  "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
                 }
               ],
               "value": [
                 {
-                  "label": "متحرك",
-                  "value": "move",
-                  "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                  "label": "متحرك لليمين →",
+                  "value": "right",
+                  "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
                 }
               ]
             },
@@ -186,9 +190,9 @@
               "bars.image": "",
               "bars.motion": [
                 {
-                  "label": "متحرك",
-                  "value": "move",
-                  "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                  "label": "متحرك لليمين →",
+                  "value": "right",
+                  "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
                 }
               ],
               "bars.link": "",
@@ -208,7 +212,7 @@
                 }
               ],
               "bars.icon": "sicon-megaphone",
-              "bars.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=200",
+              "bars.image": "https://images.pexels.com/photos/35150034/pexels-photo-35150034.jpeg?auto=compress&cs=tinysrgb&w=200",
               "bars.motion": [
                 {
                   "label": "ثابت",
@@ -236,9 +240,9 @@
               "bars.image": "",
               "bars.motion": [
                 {
-                  "label": "متحرك",
-                  "value": "move",
-                  "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                  "label": "متحرك لليمين →",
+                  "value": "right",
+                  "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
                 }
               ],
               "bars.link": "",
@@ -830,21 +834,21 @@
           ],
           "value": [
             {
-              "photos.image": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=1000",
+              "photos.image": "https://images.pexels.com/photos/32279501/pexels-photo-32279501.jpeg?auto=compress&cs=tinysrgb&w=1000",
               "photos.caption": {
                 "ar": "عباية كريب مطفي",
                 "en": "Matte crepe abaya"
               }
             },
             {
-              "photos.image": "https://images.pexels.com/photos/5973508/pexels-photo-5973508.jpeg?auto=compress&cs=tinysrgb&w=1000",
+              "photos.image": "https://images.pexels.com/photos/32208656/pexels-photo-32208656.jpeg?auto=compress&cs=tinysrgb&w=1000",
               "photos.caption": {
                 "ar": "عباية حرير مغسول",
                 "en": "Washed silk abaya"
               }
             },
             {
-              "photos.image": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=1000",
+              "photos.image": "https://images.pexels.com/photos/34721670/pexels-photo-34721670.jpeg?auto=compress&cs=tinysrgb&w=1000",
               "photos.caption": {
                 "ar": "عباية كلوش",
                 "en": "Flared abaya"
@@ -1310,7 +1314,7 @@
                 "ar": "الأكثر طلباً",
                 "en": "Most requested"
               },
-              "cards.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=900",
+              "cards.image": "https://images.pexels.com/photos/32178223/pexels-photo-32178223.jpeg?auto=compress&cs=tinysrgb&w=900",
               "cards.caption": {
                 "ar": "عباية كلوش",
                 "en": "Flared abaya"
@@ -1338,7 +1342,7 @@
                 "ar": "جديدة",
                 "en": "New"
               },
-              "cards.image": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=900",
+              "cards.image": "https://images.pexels.com/photos/35150034/pexels-photo-35150034.jpeg?auto=compress&cs=tinysrgb&w=900",
               "cards.caption": {
                 "ar": "عباية مطرزة",
                 "en": "Embroidered abaya"
@@ -1366,7 +1370,7 @@
                 "ar": "يومية",
                 "en": "Everyday"
               },
-              "cards.image": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=900",
+              "cards.image": "https://images.pexels.com/photos/39535716/pexels-photo-39535716.jpeg?auto=compress&cs=tinysrgb&w=900",
               "cards.caption": {
                 "ar": "عباية مستقيمة",
                 "en": "Straight abaya"
@@ -1865,21 +1869,21 @@
           ],
           "value": [
             {
-              "photos.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=1000",
+              "photos.image": "https://images.pexels.com/photos/13838842/pexels-photo-13838842.jpeg?auto=compress&cs=tinysrgb&w=1000",
               "photos.caption": {
                 "ar": "عباية نَسَق المطرزة",
                 "en": "Nasaq embroidered abaya"
               }
             },
             {
-              "photos.image": "https://images.pexels.com/photos/5973508/pexels-photo-5973508.jpeg?auto=compress&cs=tinysrgb&w=1000",
+              "photos.image": "https://images.pexels.com/photos/33108120/pexels-photo-33108120.jpeg?auto=compress&cs=tinysrgb&w=1000",
               "photos.caption": {
                 "ar": "التطريز",
                 "en": "Embroidery"
               }
             },
             {
-              "photos.image": "https://images.pexels.com/photos/32688173/pexels-photo-32688173.jpeg?auto=compress&cs=tinysrgb&w=1000",
+              "photos.image": "https://images.pexels.com/photos/6276020/pexels-photo-6276020.jpeg?auto=compress&cs=tinysrgb&w=1000",
               "photos.caption": {
                 "ar": "البطانة",
                 "en": "The lining"
@@ -2447,7 +2451,7 @@
           "value": [
             {
               "clips.video_url": "",
-              "clips.poster": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=800",
+              "clips.poster": "https://images.pexels.com/photos/31049717/pexels-photo-31049717.jpeg?auto=compress&cs=tinysrgb&w=800",
               "clips.name": {
                 "ar": "لمى",
                 "en": "Lama"
@@ -2463,7 +2467,7 @@
             },
             {
               "clips.video_url": "",
-              "clips.poster": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=800",
+              "clips.poster": "https://images.pexels.com/photos/33539326/pexels-photo-33539326.jpeg?auto=compress&cs=tinysrgb&w=800",
               "clips.name": {
                 "ar": "هيفاء",
                 "en": "Haifa"
@@ -2479,7 +2483,7 @@
             },
             {
               "clips.video_url": "",
-              "clips.poster": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=800",
+              "clips.poster": "https://images.pexels.com/photos/34957209/pexels-photo-34957209.jpeg?auto=compress&cs=tinysrgb&w=800",
               "clips.name": {
                 "ar": "نورة",
                 "en": "Noura"
@@ -2639,17 +2643,16 @@
         {
           "id": "ends_at",
           "type": "string",
-          "format": "datetime",
-          "inputType": "datetime-local",
+          "format": "text",
           "label": "تاريخ انتهاء العرض",
           "icon": "sicon-calendar-time",
           "multilanguage": false,
           "required": false,
-          "description": "اختاري التاريخ من التقويم. العدّاد يحسب الأيام والساعات والدقائق والثواني حتى هذا الموعد.",
-          "placeholder": "2026-12-05T23:59",
+          "description": "اكتبي الموعد بهذا الشكل: 2026-12-31 23:59 (سنة-شهر-يوم ساعة:دقيقة). العدّاد يحسب الأيام والساعات والدقائق والثواني حتى هذا الموعد.",
+          "placeholder": "2026-12-05 23:59",
           "minLength": 0,
           "maxLength": 40,
-          "value": "2026-12-05T23:59"
+          "value": "2026-12-31 23:59"
         },
         {
           "id": "show_video",
@@ -3722,7 +3725,7 @@
           ],
           "value": [
             {
-              "items.image": "https://images.pexels.com/photos/5973508/pexels-photo-5973508.jpeg?auto=compress&cs=tinysrgb&w=480",
+              "items.image": "https://images.pexels.com/photos/7641148/pexels-photo-7641148.jpeg?auto=compress&cs=tinysrgb&w=480",
               "items.name": {
                 "ar": "كريب ياباني",
                 "en": "Japanese crepe"
@@ -3734,7 +3737,7 @@
               "items.url": ""
             },
             {
-              "items.image": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=480",
+              "items.image": "https://images.pexels.com/photos/6276056/pexels-photo-6276056.jpeg?auto=compress&cs=tinysrgb&w=480",
               "items.name": {
                 "ar": "لينو",
                 "en": "Linen"
@@ -3746,7 +3749,7 @@
               "items.url": ""
             },
             {
-              "items.image": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=480",
+              "items.image": "https://images.pexels.com/photos/1487809/pexels-photo-1487809.jpeg?auto=compress&cs=tinysrgb&w=480",
               "items.name": {
                 "ar": "حرير مغسول",
                 "en": "Washed silk"
@@ -3758,7 +3761,7 @@
               "items.url": ""
             },
             {
-              "items.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=480",
+              "items.image": "https://images.pexels.com/photos/7598386/pexels-photo-7598386.jpeg?auto=compress&cs=tinysrgb&w=480",
               "items.name": {
                 "ar": "جورجيت",
                 "en": "Georgette"

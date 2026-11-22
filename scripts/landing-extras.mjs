@@ -25,10 +25,10 @@ const SPEC = {
     kicker: ["القماش", "Cloth"],
     title: ["بيوت القماش", "Cloth houses"],
     items: [
-      [["كريب ياباني", "Japanese crepe"], ["سقوط ناعم", "A soft fall"], "5973508"],
-      [["لينو", "Linen"], ["خامة الصيف", "Summer cloth"], "32279508"],
-      [["حرير مغسول", "Washed silk"], ["لمعة هادئة", "A quiet sheen"], "13862196"],
-      [["جورجيت", "Georgette"], ["طبقة خفيفة", "A light layer"], "37368651"],
+      [["كريب ياباني", "Japanese crepe"], ["سقوط ناعم", "A soft fall"], "7641148"],
+      [["لينو", "Linen"], ["خامة الصيف", "Summer cloth"], "6276056"],
+      [["حرير مغسول", "Washed silk"], ["لمعة هادئة", "A quiet sheen"], "1487809"],
+      [["جورجيت", "Georgette"], ["طبقة خفيفة", "A light layer"], "7598386"],
     ],
   },
   partner: {

@@ -136,6 +136,8 @@ html.${p}-mode-dark .${p}-ann.${p}-auto, .${p}-ann.${p}-dark {
   animation: ${p}-ann-ltr var(--ann-speed, 18s) linear infinite;
 }
 .${p}-ann.is-rtl .${p}-ann__item { animation-name: ${p}-ann-rtl; }
+.${p}-ann.is-back .${p}-ann__item { animation-name: ${p}-ann-ltr-back; }
+.${p}-ann.is-rtl.is-back .${p}-ann__item { animation-name: ${p}-ann-rtl-back; }
 .${p}-ann__list:hover .${p}-ann__item { animation-play-state: paused; }
 .${p}-ann__text {
   display: inline-flex;
@@ -185,8 +187,10 @@ html.${p}-mode-dark .${p}-ann.${p}-auto, .${p}-ann.${p}-dark {
 .${p}-anns.is-rotate > .${p}-ann.is-on { opacity: 1; visibility: visible; transition: opacity .45s ease; }
 @keyframes ${p}-ann-ltr { to { transform: translateX(-100%); } }
 @keyframes ${p}-ann-rtl { to { transform: translateX(100%); } }
+@keyframes ${p}-ann-ltr-back { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+@keyframes ${p}-ann-rtl-back { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) {
-  .${p}-ann__item { animation: none; }
+  .${p}-ann .${p}-ann__item { animation: none !important; }
   .${p}-ann__item[aria-hidden="true"] { display: none; }
   .${p}-ann__list { justify-content: center; }
   .${p}-ann__item .${p}-ann__text::after { display: none; }
@@ -209,9 +213,9 @@ function announceTone(cfg) {
   ].filter(Boolean).join(";");
 }
 __name(announceTone, "announceTone");
-function marquee(prefix, extraClass, style, body, own = !1) {
-  const rtl = isRtl() ? " is-rtl" : "";
-  return html`<div class="${prefix}-ann${rtl}${own ? " is-own" : ""} ${extraClass}" style=${style}>
+function marquee(prefix, extraClass, style, body, own = !1, go = "") {
+  const rtl = isRtl();
+  return html`<div class="${prefix}-ann${rtl ? " is-rtl" : ""}${go === (rtl ? "left" : "right") ? " is-back" : ""}${own ? " is-own" : ""} ${extraClass}" style=${style}>
     <ul class="${prefix}-ann__list">
       ${Array.from({ length: COPIES }, (_, index) => html`<li class="${prefix}-ann__item" aria-hidden=${index ? "true" : "false"}><span class="${prefix}-ann__text">${body}</span></li>`)}
     </ul>

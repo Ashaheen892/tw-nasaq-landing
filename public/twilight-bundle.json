@@ -102,7 +102,6 @@
                             "label": "الأيقونة",
                             "icon": "sicon-star2",
                             "required": false,
-                            "class": "form--inline",
                             "value": "sicon-megaphone"
                         },
                         {
@@ -123,12 +122,17 @@
                             "label": "حركة الشريط",
                             "icon": "sicon-list",
                             "required": false,
-                            "description": "المتحرك يمرّ الجملة باستمرار. الثابت يُبقيها في الوسط.",
+                            "description": "المتحرك يمرّ الجملة باستمرار في الاتجاه المختار ويتوقف عند مرور المؤشر. الثابت يُبقيها في الوسط.",
                             "options": [
                                 {
-                                    "label": "متحرك",
-                                    "value": "move",
-                                    "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                                    "label": "متحرك لليمين →",
+                                    "value": "right",
+                                    "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
+                                },
+                                {
+                                    "label": "متحرك لليسار ←",
+                                    "value": "left",
+                                    "key": "a9e02f87-7c32-4249-9ea3-dede8627200e"
                                 },
                                 {
                                     "label": "ثابت",
@@ -138,16 +142,16 @@
                             ],
                             "selected": [
                                 {
-                                    "label": "متحرك",
-                                    "value": "move",
-                                    "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                                    "label": "متحرك لليمين →",
+                                    "value": "right",
+                                    "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
                                 }
                             ],
                             "value": [
                                 {
-                                    "label": "متحرك",
-                                    "value": "move",
-                                    "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                                    "label": "متحرك لليمين →",
+                                    "value": "right",
+                                    "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
                                 }
                             ]
                         },
@@ -204,9 +208,9 @@
                             "bars.image": "",
                             "bars.motion": [
                                 {
-                                    "label": "متحرك",
-                                    "value": "move",
-                                    "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                                    "label": "متحرك لليمين →",
+                                    "value": "right",
+                                    "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
                                 }
                             ],
                             "bars.link": "",
@@ -226,7 +230,7 @@
                                 }
                             ],
                             "bars.icon": "sicon-megaphone",
-                            "bars.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=200",
+                            "bars.image": "https://images.pexels.com/photos/35150034/pexels-photo-35150034.jpeg?auto=compress&cs=tinysrgb&w=200",
                             "bars.motion": [
                                 {
                                     "label": "ثابت",
@@ -254,9 +258,9 @@
                             "bars.image": "",
                             "bars.motion": [
                                 {
-                                    "label": "متحرك",
-                                    "value": "move",
-                                    "key": "f49590e8-a17c-4d00-882b-88d3f7b373f5"
+                                    "label": "متحرك لليمين →",
+                                    "value": "right",
+                                    "key": "6f7d92e9-7e18-474a-a893-a4251092e3a2"
                                 }
                             ],
                             "bars.link": "",
@@ -671,6 +675,170 @@
                     }
                 },
                 {
+                    "id": "fit",
+                    "type": "items",
+                    "format": "dropdown-list",
+                    "source": "Manual",
+                    "label": "طريقة عرض الصورة",
+                    "icon": "sicon-list",
+                    "required": false,
+                    "description": "خلفية ممتدة: نسخة ضبابية من الصورة تملأ العرض، والصورة كاملة داخل قوس بجانب النص. تناسب صور العبايات الطولية. على الجوال تملأ الصورة الشاشة في الحالتين.",
+                    "options": [
+                        {
+                            "label": "خلفية ممتدة وصورة في قوس",
+                            "value": "framed",
+                            "key": "08c617d6-17a1-4d8a-822a-3c3e44881928"
+                        },
+                        {
+                            "label": "الصورة تملأ الخلفية",
+                            "value": "cover",
+                            "key": "713632a6-dc37-47d0-be46-2dc2ee1015fd"
+                        }
+                    ],
+                    "selected": [
+                        {
+                            "label": "خلفية ممتدة وصورة في قوس",
+                            "value": "framed",
+                            "key": "08c617d6-17a1-4d8a-822a-3c3e44881928"
+                        }
+                    ],
+                    "value": [
+                        {
+                            "label": "خلفية ممتدة وصورة في قوس",
+                            "value": "framed",
+                            "key": "08c617d6-17a1-4d8a-822a-3c3e44881928"
+                        }
+                    ]
+                },
+                {
+                    "id": "height",
+                    "type": "items",
+                    "format": "dropdown-list",
+                    "source": "Manual",
+                    "label": "ارتفاع السلايدر",
+                    "icon": "sicon-list",
+                    "required": false,
+                    "description": null,
+                    "options": [
+                        {
+                            "label": "ملء الشاشة",
+                            "value": "screen",
+                            "key": "fd94ecf6-10f3-491d-92c6-4103775007a2"
+                        },
+                        {
+                            "label": "طويل",
+                            "value": "tall",
+                            "key": "42c175fc-dc0b-45e7-98cf-a5926c1c824f"
+                        },
+                        {
+                            "label": "متوسط",
+                            "value": "medium",
+                            "key": "195710ad-cece-4491-b798-ebf7bd690003"
+                        }
+                    ],
+                    "selected": [
+                        {
+                            "label": "ملء الشاشة",
+                            "value": "screen",
+                            "key": "fd94ecf6-10f3-491d-92c6-4103775007a2"
+                        }
+                    ],
+                    "value": [
+                        {
+                            "label": "ملء الشاشة",
+                            "value": "screen",
+                            "key": "fd94ecf6-10f3-491d-92c6-4103775007a2"
+                        }
+                    ]
+                },
+                {
+                    "id": "shade",
+                    "type": "items",
+                    "format": "dropdown-list",
+                    "source": "Manual",
+                    "label": "تعتيم الصورة خلف النص",
+                    "icon": "sicon-list",
+                    "required": false,
+                    "description": "يزيد وضوح النص الأبيض فوق الصور الفاتحة.",
+                    "options": [
+                        {
+                            "label": "خفيف",
+                            "value": "soft",
+                            "key": "1ec808f7-fee3-4b1a-b353-69b3c7465145"
+                        },
+                        {
+                            "label": "متوسط",
+                            "value": "medium",
+                            "key": "41e072ae-83e8-4718-9e5d-aa45ce273fda"
+                        },
+                        {
+                            "label": "قوي",
+                            "value": "strong",
+                            "key": "9eff4bfa-3b5f-4c06-b52c-18b4031b344e"
+                        }
+                    ],
+                    "selected": [
+                        {
+                            "label": "متوسط",
+                            "value": "medium",
+                            "key": "41e072ae-83e8-4718-9e5d-aa45ce273fda"
+                        }
+                    ],
+                    "value": [
+                        {
+                            "label": "متوسط",
+                            "value": "medium",
+                            "key": "41e072ae-83e8-4718-9e5d-aa45ce273fda"
+                        }
+                    ]
+                },
+                {
+                    "id": "focus",
+                    "type": "items",
+                    "format": "dropdown-list",
+                    "source": "Manual",
+                    "label": "الجزء الظاهر من الصورة عند القص",
+                    "icon": "sicon-list",
+                    "required": false,
+                    "description": "الأعلى يحفظ الوجه والكتفين في الصور الطولية.",
+                    "options": [
+                        {
+                            "label": "الأعلى",
+                            "value": "top",
+                            "key": "833178ab-1cbe-4111-b554-812fb424ce3d"
+                        },
+                        {
+                            "label": "الوسط",
+                            "value": "center",
+                            "key": "549894fa-5bc2-4904-8704-5951ad134671"
+                        },
+                        {
+                            "label": "الأسفل",
+                            "value": "bottom",
+                            "key": "5c7c0d2e-8d67-4292-8c78-8f62d92c9c28"
+                        }
+                    ],
+                    "selected": [
+                        {
+                            "label": "الأعلى",
+                            "value": "top",
+                            "key": "833178ab-1cbe-4111-b554-812fb424ce3d"
+                        }
+                    ],
+                    "value": [
+                        {
+                            "label": "الأعلى",
+                            "value": "top",
+                            "key": "833178ab-1cbe-4111-b554-812fb424ce3d"
+                        }
+                    ]
+                },
+                {
+                    "id": "ls-look",
+                    "type": "static",
+                    "format": "line"
+                },
+                {
                     "id": "items",
                     "type": "collection",
                     "format": "collection",
@@ -686,7 +854,17 @@
                             "label": "الصورة",
                             "icon": "sicon-image",
                             "required": false,
-                            "description": "المقاس المقترح 1200×1500 بكسل، صورة طولية. مع الفيديو تظهر قبل تحميله.",
+                            "description": "المقاس المقترح 1600×2000 بكسل (طولية 4:5) لوضع القوس، أو 1920×1080 بكسل (أفقية) لوضع ملء الخلفية. مع الفيديو تظهر قبل تحميله.",
+                            "value": ""
+                        },
+                        {
+                            "id": "items.image_mobile",
+                            "type": "string",
+                            "format": "image",
+                            "label": "صورة الجوال (اختياري)",
+                            "icon": "sicon-image",
+                            "required": false,
+                            "description": "المقاس المقترح 1080×1600 بكسل (طولية). اتركها فارغة لتُستخدم الصورة الأساسية.",
                             "value": ""
                         },
                         {
@@ -722,7 +900,7 @@
                             "id": "items.tag",
                             "type": "string",
                             "format": "text",
-                            "label": "اسم القطعة على الصورة",
+                            "label": "اسم القطعة",
                             "icon": "sicon-format-text-alt",
                             "multilanguage": true,
                             "required": false,
@@ -798,74 +976,74 @@
                     ],
                     "value": [
                         {
-                            "items.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=1200",
+                            "items.image": "https://images.pexels.com/photos/35150034/pexels-photo-35150034.jpeg?auto=compress&cs=tinysrgb&w=1600",
                             "items.alt": {
-                                "ar": "عباية سوداء بتطريز ذهبي",
-                                "en": "A black abaya with gold embroidery"
+                                "ar": "عباية سوداء مطرزة بخيوط ذهبية",
+                                "en": "A black abaya embroidered in gold thread"
                             },
                             "items.tag": {
-                                "ar": "العباية المطرزة",
-                                "en": "The embroidered abaya"
+                                "ar": "عباية الليالي",
+                                "en": "The Layali abaya"
                             },
                             "items.title": {
-                                "ar": "تطريز ذهبي يُرى من قريب فقط",
-                                "en": "Gold embroidery you only notice up close"
+                                "ar": "تطريز ذهبي يُرى من قريب",
+                                "en": "Gold embroidery you notice up close"
                             },
                             "items.text": {
-                                "ar": "حرير مغسول وتطريز يدوي على الأكمام. البطانة قطن ١٠٠٪.",
-                                "en": "Washed silk with hand embroidery on the sleeves. A 100% cotton lining."
+                                "ar": "كريب ياباني ثقيل وتطريز يدوي على الأكمام والصدر. البطانة قطن ١٠٠٪ وتُفصّل على مقاسك.",
+                                "en": "Heavy Japanese crepe with hand embroidery on the sleeves and chest. A 100% cotton lining, cut to your size."
                             },
                             "items.button": {
-                                "ar": "اطلبي المطرزة",
-                                "en": "Order the embroidered one"
+                                "ar": "اطلبي عباية الليالي",
+                                "en": "Order the Layali abaya"
                             },
                             "items.url": "#product"
                         },
                         {
-                            "items.image": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=1200",
+                            "items.image": "https://images.pexels.com/photos/9880858/pexels-photo-9880858.jpeg?auto=compress&cs=tinysrgb&w=1600",
                             "items.alt": {
-                                "ar": "عباية كريب سوداء واسعة",
-                                "en": "A wide black crepe abaya"
+                                "ar": "ثلاث نساء بعبايات يمشين على كثبان رملية",
+                                "en": "Three women in abayas walking on sand dunes"
                             },
                             "items.tag": {
-                                "ar": "عباية الكريب",
-                                "en": "The crepe abaya"
+                                "ar": "مجموعة نجد",
+                                "en": "The Najd collection"
                             },
                             "items.title": {
-                                "ar": "كريب مطفي لا يلمع تحت الضوء",
-                                "en": "Matte crepe that never shines under light"
+                                "ar": "ألوان الرمل لرحلات الشتاء",
+                                "en": "Sand tones for winter trips"
                             },
                             "items.text": {
-                                "ar": "قصة واسعة تناسب الدوام والمشاوير الطويلة.",
-                                "en": "A wide cut for work and long errands."
+                                "ar": "ثلاثة ألوان ترابية بقماش لا يتجعد في السفر، بطول يناسب المشي في المخيم والبر.",
+                                "en": "Three earthy tones in a fabric that does not crease on the road, at a length made for walking at the camp."
                             },
                             "items.button": {
-                                "ar": "اطلبي الكريب",
-                                "en": "Order the crepe"
+                                "ar": "شاهدي ألوان نجد",
+                                "en": "See the Najd colors"
                             },
                             "items.url": "#product"
                         },
                         {
-                            "items.image": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=1200",
+                            "items.image": "https://images.pexels.com/photos/35324598/pexels-photo-35324598.jpeg?auto=compress&cs=tinysrgb&w=1600",
                             "items.alt": {
-                                "ar": "عباية كلوش سوداء",
-                                "en": "A black flared abaya"
+                                "ar": "عباية بلون الموف في مكان داخلي أنيق",
+                                "en": "A mauve abaya in an elegant interior"
                             },
                             "items.tag": {
-                                "ar": "عباية الكلوش",
-                                "en": "The flared abaya"
+                                "ar": "عباية المناسبات",
+                                "en": "The occasion abaya"
                             },
                             "items.title": {
-                                "ar": "كلوش يتحرك معك في المناسبة",
-                                "en": "A flare that moves with you at the event"
+                                "ar": "لون هادئ لمناسبات المساء",
+                                "en": "A calm color for evening occasions"
                             },
                             "items.text": {
-                                "ar": "طول حسب مقاسك، وتصل قبل المناسبة بثلاثة أيام.",
-                                "en": "Cut to your length, delivered three days before the event."
+                                "ar": "قصة واسعة من الشيفون المبطن، وتصل قبل المناسبة بثلاثة أيام داخل الرياض وجدة والدمام.",
+                                "en": "A wide cut in lined chiffon, delivered three days before the occasion in Riyadh, Jeddah, and Dammam."
                             },
                             "items.button": {
-                                "ar": "اطلبي الكلوش",
-                                "en": "Order the flare"
+                                "ar": "اطلبي قبل المناسبة",
+                                "en": "Order before the occasion"
                             },
                             "items.url": "#product"
                         }
@@ -1145,21 +1323,21 @@
                     ],
                     "value": [
                         {
-                            "photos.image": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=1000",
+                            "photos.image": "https://images.pexels.com/photos/32279501/pexels-photo-32279501.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "عباية كريب مطفي",
                                 "en": "Matte crepe abaya"
                             }
                         },
                         {
-                            "photos.image": "https://images.pexels.com/photos/5973508/pexels-photo-5973508.jpeg?auto=compress&cs=tinysrgb&w=1000",
+                            "photos.image": "https://images.pexels.com/photos/32208656/pexels-photo-32208656.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "عباية حرير مغسول",
                                 "en": "Washed silk abaya"
                             }
                         },
                         {
-                            "photos.image": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=1000",
+                            "photos.image": "https://images.pexels.com/photos/34721670/pexels-photo-34721670.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "عباية كلوش",
                                 "en": "Flared abaya"
@@ -1625,7 +1803,7 @@
                                 "ar": "الأكثر طلباً",
                                 "en": "Most requested"
                             },
-                            "cards.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=900",
+                            "cards.image": "https://images.pexels.com/photos/32178223/pexels-photo-32178223.jpeg?auto=compress&cs=tinysrgb&w=900",
                             "cards.caption": {
                                 "ar": "عباية كلوش",
                                 "en": "Flared abaya"
@@ -1653,7 +1831,7 @@
                                 "ar": "جديدة",
                                 "en": "New"
                             },
-                            "cards.image": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=900",
+                            "cards.image": "https://images.pexels.com/photos/35150034/pexels-photo-35150034.jpeg?auto=compress&cs=tinysrgb&w=900",
                             "cards.caption": {
                                 "ar": "عباية مطرزة",
                                 "en": "Embroidered abaya"
@@ -1681,7 +1859,7 @@
                                 "ar": "يومية",
                                 "en": "Everyday"
                             },
-                            "cards.image": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=900",
+                            "cards.image": "https://images.pexels.com/photos/39535716/pexels-photo-39535716.jpeg?auto=compress&cs=tinysrgb&w=900",
                             "cards.caption": {
                                 "ar": "عباية مستقيمة",
                                 "en": "Straight abaya"
@@ -2180,21 +2358,21 @@
                     ],
                     "value": [
                         {
-                            "photos.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=1000",
+                            "photos.image": "https://images.pexels.com/photos/13838842/pexels-photo-13838842.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "عباية نَسَق المطرزة",
                                 "en": "Nasaq embroidered abaya"
                             }
                         },
                         {
-                            "photos.image": "https://images.pexels.com/photos/5973508/pexels-photo-5973508.jpeg?auto=compress&cs=tinysrgb&w=1000",
+                            "photos.image": "https://images.pexels.com/photos/33108120/pexels-photo-33108120.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "التطريز",
                                 "en": "Embroidery"
                             }
                         },
                         {
-                            "photos.image": "https://images.pexels.com/photos/32688173/pexels-photo-32688173.jpeg?auto=compress&cs=tinysrgb&w=1000",
+                            "photos.image": "https://images.pexels.com/photos/6276020/pexels-photo-6276020.jpeg?auto=compress&cs=tinysrgb&w=1000",
                             "photos.caption": {
                                 "ar": "البطانة",
                                 "en": "The lining"
@@ -2668,17 +2846,16 @@
                 {
                     "id": "ends_at",
                     "type": "string",
-                    "format": "datetime",
-                    "inputType": "datetime-local",
+                    "format": "text",
                     "label": "تاريخ انتهاء العرض",
                     "icon": "sicon-calendar-time",
                     "multilanguage": false,
                     "required": false,
-                    "description": "اختاري التاريخ من التقويم. العدّاد يحسب الأيام والساعات والدقائق والثواني حتى هذا الموعد.",
-                    "placeholder": "2026-12-05T23:59",
+                    "description": "اكتبي الموعد بهذا الشكل: 2026-12-31 23:59 (سنة-شهر-يوم ساعة:دقيقة). العدّاد يحسب الأيام والساعات والدقائق والثواني حتى هذا الموعد.",
+                    "placeholder": "2026-12-05 23:59",
                     "minLength": 0,
                     "maxLength": 40,
-                    "value": "2026-12-05T23:59"
+                    "value": "2026-12-31 23:59"
                 },
                 {
                     "id": "show_video",
@@ -3583,7 +3760,7 @@
                     "value": [
                         {
                             "clips.video_url": "",
-                            "clips.poster": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=800",
+                            "clips.poster": "https://images.pexels.com/photos/31049717/pexels-photo-31049717.jpeg?auto=compress&cs=tinysrgb&w=800",
                             "clips.name": {
                                 "ar": "لمى",
                                 "en": "Lama"
@@ -3599,7 +3776,7 @@
                         },
                         {
                             "clips.video_url": "",
-                            "clips.poster": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=800",
+                            "clips.poster": "https://images.pexels.com/photos/33539326/pexels-photo-33539326.jpeg?auto=compress&cs=tinysrgb&w=800",
                             "clips.name": {
                                 "ar": "هيفاء",
                                 "en": "Haifa"
@@ -3615,7 +3792,7 @@
                         },
                         {
                             "clips.video_url": "",
-                            "clips.poster": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=800",
+                            "clips.poster": "https://images.pexels.com/photos/34957209/pexels-photo-34957209.jpeg?auto=compress&cs=tinysrgb&w=800",
                             "clips.name": {
                                 "ar": "نورة",
                                 "en": "Noura"
@@ -4037,7 +4214,7 @@
                     ],
                     "value": [
                         {
-                            "items.image": "https://images.pexels.com/photos/5973508/pexels-photo-5973508.jpeg?auto=compress&cs=tinysrgb&w=480",
+                            "items.image": "https://images.pexels.com/photos/7641148/pexels-photo-7641148.jpeg?auto=compress&cs=tinysrgb&w=480",
                             "items.name": {
                                 "ar": "كريب ياباني",
                                 "en": "Japanese crepe"
@@ -4049,7 +4226,7 @@
                             "items.url": ""
                         },
                         {
-                            "items.image": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=480",
+                            "items.image": "https://images.pexels.com/photos/6276056/pexels-photo-6276056.jpeg?auto=compress&cs=tinysrgb&w=480",
                             "items.name": {
                                 "ar": "لينو",
                                 "en": "Linen"
@@ -4061,7 +4238,7 @@
                             "items.url": ""
                         },
                         {
-                            "items.image": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=480",
+                            "items.image": "https://images.pexels.com/photos/1487809/pexels-photo-1487809.jpeg?auto=compress&cs=tinysrgb&w=480",
                             "items.name": {
                                 "ar": "حرير مغسول",
                                 "en": "Washed silk"
@@ -4073,7 +4250,7 @@
                             "items.url": ""
                         },
                         {
-                            "items.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=480",
+                            "items.image": "https://images.pexels.com/photos/7598386/pexels-photo-7598386.jpeg?auto=compress&cs=tinysrgb&w=480",
                             "items.name": {
                                 "ar": "جورجيت",
                                 "en": "Georgette"
