@@ -2,7 +2,7 @@ import { html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 import { getConfig, localizedString, t, watchLocale } from "../../utils/config.js";
 import { schemeOf } from "../../utils/landing.js";
-import { baseCss, injectFonts, injectStyles, sectionStyle } from "../../utils/styles.js";
+import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { emptyCopy } from "../../utils/ui.js";
 
 const css = `
@@ -15,6 +15,7 @@ const css = `
 }
 .nq-quick small { display: block; color: var(--gold); letter-spacing: .16em; font-size: .72rem; }
 .nq-quick b { display: block; margin-top: 10px; font-size: 1.25rem; font-weight: 700; }
+.nq-quick a.nq-rev { transition-delay: calc(var(--i, 0) * 90ms); }
 `;
 
 function digits(value: unknown): string {
@@ -36,7 +37,9 @@ export default class QuickContact extends LitElement {
     injectFonts();
     injectStyles("nq-base", baseCss);
     injectStyles("nq-quick-contact", css);
-    this.stop = watchLocale(this);
+    const stopLocale = watchLocale(this);
+    const stopReveal = watchReveal(this);
+    this.stop = () => { stopLocale(); stopReveal(); };
   }
 
   disconnectedCallback() {
@@ -59,7 +62,7 @@ export default class QuickContact extends LitElement {
       <div class="nq-wrap">
         ${localizedString(cfg.title) ? html`<h2 class="nq-h2">${localizedString(cfg.title)}</h2>` : ""}
         ${localizedString(cfg.text) ? html`<p style="margin:0 0 18px;color:var(--muted);max-width:46ch">${localizedString(cfg.text)}</p>` : ""}
-        ${actions.length ? html`<div class="nq-quick">${actions.map((item) => html`<a href=${item.href}><small>${item.kicker}</small><b>${item.value}</b></a>`)}</div>` : emptyCopy()}
+        ${actions.length ? html`<div class="nq-quick">${actions.map((item, index) => html`<a class="nq-rev" style=${`--i:${index}`} href=${item.href}><small>${item.kicker}</small><b>${item.value}</b></a>`)}</div>` : emptyCopy()}
       </div>
     </section>`;
   }

@@ -1,6 +1,6 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
-import { LitElement, nothing, html } from "lit";
+import { nothing, html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 function getConfig(raw) {
   return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
@@ -12,6 +12,10 @@ function getLocale() {
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
+function isRtl() {
+  return (document.documentElement.dir || (getLocale() === "ar" ? "rtl" : "ltr")) === "rtl";
+}
+__name(isRtl, "isRtl");
 function localizedString(value) {
   if (value == null || value === "") return "";
   if (typeof value == "string") return value;
@@ -69,6 +73,149 @@ function watchLocale(host) {
   return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
+const COPIES = 12;
+function announceCss(prefix) {
+  return `
+.${prefix}-ann.${prefix}-ann {
+  overflow: hidden;
+  padding-block: 5px;
+  border: 0;
+  font-family: var(--font-main, inherit);
+  background: var(--ann-bg-light, var(--ann-bg, var(--color-primary)));
+  color: var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff)));
+}
+html.${prefix}-mode-dark .${prefix}-ann.${prefix}-auto, .${prefix}-ann.${prefix}-dark {
+  background: var(--ann-bg-dark, var(--ann-bg-light, var(--ann-bg, var(--color-primary))));
+  color: var(--ann-ink-dark, var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff))));
+}
+.${prefix}-ann__still {
+  padding: 5px 1.5rem;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 26px;
+}
+.${prefix}-ann__list {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 5px 0;
+  list-style: none;
+  white-space: nowrap;
+}
+.${prefix}-ann__item {
+  flex: none;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 26px;
+  animation: ${prefix}-ann-ltr var(--ann-speed, 18s) linear infinite;
+}
+.${prefix}-ann.is-rtl .${prefix}-ann__item { animation-name: ${prefix}-ann-rtl; }
+.${prefix}-ann__list:hover .${prefix}-ann__item { animation-play-state: paused; }
+.${prefix}-ann__text {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-inline: 1.5rem;
+}
+.${prefix}-ann__text::after {
+  content: "";
+  width: .35rem;
+  height: .35rem;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .55;
+  flex: none;
+}
+@keyframes ${prefix}-ann-ltr { to { transform: translateX(-100%); } }
+@keyframes ${prefix}-ann-rtl { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .${prefix}-ann__item { animation: none; }
+  .${prefix}-ann__item[aria-hidden="true"] { display: none; }
+  .${prefix}-ann__list { justify-content: center; }
+  .${prefix}-ann__text::after { display: none; }
+}
+`;
+}
+__name(announceCss, "announceCss");
+function announceTone(cfg) {
+  const paint2 = /* @__PURE__ */ __name((key, variable) => {
+    const value = String(cfg[key] || "").trim();
+    return value ? `${variable}:${value}` : "";
+  }, "paint");
+  return [
+    paint2("announce_bg", "--ann-bg-light"),
+    paint2("announce_ink", "--ann-ink-light"),
+    paint2("announce_bg_dark", "--ann-bg-dark"),
+    paint2("announce_ink_dark", "--ann-ink-dark")
+  ].filter(Boolean).join(";");
+}
+__name(announceTone, "announceTone");
+function announceBar(cfg, prefix, extraClass = "", tone = "") {
+  const text = localizedString(cfg.announce).trim();
+  if (!text) return nothing;
+  if (!(String(unwrapValue(cfg.announce_mode) || "move") !== "still"))
+    return html`<div class="${prefix}-ann ${prefix}-ann__still ${extraClass}" style=${tone}>${text}</div>`;
+  const rtl = isRtl() ? " is-rtl" : "";
+  return html`<div class="${prefix}-ann${rtl} ${extraClass}" style=${tone}>
+    <ul class="${prefix}-ann__list">
+      ${Array.from({ length: COPIES }, (_, index) => html`<li class="${prefix}-ann__item" aria-hidden=${index ? "true" : "false"}><span class="${prefix}-ann__text">${text}</span></li>`)}
+    </ul>
+  </div>`;
+}
+__name(announceBar, "announceBar");
+const WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2A7.8 7.8 0 0 0 5.3 16l-.7 3.2 3.3-.7A7.8 7.8 0 1 0 12 4.2Zm3.7 10.3c-.2.5-1 .9-1.4 1-.4.1-.8.1-1.3-.1-.3-.1-.7-.2-1.2-.5-2.1-1.1-3.4-3.2-3.5-3.4-.1-.2-.9-1.2-.9-2.3s.6-1.6.8-1.8c.2-.2.4-.3.6-.3h.4c.2 0 .3 0 .5.4.2.5.6 1.6.7 1.7.1.2 0 .3-.1.5l-.3.4c-.1.1-.2.2 0 .4.2.3.7 1 1.5 1.6.6.5 1.1.6 1.3.5l.4-.3c.2-.1.3-.1.5 0 .2.2 1 .8 1.1 1 .1.1.1.3 0 .5Z"></path></svg>', UP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 19V8.8L7.4 12.4 6 11l6-6 6 6-1.4 1.4L13 8.8V19h-2Z"></path></svg>';
+function shown(value) {
+  return value == null || value === "" ? !0 : flag(value);
+}
+__name(shown, "shown");
+function sideOf(value, fallback) {
+  return String(unwrapValue(value) || fallback) === "end" ? "end" : "start";
+}
+__name(sideOf, "sideOf");
+function digitsOf(value) {
+  return (typeof value == "string" ? value : localizedString(value)).replace(/\D/g, "");
+}
+__name(digitsOf, "digitsOf");
+function paint(el, bg, ink) {
+  el.style.background = String(bg || "").trim(), el.style.color = String(ink || "").trim();
+}
+__name(paint, "paint");
+function place(el, side, raised) {
+  el.style.bottom = raised ? "5.6rem" : "1.15rem", el.style.insetInlineStart = side === "start" ? "1.15rem" : "auto", el.style.insetInlineEnd = side === "end" ? "1.15rem" : "auto";
+}
+__name(place, "place");
+function syncDocks(cfg, prefix, nodes, onTop, options = {}) {
+  const showWa = shown(cfg.show_whatsapp), showTop = shown(cfg.show_top) && !options.hideTop, waSide = sideOf(cfg.whatsapp_side, "start"), topSide = sideOf(cfg.top_side, "end"), stacked = showWa && showTop && waSide === topSide, digits = digitsOf(cfg.whatsapp_number || "201153958512"), message = localizedString(cfg.whatsapp_message), href = digits ? `https://wa.me/${digits}${message ? `?text=${encodeURIComponent(message)}` : ""}` : "";
+  if (showWa && href) {
+    if (!nodes.wa) {
+      const link = document.createElement("a");
+      link.className = `${prefix}-dock ${prefix}-dock--wa`, link.target = "_blank", link.rel = "noopener noreferrer", link.innerHTML = WA, document.body.appendChild(link), nodes.wa = link;
+    }
+    nodes.wa.href = href, nodes.wa.setAttribute("aria-label", t({ ar: "واتساب", en: "WhatsApp" })), paint(nodes.wa, cfg.whatsapp_bg, cfg.whatsapp_ink), place(nodes.wa, waSide, stacked), nodes.wa.hidden = !1;
+  } else nodes.wa && (nodes.wa.hidden = !0);
+  const label = localizedString(cfg.top_label) || t({ ar: "أعلى", en: "Top" });
+  if (shown(cfg.show_top)) {
+    if (!nodes.top) {
+      const button = document.createElement("button");
+      button.type = "button", button.className = `${prefix}-dock ${prefix}-dock--top`, button.innerHTML = UP, button.addEventListener("click", onTop), document.body.appendChild(button), nodes.top = button;
+    }
+    if (nodes.top.setAttribute("aria-label", label), options.topText) {
+      let caption = nodes.top.querySelector("span");
+      caption || (caption = document.createElement("span"), nodes.top.appendChild(caption)), caption.textContent = label;
+    }
+    paint(nodes.top, cfg.top_bg, cfg.top_ink), place(nodes.top, topSide, !1), nodes.top.hidden = !showTop;
+  } else nodes.top && (nodes.top.hidden = !0);
+  return nodes;
+}
+__name(syncDocks, "syncDocks");
+function clearDocks(nodes) {
+  var _a, _b;
+  (_a = nodes.wa) == null || _a.remove(), (_b = nodes.top) == null || _b.remove(), nodes.wa = null, nodes.top = null;
+}
+__name(clearDocks, "clearDocks");
 function currentTone() {
   return document.documentElement.classList.contains("nq-mode-dark") ? "dark" : "light";
 }
@@ -109,7 +256,7 @@ html.nq-mode-dark body:has(.nq-host) { background: #0e0d0b; }
   ${LIGHT}
   --max:1240px; --pad:clamp(18px,4vw,48px);
   --serif:inherit; --sans:inherit;
-  display: block; box-sizing: border-box; color: var(--ink); font-family: inherit; font-weight: 300; line-height: 1.75;
+  display: block; box-sizing: border-box; color: var(--ink); font-family: var(--font-main, inherit); font-weight: 300; line-height: 1.75;
   -webkit-font-smoothing: antialiased;
 }
 html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif; font-family: var(--sans); }
@@ -122,7 +269,7 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
 .nq-root *, .nq-root *::before, .nq-root *::after { box-sizing: border-box; }
 .nq-root img { max-width: 100%; display: block; }
 .nq-root a { color: inherit; text-decoration: none; }
-.nq-root a.nq-btn, .nq-root button.nq-btn { color: var(--ivory); background: var(--ink); }
+.nq-root a.nq-btn, .nq-root button.nq-btn { color: var(--color-primary-reverse, var(--ivory)); background: var(--color-primary, var(--ink)); border-color: var(--color-primary, var(--ink)); }
 .nq-root a.nq-btn.ghost, .nq-root button.nq-btn.ghost { color: var(--ink); background: transparent; border-color: var(--line); }
 .nq-root a.nq-btn.light, .nq-root button.nq-btn.light { color: var(--ink); background: var(--ivory); border-color: var(--ivory); }
 .nq-root a.nq-btn:hover, .nq-root button.nq-btn:hover { background: transparent; color: var(--ink); }
@@ -135,7 +282,7 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
 .nq-eyebrow { font-size: .72rem; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; }
 .nq-h2 { font-family: var(--serif); font-weight: 700; font-size: clamp(1.9rem, 4.4vw, 3.3rem); line-height: 1.2; margin: 0 0 14px; letter-spacing: -.01em; }
 .nq-lead { color: var(--muted); max-width: 56ch; margin: 0; }
-.nq-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 15px 30px; background: var(--ink); color: var(--ivory); font-family: var(--sans); font-size: .92rem; font-weight: 400; letter-spacing: .04em; border: 1px solid var(--ink); cursor: pointer; transition: .35s; }
+.nq-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 15px 30px; background: var(--color-primary, var(--ink)); color: var(--color-primary-reverse, var(--ivory)); font-family: var(--font-main, inherit); font-size: .92rem; font-weight: 500; letter-spacing: .04em; border: 1px solid var(--color-primary, var(--ink)); cursor: pointer; transition: .35s; }
 .nq-btn:hover { background: transparent; color: var(--ink); }
 .nq-btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
 .nq-btn.ghost:hover { border-color: var(--ink); }
@@ -170,21 +317,36 @@ const css = `
 .nq-ft ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .nq-about { max-width: 30ch; }
 .nq-about p { margin: 14px 0 0; }
-.nq-pay { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.nq-pay-size { margin: 16px 0 8px; font-size: .68rem; letter-spacing: .08em; color: color-mix(in srgb, var(--ivory) 62%, transparent); }
+.nq-pay { display: flex; gap: 8px; margin-top: 0; flex-wrap: wrap; align-items: center; }
+.nq-pay img { width: 32px; height: 32px; object-fit: contain; background: #f7f4ef; border-radius: 8px; }
 .nq-pay span { border: 1px solid color-mix(in srgb, var(--ivory) 22%, transparent); padding: 5px 10px; font-size: .68rem; letter-spacing: .08em; }
+.nq-social { display: flex; gap: 10px; flex-wrap: wrap; }
+.nq-social a { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--ivory) 28%, transparent); color: var(--ivory); }
+.nq-social a:hover { border-color: var(--gold); color: var(--gold); }
+.nq-social svg { width: 18px; height: 18px; display: block; }
 .nq-copy { margin-top: 34px; padding-top: 20px; border-top: 1px solid color-mix(in srgb, var(--ivory) 16%, transparent); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: .78rem; }
 .nq-totop, .nq-top { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 8px 18px; border: 1px solid color-mix(in srgb, var(--ivory) 28%, transparent); background: transparent; color: var(--ivory); font-family: var(--sans); font-size: .78rem; letter-spacing: .14em; cursor: pointer; transition: .3s; }
 .nq-foot .nq-totop { display: flex; width: fit-content; margin: 28px auto 0; }
 .nq-totop:hover, .nq-top:hover { border-color: var(--gold); color: var(--gold); }
 .nq-top { position: fixed; z-index: 70; inset-inline-end: 18px; bottom: 22px; background: var(--ink); opacity: 0; pointer-events: none; transform: translateY(10px); }
 .nq-top.show { opacity: 1; pointer-events: auto; transform: none; }
+.nq-dock { position: fixed; z-index: 80; display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-width: 3.35rem; min-height: 3.35rem; padding: .35rem .8rem; border-radius: 999px; border: 1px solid #b8945f; background: #101014; color: #f7f4ef; font-family: var(--font-main, inherit); letter-spacing: .06em; cursor: pointer; text-decoration: none; box-shadow: 0 12px 28px rgb(0 0 0 / 28%); }
+.nq-dock[hidden] { display: none; }
+.nq-dock svg { width: 1.2rem; height: 1.2rem; display: block; }
+.nq-dock--wa { width: 3.45rem; height: 3.45rem; padding: 0; }
 .nq-logo { font-family: var(--serif); font-weight: 700; font-size: 1.5rem; letter-spacing: .02em; line-height: 1; color: var(--ivory); }
 .nq-logo small { display: block; font-family: var(--sans); font-size: .6rem; letter-spacing: .4em; color: var(--gold); font-weight: 400; margin-top: 4px; }
 .nq-logo img { height: 42px; width: auto; object-fit: contain; }
-`, _PageFooter = class _PageFooter extends LitElement {
+`;
+function socialIcon(name) {
+  return name === "instagram" ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"></rect><circle cx="12" cy="12" r="3.2"></circle><circle cx="17.2" cy="6.8" r=".8" fill="currentColor" stroke="none"></circle></svg>` : name === "snapchat" ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 4c2.4 0 4 1.8 4 4.2 0 1.2-.2 2 .4 2.6.3.3.8.4 1.1.6.4.3.3 1-.2 1.2-.8.3-1.3.2-1.7.6-.3.3-.4.8-.2 1.4.2.5-.2.9-.8.9-.7 0-1.1.4-1.6.7-.4.2-.7.2-1 .2s-.6 0-1-.2c-.5-.3-.9-.7-1.6-.7-.6 0-1-.4-.8-.9.2-.6.1-1.1-.2-1.4-.4-.4-.9-.3-1.7-.6-.5-.2-.6-.9-.2-1.2.3-.2.8-.3 1.1-.6.6-.6.4-1.4.4-2.6C8 5.8 9.6 4 12 4Z"></path></svg>` : name === "tiktok" ? html`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 6c.6 2.2 2 3.6 4 4v2.2c-1.4 0-2.7-.4-4-1.2v5.2a5.2 5.2 0 1 1-5.2-5.2c.3 0 .6 0 .8.1v2.3a2.9 2.9 0 1 0 2 2.8V6H14Z"></path></svg>` : name === "whatsapp" ? html`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2A7.8 7.8 0 0 0 5.3 16l-.7 3.2 3.3-.7A7.8 7.8 0 1 0 12 4.2Zm3.7 10.3c-.2.5-1 .9-1.4 1-.4.1-.8.1-1.3-.1-.3-.1-.7-.2-1.2-.5-2.1-1.1-3.4-3.2-3.5-3.4-.1-.2-.9-1.2-.9-2.3s.6-1.6.8-1.8c.2-.2.4-.3.6-.3h.4c.2 0 .3 0 .5.4.2.5.6 1.6.7 1.7.1.2 0 .3-.1.5l-.3.4c-.1.1-.2.2 0 .4.2.3.7 1 1.5 1.6.6.5 1.1.6 1.3.5l.4-.3c.2-.1.3-.1.5 0 .2.2 1 .8 1.1 1 .1.1.1.3 0 .5Z"></path></svg>` : name === "youtube" ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="7" width="17" height="11" rx="2.5"></rect><path d="m11 10 4 2.2-4 2.2V10Z" fill="currentColor" stroke="none"></path></svg>` : name === "x" ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>` : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="7"></circle></svg>`;
+}
+__name(socialIcon, "socialIcon");
+const _PageFooter = class _PageFooter extends LitElement {
   constructor() {
     super(...arguments), this.storeName = "", this.dark = !1, this.raised = !1, this.atFooter = !1, this.stop = () => {
-    }, this.floater = null, this.onScroll = (event) => {
+    }, this.floater = null, this.docks = { wa: null, top: null }, this.onScroll = (event) => {
       const target = event == null ? void 0 : event.target, nested = target instanceof Element ? target.scrollTop : 0, next = Math.max(window.scrollY || 0, document.documentElement.scrollTop || 0, nested) > 360;
       next !== this.raised && (this.raised = next);
     }, this.toTop = (event) => {
@@ -217,7 +379,7 @@ const css = `
   }
   connectedCallback() {
     var _a;
-    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-page-footer", css);
+    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-announce", announceCss("nq")), injectStyles("nq-page-footer", css);
     const stopLocale = watchLocale(this), onTone = /* @__PURE__ */ __name(() => {
       this.dark = currentTone() === "dark";
     }, "onTone");
@@ -232,13 +394,13 @@ const css = `
   }
   disconnectedCallback() {
     var _a, _b;
-    this.stop(), document.removeEventListener("scroll", this.onScroll, { capture: !0 }), (_a = this.seen) == null || _a.disconnect(), (_b = this.floater) == null || _b.remove(), this.floater = null, super.disconnectedCallback();
+    this.stop(), document.removeEventListener("scroll", this.onScroll, { capture: !0 }), (_a = this.seen) == null || _a.disconnect(), (_b = this.floater) == null || _b.remove(), this.floater = null, clearDocks(this.docks), super.disconnectedCallback();
   }
   updated() {
-    var _a;
-    this.syncFloater();
+    var _a, _b;
+    (_a = this.floater) == null || _a.remove(), this.floater = null, this.docks = syncDocks(getConfig(this.config), "nq", this.docks, this.toTop, { hideTop: this.atFooter, topText: !0 });
     const button = this.querySelector(".nq-totop");
-    if ((_a = this.seen) == null || _a.disconnect(), !button) {
+    if ((_b = this.seen) == null || _b.disconnect(), !button) {
       this.atFooter = !1;
       return;
     }
@@ -268,22 +430,38 @@ const css = `
     mark.setAttribute("aria-hidden", "true"), mark.textContent = "↑", this.floater.append(text, mark), this.floater.classList.add("show");
   }
   render() {
-    const cfg = getConfig(this.config), brand = localizedString(cfg.brand) || this.storeName || t({ ar: "المتجر", en: "Store" }), showTop = this.shown(cfg.show_top), topLabel = localizedString(cfg.top_label) || t({ ar: "العودة للأعلى", en: "Back to top" }), mark = localizedString(cfg.mark), columns = [1, 2, 3].map((index) => ({
+    const cfg = getConfig(this.config), brand = localizedString(cfg.brand) || this.storeName || t({ ar: "المتجر", en: "Store" }), showTop = this.shown(cfg.show_top), topLabel = localizedString(cfg.top_label) || t({ ar: "العودة للأعلى", en: "Back to top" }), mark = localizedString(cfg.mark), columns = [1, 2].map((index) => ({
       title: localizedString(cfg[`col${index}_title`]),
       links: getCollectionItems(cfg[`col${index}`], `col${index}`).map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" })).filter((item) => item.label)
-    })).filter((column) => column.title || column.links.length), pays = getCollectionItems(cfg.payments, "payments").map((item) => localizedString(item.label)).filter(Boolean), logo = this.dark && cfg.logo_dark || cfg.logo;
-    return html`<footer class=${`nq-root nq-foot ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
+    })).filter((column) => column.title || column.links.length), socialTitle = localizedString(cfg.col3_title), socials = getCollectionItems(cfg.social, "social").map((item) => ({
+      network: String(unwrapValue(item.network) || "instagram"),
+      url: linkHref(item.url) || "#",
+      label: {
+        instagram: t({ ar: "إنستغرام", en: "Instagram" }),
+        snapchat: t({ ar: "سناب شات", en: "Snapchat" }),
+        tiktok: t({ ar: "تيك توك", en: "TikTok" }),
+        whatsapp: t({ ar: "واتساب", en: "WhatsApp" }),
+        x: t({ ar: "إكس", en: "X" }),
+        youtube: t({ ar: "يوتيوب", en: "YouTube" })
+      }[String(unwrapValue(item.network) || "instagram")] || t({ ar: "تواصل", en: "Social" })
+    })).filter((item) => item.url), pays = getCollectionItems(cfg.payments, "payments").map((item) => ({ image: String(item.image || ""), label: localizedString(item.label) })).filter((item) => item.image || item.label), logo = this.dark && cfg.logo_dark || cfg.logo;
+    return html`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
+    <footer class=${`nq-root nq-foot ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
       <div class="nq-wrap">
         <div class="nq-ft">
           <div class="nq-about">
             <a href="#" class="nq-logo">${logo ? html`<img src=${logo} alt=${brand} />` : html`${brand}${mark ? html`<small>${mark}</small>` : nothing}`}</a>
             ${localizedString(cfg.about) ? html`<p>${localizedString(cfg.about)}</p>` : nothing}
-            ${pays.length ? html`<div class="nq-pay">${pays.map((pay) => html`<span>${pay}</span>`)}</div>` : nothing}
+            ${pays.length ? html`<p class="nq-pay-size">${t({ ar: "أيقونات الدفع ٦٤×٦٤ بكسل", en: "Payment icons, 64×64 px" })}</p><div class="nq-pay">${pays.map((pay) => pay.image ? html`<img src=${pay.image} alt=${pay.label} width="32" height="32" title=${pay.label} />` : html`<span>${pay.label}</span>`)}</div>` : nothing}
           </div>
           ${columns.map((column) => html`<div>
             ${column.title ? html`<h5>${column.title}</h5>` : nothing}
             <ul>${column.links.map((link) => html`<li><a href=${link.url}>${link.label}</a></li>`)}</ul>
           </div>`)}
+          ${socialTitle || socials.length ? html`<div>
+            ${socialTitle ? html`<h5>${socialTitle}</h5>` : nothing}
+            <div class="nq-social">${socials.map((item) => html`<a href=${item.url} aria-label=${item.label} target="_blank" rel="noopener noreferrer">${socialIcon(item.network)}</a>`)}</div>
+          </div>` : nothing}
         </div>
         ${showTop ? html`<button type="button" class="nq-totop" @click=${this.toTop}>${topLabel} <span aria-hidden="true">↑</span></button>` : nothing}
         <div class="nq-copy">

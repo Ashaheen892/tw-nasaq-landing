@@ -12,6 +12,7 @@ const css = `
 .nq-stat i { grid-row: span 2; font-style: normal; color: var(--gold); letter-spacing: .16em; }
 .nq-stat b { font-size: clamp(1.8rem, 3vw, 2.7rem); font-weight: 700; line-height: 1; }
 .nq-stat span { color: var(--muted); }
+.nq-stat.nq-rev { transition-delay: calc(var(--i, 0) * 90ms); }
 `;
 
 export default class StatStrip extends LitElement {
@@ -48,7 +49,7 @@ export default class StatStrip extends LitElement {
         ${localizedString(cfg.kicker) ? html`<p class="nq-kicker">${localizedString(cfg.kicker)}</p>` : ""}
         ${localizedString(cfg.title) ? html`<h2 class="nq-h2">${localizedString(cfg.title)}</h2>` : ""}
         ${items.length
-          ? html`<div class="nq-stats">${items.map((item, index) => html`<article class="nq-stat nq-rev"><i>${arDigits(index + 1)}</i><b>${item.value}</b><span>${item.label}</span></article>`)}</div>`
+          ? html`<div class="nq-stats">${items.map((item, index) => html`<article class="nq-stat nq-rev" style=${`--i:${index}`}><i>${arDigits(index + 1)}</i><b>${item.value}</b><span>${item.label}</span></article>`)}</div>`
           : emptyCopy()}
       </div>
     </section>`;

@@ -1,7 +1,7 @@
 import { html, LitElement, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { flag, getCollectionItems, getConfig, linkHref, localizedString, t, unwrapValue, watchLocale } from "../../utils/config.js";
-import { announceBar, announceCss } from "../../utils/announce.js";
+import { announceBar, announceCss, announceTone } from "../../utils/announce.js";
 import { clearDocks, syncDocks, type DockNodes } from "../../utils/dock.js";
 import { currentTone, schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle } from "../../utils/styles.js";
@@ -209,7 +209,7 @@ export default class PageFooter extends LitElement {
       .map((item) => ({ image: String(item.image || ""), label: localizedString(item.label) }))
       .filter((item) => item.image || item.label);
     const logo = (this.dark && cfg.logo_dark) || cfg.logo;
-    return html`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, "--ann-bg:var(--ink);--ann-ink:var(--ivory)")}
+    return html`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
     <footer class=${`nq-root nq-foot ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
       <div class="nq-wrap">
         <div class="nq-ft">

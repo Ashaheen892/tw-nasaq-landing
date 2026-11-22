@@ -25,10 +25,10 @@ const SPEC = {
     kicker: ["القماش", "Cloth"],
     title: ["بيوت القماش", "Cloth houses"],
     items: [
-      [["كريب ياباني", "Japanese crepe"], ["سقوط ناعم", "A soft fall"]],
-      [["لينو", "Linen"], ["خامة الصيف", "Summer cloth"]],
-      [["حرير مغسول", "Washed silk"], ["لمعة هادئة", "A quiet sheen"]],
-      [["جورجيت", "Georgette"], ["طبقة خفيفة", "A light layer"]],
+      [["كريب ياباني", "Japanese crepe"], ["سقوط ناعم", "A soft fall"], "5973508"],
+      [["لينو", "Linen"], ["خامة الصيف", "Summer cloth"], "32279508"],
+      [["حرير مغسول", "Washed silk"], ["لمعة هادئة", "A quiet sheen"], "13862196"],
+      [["جورجيت", "Georgette"], ["طبقة خفيفة", "A light layer"], "37368651"],
     ],
   },
   partner: {
@@ -158,7 +158,12 @@ function blocks({ L, text, color, collection, image, url, scheme, spec }) {
           text("name", "الاسم", L("الماركة", "Brand")),
           text("note", "السطر", L("الخامة", "Material")),
           url("url", "الرابط", ""),
-        ], spec.brand.items.map(([name, note]) => ({ image: "", name: L(...name), note: L(...note), url: "" })), 1, 8),
+        ], spec.brand.items.map(([name, note, photo]) => ({
+          image: photo ? `https://images.pexels.com/photos/${photo}/pexels-photo-${photo}.jpeg?auto=compress&cs=tinysrgb&w=480` : "",
+          name: L(...name),
+          note: L(...note),
+          url: "",
+        })), 1, 8),
       ]),
     },
     {

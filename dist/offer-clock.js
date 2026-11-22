@@ -22,6 +22,10 @@ function localizedString(value) {
   return String(value);
 }
 __name(localizedString, "localizedString");
+function t(strings) {
+  return getLocale() === "ar" ? strings.ar : strings.en;
+}
+__name(t, "t");
 function unwrapValue(value) {
   var _a;
   return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
@@ -92,7 +96,7 @@ html.nq-mode-dark body:has(.nq-host) { background: #0e0d0b; }
   ${LIGHT}
   --max:1240px; --pad:clamp(18px,4vw,48px);
   --serif:inherit; --sans:inherit;
-  display: block; box-sizing: border-box; color: var(--ink); font-family: inherit; font-weight: 300; line-height: 1.75;
+  display: block; box-sizing: border-box; color: var(--ink); font-family: var(--font-main, inherit); font-weight: 300; line-height: 1.75;
   -webkit-font-smoothing: antialiased;
 }
 html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif; font-family: var(--sans); }
@@ -105,7 +109,7 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
 .nq-root *, .nq-root *::before, .nq-root *::after { box-sizing: border-box; }
 .nq-root img { max-width: 100%; display: block; }
 .nq-root a { color: inherit; text-decoration: none; }
-.nq-root a.nq-btn, .nq-root button.nq-btn { color: var(--ivory); background: var(--ink); }
+.nq-root a.nq-btn, .nq-root button.nq-btn { color: var(--color-primary-reverse, var(--ivory)); background: var(--color-primary, var(--ink)); border-color: var(--color-primary, var(--ink)); }
 .nq-root a.nq-btn.ghost, .nq-root button.nq-btn.ghost { color: var(--ink); background: transparent; border-color: var(--line); }
 .nq-root a.nq-btn.light, .nq-root button.nq-btn.light { color: var(--ink); background: var(--ivory); border-color: var(--ivory); }
 .nq-root a.nq-btn:hover, .nq-root button.nq-btn:hover { background: transparent; color: var(--ink); }
@@ -118,7 +122,7 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
 .nq-eyebrow { font-size: .72rem; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; }
 .nq-h2 { font-family: var(--serif); font-weight: 700; font-size: clamp(1.9rem, 4.4vw, 3.3rem); line-height: 1.2; margin: 0 0 14px; letter-spacing: -.01em; }
 .nq-lead { color: var(--muted); max-width: 56ch; margin: 0; }
-.nq-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 15px 30px; background: var(--ink); color: var(--ivory); font-family: var(--sans); font-size: .92rem; font-weight: 400; letter-spacing: .04em; border: 1px solid var(--ink); cursor: pointer; transition: .35s; }
+.nq-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 15px 30px; background: var(--color-primary, var(--ink)); color: var(--color-primary-reverse, var(--ivory)); font-family: var(--font-main, inherit); font-size: .92rem; font-weight: 500; letter-spacing: .04em; border: 1px solid var(--color-primary, var(--ink)); cursor: pointer; transition: .35s; }
 .nq-btn:hover { background: transparent; color: var(--ink); }
 .nq-btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
 .nq-btn.ghost:hover { border-color: var(--ink); }
@@ -196,6 +200,17 @@ var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name
     (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
   return result && __defProp2(target, key, result), result;
 }, "__decorateClass");
+function offerEnd(raw) {
+  const text = String(unwrapValue(raw) || "").trim();
+  if (!text) return 0;
+  const day = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (day) return new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3]), 23, 59, 59).getTime();
+  const local = text.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+  if (local) return new Date(Number(local[1]), Number(local[2]) - 1, Number(local[3]), Number(local[4]), Number(local[5]), 0).getTime();
+  const parsed = Date.parse(text);
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+__name(offerEnd, "offerEnd");
 const css = `
 .nq-cd { background: var(--nq-section-bg, var(--ink)); color: var(--ivory); position: relative; overflow: hidden; }
 .nq-cd::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(60% 80% at 85% 10%, rgba(184,148,95,.22), transparent 60%); }
@@ -231,8 +246,8 @@ const css = `
   disconnectedCallback() {
     this.stop(), super.disconnectedCallback();
   }
-  willUpdate() {
-    this.arm();
+  willUpdate(changed) {
+    changed.has("config") && this.arm();
   }
   updated() {
     const video = this.querySelector(".nq-cd-video");
@@ -240,28 +255,14 @@ const css = `
     }));
   }
   arm() {
-    const cfg = getConfig(this.config), hours = Math.min(Math.max(Number(cfg.hours) || 56, 1), 240), key = `nq-offer-end-${hours}`;
-    let end = 0;
-    try {
-      end = Number(sessionStorage.getItem(key)) || 0;
-    } catch {
-      end = 0;
-    }
-    if (!end || end < Date.now() - 1e3) {
-      end = Date.now() + hours * 36e5;
-      try {
-        sessionStorage.setItem(key, String(end));
-      } catch {
-      }
-    }
-    this.end = end, this.left = Math.max(0, end - Date.now());
+    this.end = offerEnd(getConfig(this.config).ends_at), this.left = Math.max(0, this.end - Date.now());
   }
   render() {
     const cfg = getConfig(this.config), title = localizedString(cfg.title), seconds = Math.floor(this.left / 1e3), parts = [
-      [Math.floor(seconds / 86400), localizedString(cfg.day_label) || "يوم"],
-      [Math.floor(seconds % 86400 / 3600), localizedString(cfg.hour_label) || "ساعة"],
-      [Math.floor(seconds % 3600 / 60), localizedString(cfg.minute_label) || "دقيقة"],
-      [seconds % 60, localizedString(cfg.second_label) || "ثانية"]
+      [Math.floor(seconds / 86400), t({ ar: "يوم", en: "day" })],
+      [Math.floor(seconds % 86400 / 3600), t({ ar: "ساعة", en: "hour" })],
+      [Math.floor(seconds % 3600 / 60), t({ ar: "دقيقة", en: "min" })],
+      [seconds % 60, t({ ar: "ثانية", en: "sec" })]
     ], video = flag(cfg.show_video) ? clipUrl(cfg.video_url) : "", file = video && (isFileClip(video) || !/youtube|youtu\.be|vimeo/i.test(video));
     return html`<section class=${`nq-root nq-cd nq-sec ${schemeOf(cfg)} ${video ? "has-video" : ""}`} style=${sectionStyle(cfg)} aria-label=${title || "offer"}>
       ${video ? file ? html`<video class="nq-cd-video" src=${video} autoplay muted loop playsinline aria-hidden="true"></video>` : html`<iframe class="nq-cd-video" src=${frameSrc(video)} title="" allow="autoplay; encrypted-media" tabindex="-1"></iframe>` : nothing}

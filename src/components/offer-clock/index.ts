@@ -6,6 +6,17 @@ import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from ".
 import { arDigits } from "../../utils/ui.js";
 import { clipUrl, frameSrc, isFileClip } from "../../utils/video.js";
 
+function offerEnd(raw: unknown): number {
+  const text = String(unwrapValue(raw) || "").trim();
+  if (!text) return 0;
+  const day = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (day) return new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3]), 23, 59, 59).getTime();
+  const local = text.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+  if (local) return new Date(Number(local[1]), Number(local[2]) - 1, Number(local[3]), Number(local[4]), Number(local[5]), 0).getTime();
+  const parsed = Date.parse(text);
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
 const css = `
 .nq-cd { background: var(--nq-section-bg, var(--ink)); color: var(--ivory); position: relative; overflow: hidden; }
 .nq-cd::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(60% 80% at 85% 10%, rgba(184,148,95,.22), transparent 60%); }
@@ -58,8 +69,8 @@ export default class OfferClock extends LitElement {
     super.disconnectedCallback();
   }
 
-  protected willUpdate() {
-    this.arm();
+  protected willUpdate(changed: Map<PropertyKey, unknown>) {
+    if (changed.has("config")) this.arm();
   }
 
   protected updated() {
@@ -71,9 +82,7 @@ export default class OfferClock extends LitElement {
   }
 
   private arm() {
-    const raw = String(unwrapValue(getConfig(this.config).ends_at) || "").trim();
-    const end = raw ? Date.parse(raw) : 0;
-    this.end = Number.isFinite(end) ? end : 0;
+    this.end = offerEnd(getConfig(this.config).ends_at);
     this.left = Math.max(0, this.end - Date.now());
   }
 

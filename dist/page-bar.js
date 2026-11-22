@@ -1,6 +1,6 @@
 var __defProp = Object.defineProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
-import { LitElement, nothing, html } from "lit";
+import { nothing, html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 function getConfig(raw) {
   return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
@@ -12,6 +12,10 @@ function getLocale() {
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
+function isRtl() {
+  return (document.documentElement.dir || (getLocale() === "ar" ? "rtl" : "ltr")) === "rtl";
+}
+__name(isRtl, "isRtl");
 function localizedString(value) {
   if (value == null || value === "") return "";
   if (typeof value == "string") return value;
@@ -69,6 +73,99 @@ function watchLocale(host) {
   return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
+const COPIES = 12;
+function announceCss(prefix) {
+  return `
+.${prefix}-ann.${prefix}-ann {
+  overflow: hidden;
+  padding-block: 5px;
+  border: 0;
+  font-family: var(--font-main, inherit);
+  background: var(--ann-bg-light, var(--ann-bg, var(--color-primary)));
+  color: var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff)));
+}
+html.${prefix}-mode-dark .${prefix}-ann.${prefix}-auto, .${prefix}-ann.${prefix}-dark {
+  background: var(--ann-bg-dark, var(--ann-bg-light, var(--ann-bg, var(--color-primary))));
+  color: var(--ann-ink-dark, var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff))));
+}
+.${prefix}-ann__still {
+  padding: 5px 1.5rem;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 26px;
+}
+.${prefix}-ann__list {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 5px 0;
+  list-style: none;
+  white-space: nowrap;
+}
+.${prefix}-ann__item {
+  flex: none;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 26px;
+  animation: ${prefix}-ann-ltr var(--ann-speed, 18s) linear infinite;
+}
+.${prefix}-ann.is-rtl .${prefix}-ann__item { animation-name: ${prefix}-ann-rtl; }
+.${prefix}-ann__list:hover .${prefix}-ann__item { animation-play-state: paused; }
+.${prefix}-ann__text {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-inline: 1.5rem;
+}
+.${prefix}-ann__text::after {
+  content: "";
+  width: .35rem;
+  height: .35rem;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: .55;
+  flex: none;
+}
+@keyframes ${prefix}-ann-ltr { to { transform: translateX(-100%); } }
+@keyframes ${prefix}-ann-rtl { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .${prefix}-ann__item { animation: none; }
+  .${prefix}-ann__item[aria-hidden="true"] { display: none; }
+  .${prefix}-ann__list { justify-content: center; }
+  .${prefix}-ann__text::after { display: none; }
+}
+`;
+}
+__name(announceCss, "announceCss");
+function announceTone(cfg) {
+  const paint = /* @__PURE__ */ __name((key, variable) => {
+    const value = String(cfg[key] || "").trim();
+    return value ? `${variable}:${value}` : "";
+  }, "paint");
+  return [
+    paint("announce_bg", "--ann-bg-light"),
+    paint("announce_ink", "--ann-ink-light"),
+    paint("announce_bg_dark", "--ann-bg-dark"),
+    paint("announce_ink_dark", "--ann-ink-dark")
+  ].filter(Boolean).join(";");
+}
+__name(announceTone, "announceTone");
+function announceBar(cfg, prefix, extraClass = "", tone = "") {
+  const text = localizedString(cfg.announce).trim();
+  if (!text) return nothing;
+  if (!(String(unwrapValue(cfg.announce_mode) || "move") !== "still"))
+    return html`<div class="${prefix}-ann ${prefix}-ann__still ${extraClass}" style=${tone}>${text}</div>`;
+  const rtl = isRtl() ? " is-rtl" : "";
+  return html`<div class="${prefix}-ann${rtl} ${extraClass}" style=${tone}>
+    <ul class="${prefix}-ann__list">
+      ${Array.from({ length: COPIES }, (_, index) => html`<li class="${prefix}-ann__item" aria-hidden=${index ? "true" : "false"}><span class="${prefix}-ann__text">${text}</span></li>`)}
+    </ul>
+  </div>`;
+}
+__name(announceBar, "announceBar");
 const TONE_KEY = "nq-landing-tone";
 function applyTone(mode) {
   document.documentElement.classList.remove("nq-mode-light", "nq-mode-dark"), document.documentElement.classList.add(mode === "dark" ? "nq-mode-dark" : "nq-mode-light");
@@ -148,7 +245,7 @@ html.nq-mode-dark body:has(.nq-host) { background: #0e0d0b; }
   ${LIGHT}
   --max:1240px; --pad:clamp(18px,4vw,48px);
   --serif:inherit; --sans:inherit;
-  display: block; box-sizing: border-box; color: var(--ink); font-family: inherit; font-weight: 300; line-height: 1.75;
+  display: block; box-sizing: border-box; color: var(--ink); font-family: var(--font-main, inherit); font-weight: 300; line-height: 1.75;
   -webkit-font-smoothing: antialiased;
 }
 html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Almarai',system-ui,sans-serif; font-family: var(--sans); }
@@ -161,7 +258,7 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
 .nq-root *, .nq-root *::before, .nq-root *::after { box-sizing: border-box; }
 .nq-root img { max-width: 100%; display: block; }
 .nq-root a { color: inherit; text-decoration: none; }
-.nq-root a.nq-btn, .nq-root button.nq-btn { color: var(--ivory); background: var(--ink); }
+.nq-root a.nq-btn, .nq-root button.nq-btn { color: var(--color-primary-reverse, var(--ivory)); background: var(--color-primary, var(--ink)); border-color: var(--color-primary, var(--ink)); }
 .nq-root a.nq-btn.ghost, .nq-root button.nq-btn.ghost { color: var(--ink); background: transparent; border-color: var(--line); }
 .nq-root a.nq-btn.light, .nq-root button.nq-btn.light { color: var(--ink); background: var(--ivory); border-color: var(--ivory); }
 .nq-root a.nq-btn:hover, .nq-root button.nq-btn:hover { background: transparent; color: var(--ink); }
@@ -174,7 +271,7 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
 .nq-eyebrow { font-size: .72rem; letter-spacing: .34em; text-transform: uppercase; color: var(--gold); margin: 0 0 14px; }
 .nq-h2 { font-family: var(--serif); font-weight: 700; font-size: clamp(1.9rem, 4.4vw, 3.3rem); line-height: 1.2; margin: 0 0 14px; letter-spacing: -.01em; }
 .nq-lead { color: var(--muted); max-width: 56ch; margin: 0; }
-.nq-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 15px 30px; background: var(--ink); color: var(--ivory); font-family: var(--sans); font-size: .92rem; font-weight: 400; letter-spacing: .04em; border: 1px solid var(--ink); cursor: pointer; transition: .35s; }
+.nq-btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 15px 30px; background: var(--color-primary, var(--ink)); color: var(--color-primary-reverse, var(--ivory)); font-family: var(--font-main, inherit); font-size: .92rem; font-weight: 500; letter-spacing: .04em; border: 1px solid var(--color-primary, var(--ink)); cursor: pointer; transition: .35s; }
 .nq-btn:hover { background: transparent; color: var(--ink); }
 .nq-btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
 .nq-btn.ghost:hover { border-color: var(--ink); }
@@ -232,7 +329,7 @@ const css = `
     return this;
   }
   connectedCallback() {
-    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-page-bar", css);
+    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-announce", announceCss("nq")), injectStyles("nq-page-bar", css);
     const stopLocale = watchLocale(this), stopReveal = watchReveal(this), onTone = /* @__PURE__ */ __name(() => {
       this.dark = currentTone() === "dark";
     }, "onTone");
@@ -255,9 +352,9 @@ const css = `
   showMode(cfg) {
     return cfg.show_mode_toggle == null || cfg.show_mode_toggle === "" ? !0 : flag(cfg.show_mode_toggle);
   }
-  /** Missing value keeps the page font. An explicit off inherits the Salla store font. */
+  /** Missing or off inherits the Salla store font. On uses the kit typeface. */
   kitFont(cfg) {
-    return cfg.use_kit_font == null || cfg.use_kit_font === "" ? !0 : flag(cfg.use_kit_font);
+    return cfg.use_kit_font == null || cfg.use_kit_font === "" ? !1 : flag(cfg.use_kit_font);
   }
   openingMode(cfg) {
     const base = String(unwrapValue(cfg.default_mode) || "light");
@@ -315,7 +412,8 @@ const css = `
   }
   render() {
     const cfg = getConfig(this.config), brand = localizedString(cfg.brand) || t({ ar: "المتجر", en: "Store" }), mark = localizedString(cfg.mark), links = getCollectionItems(cfg.links, "links").map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" })).filter((item) => item.label), logo = this.dark && cfg.logo_dark || cfg.logo;
-    return html`<header class=${`nq-root nq-bar ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
+    return html`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
+    <header class=${`nq-root nq-bar ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
       <nav class="nq-nav nq-wrap ${this.open ? "is-open" : ""}">
         <a href=${linkHref(cfg.home_url) || "#"} class="nq-logo" aria-label=${brand}>
           ${logo ? html`<img src=${logo} alt=${brand} />` : html`${brand}${mark ? html`<small>${mark}</small>` : nothing}`}

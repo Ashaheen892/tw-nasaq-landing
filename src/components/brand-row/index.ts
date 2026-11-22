@@ -2,12 +2,13 @@ import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { getCollectionItems, getConfig, localizedString, watchLocale } from "../../utils/config.js";
 import { schemeOf } from "../../utils/landing.js";
-import { baseCss, injectFonts, injectStyles, sectionStyle } from "../../utils/styles.js";
+import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { emptyCopy } from "../../utils/ui.js";
 
 const css = `
 .nq-brands { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 0; padding-block: 8px; }
 .nq-brand { display: grid; justify-items: center; gap: 8px; min-width: 9rem; padding-inline: 1.3rem; color: inherit; text-decoration: none; }
+.nq-brand.nq-rev { transition-delay: calc(var(--i, 0) * 90ms); }
 .nq-brand + .nq-brand { box-shadow: -1px 0 0 var(--gold); }
 .nq-brand img { height: 36px; width: auto; max-width: 88px; object-fit: contain; }
 .nq-brand b { font-weight: 500; letter-spacing: .12em; }
@@ -28,7 +29,9 @@ export default class BrandRow extends LitElement {
     injectFonts();
     injectStyles("nq-base", baseCss);
     injectStyles("nq-brand-row", css);
-    this.stop = watchLocale(this);
+    const stopLocale = watchLocale(this);
+    const stopReveal = watchReveal(this);
+    this.stop = () => { stopLocale(); stopReveal(); };
   }
 
   disconnectedCallback() {
@@ -45,7 +48,7 @@ export default class BrandRow extends LitElement {
     return html`<section id="nq-brands" class=${`nq-root nq-sec ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${localizedString(cfg.title) || "brands"}>
       <div class="nq-wrap">
         ${localizedString(cfg.title) ? html`<h2 class="nq-h2" style="text-align:center">${localizedString(cfg.title)}</h2>` : nothing}
-        ${items.length ? html`<div class="nq-brands">${items.map((item) => item.url ? html`<a class="nq-brand" href=${item.url}>${mark(item)}</a>` : html`<span class="nq-brand">${mark(item)}</span>`)}</div>` : emptyCopy()}
+        ${items.length ? html`<div class="nq-brands">${items.map((item, index) => item.url ? html`<a class="nq-brand nq-rev" style=${`--i:${index}`} href=${item.url}>${mark(item)}</a>` : html`<span class="nq-brand nq-rev" style=${`--i:${index}`}>${mark(item)}</span>`)}</div>` : emptyCopy()}
       </div>
     </section>`;
   }

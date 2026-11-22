@@ -64,6 +64,50 @@
           ]
         },
         {
+          "id": "announce_bg",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "خلفية الشريط في الفاتح",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": "اتركه فارغاً ليأخذ لون المتجر الأساسي.",
+          "value": ""
+        },
+        {
+          "id": "announce_ink",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "كتابة الشريط في الفاتح",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": "اتركه فارغاً ليأخذ لون الكتابة المقابل للون الأساسي.",
+          "value": ""
+        },
+        {
+          "id": "announce_bg_dark",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "خلفية الشريط في الداكن",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": "اتركه فارغاً ليبقى لون المتجر الأساسي في الداكن.",
+          "value": ""
+        },
+        {
+          "id": "announce_ink_dark",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "كتابة الشريط في الداكن",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": "اتركه فارغاً ليبقى لون الكتابة المقابل في الداكن.",
+          "value": ""
+        },
+        {
           "id": "pb-announce",
           "type": "static",
           "format": "line"
@@ -556,21 +600,21 @@
           ],
           "value": [
             {
-              "photos.image": "https://images.pexels.com/photos/29188563/pexels-photo-29188563.jpeg?auto=compress&cs=tinysrgb&w=1000",
+              "photos.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=1000",
               "photos.caption": {
                 "ar": "عباية نَسَق المطرزة",
                 "en": "Nasaq embroidered abaya"
               }
             },
             {
-              "photos.image": "https://images.pexels.com/photos/13791315/pexels-photo-13791315.jpeg?auto=compress&cs=tinysrgb&w=1000",
+              "photos.image": "https://images.pexels.com/photos/5973508/pexels-photo-5973508.jpeg?auto=compress&cs=tinysrgb&w=1000",
               "photos.caption": {
                 "ar": "التطريز",
                 "en": "Embroidery"
               }
             },
             {
-              "photos.image": "https://images.pexels.com/photos/35324617/pexels-photo-35324617.jpeg?auto=compress&cs=tinysrgb&w=1000",
+              "photos.image": "https://images.pexels.com/photos/32688173/pexels-photo-32688173.jpeg?auto=compress&cs=tinysrgb&w=1000",
               "photos.caption": {
                 "ar": "البطانة",
                 "en": "The lining"
@@ -1044,12 +1088,16 @@
         {
           "id": "ends_at",
           "type": "string",
-          "format": "datetime-local",
+          "format": "datetime",
           "inputType": "datetime-local",
           "label": "تاريخ انتهاء العرض",
-          "icon": "sicon-calendar-date",
+          "icon": "sicon-calendar-time",
+          "multilanguage": false,
           "required": false,
-          "description": "يُحسب العدّاد حتى هذا التاريخ والوقت. يوم وساعة ودقيقة وثانية تُعرض وحدها، بلا حقول مدة.",
+          "description": "اختاري التاريخ من التقويم. العدّاد يحسب الأيام والساعات والدقائق والثواني حتى هذا الموعد.",
+          "placeholder": "2026-12-05T23:59",
+          "minLength": 0,
+          "maxLength": 40,
           "value": "2026-12-05T23:59"
         },
         {
@@ -1885,7 +1933,7 @@
           ],
           "value": [
             {
-              "items.image": "",
+              "items.image": "https://images.pexels.com/photos/5973508/pexels-photo-5973508.jpeg?auto=compress&cs=tinysrgb&w=480",
               "items.name": {
                 "ar": "كريب ياباني",
                 "en": "Japanese crepe"
@@ -1897,7 +1945,7 @@
               "items.url": ""
             },
             {
-              "items.image": "",
+              "items.image": "https://images.pexels.com/photos/32279508/pexels-photo-32279508.jpeg?auto=compress&cs=tinysrgb&w=480",
               "items.name": {
                 "ar": "لينو",
                 "en": "Linen"
@@ -1909,7 +1957,7 @@
               "items.url": ""
             },
             {
-              "items.image": "",
+              "items.image": "https://images.pexels.com/photos/13862196/pexels-photo-13862196.jpeg?auto=compress&cs=tinysrgb&w=480",
               "items.name": {
                 "ar": "حرير مغسول",
                 "en": "Washed silk"
@@ -1921,7 +1969,7 @@
               "items.url": ""
             },
             {
-              "items.image": "",
+              "items.image": "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=480",
               "items.name": {
                 "ar": "جورجيت",
                 "en": "Georgette"
@@ -2499,6 +2547,50 @@
               "key": "e5c13a92-6d40-4b8c-9f37-4a0d9e2c6b83"
             }
           ]
+        },
+        {
+          "id": "announce_bg",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "خلفية الشريط في الفاتح",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": "اتركه فارغاً ليأخذ لون المتجر الأساسي.",
+          "value": ""
+        },
+        {
+          "id": "announce_ink",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "كتابة الشريط في الفاتح",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": "اتركه فارغاً ليأخذ لون الكتابة المقابل للون الأساسي.",
+          "value": ""
+        },
+        {
+          "id": "announce_bg_dark",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "خلفية الشريط في الداكن",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": "اتركه فارغاً ليبقى لون المتجر الأساسي في الداكن.",
+          "value": ""
+        },
+        {
+          "id": "announce_ink_dark",
+          "type": "string",
+          "format": "color",
+          "inputType": "color",
+          "label": "كتابة الشريط في الداكن",
+          "icon": "sicon-format-fill",
+          "required": false,
+          "description": "اتركه فارغاً ليبقى لون الكتابة المقابل في الداكن.",
+          "value": ""
         },
         {
           "id": "ft-announce",

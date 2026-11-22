@@ -2,7 +2,7 @@ import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { getCollectionItems, getConfig, localizedString, watchLocale } from "../../utils/config.js";
 import { schemeOf } from "../../utils/landing.js";
-import { baseCss, injectFonts, injectStyles, sectionStyle } from "../../utils/styles.js";
+import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
 import { emptyCopy } from "../../utils/ui.js";
 
 const css = `
@@ -12,6 +12,7 @@ const css = `
 .nq-partner i { color: var(--gold); font-style: normal; }
 .nq-partner b { font-size: 1.2rem; font-weight: 700; }
 .nq-partner span { grid-column: 2; color: var(--muted); }
+.nq-partner.nq-rev { transition-delay: calc(var(--i, 0) * 90ms); }
 `;
 
 export default class PartnerRow extends LitElement {
@@ -28,7 +29,9 @@ export default class PartnerRow extends LitElement {
     injectFonts();
     injectStyles("nq-base", baseCss);
     injectStyles("nq-partner-row", css);
-    this.stop = watchLocale(this);
+    const stopLocale = watchLocale(this);
+    const stopReveal = watchReveal(this);
+    this.stop = () => { stopLocale(); stopReveal(); };
   }
 
   disconnectedCallback() {
@@ -46,7 +49,7 @@ export default class PartnerRow extends LitElement {
         ${localizedString(cfg.kicker) ? html`<p class="nq-kicker">${localizedString(cfg.kicker)}</p>` : nothing}
         ${localizedString(cfg.title) ? html`<h2 class="nq-h2">${localizedString(cfg.title)}</h2>` : nothing}
         ${items.length
-          ? html`<div class="nq-partners">${items.map((item) => html`<article class="nq-partner"><i aria-hidden="true">—</i><b>${item.name}</b>${item.note ? html`<span>${item.note}</span>` : nothing}</article>`)}</div>`
+          ? html`<div class="nq-partners">${items.map((item, index) => html`<article class="nq-partner nq-rev" style=${`--i:${index}`}><i aria-hidden="true">—</i><b>${item.name}</b>${item.note ? html`<span>${item.note}</span>` : nothing}</article>`)}</div>`
           : emptyCopy()}
       </div>
     </section>`;

@@ -37,8 +37,8 @@ const text = (id, label, value, o = {}) => ({
 });
 const area = (id, label, value, desc = null) => text(id, label, value, { format: "textarea", icon: "sicon-paragraph", desc, max: 800 });
 const plain = (id, label, value, desc = null) => text(id, label, value, { multilang: false, desc });
-const color = (id, label, value = "") => ({
-  id, type: "string", format: "color", inputType: "color", label, icon: "sicon-format-fill", required: false, description: null, value,
+const color = (id, label, value = "", desc = null) => ({
+  id, type: "string", format: "color", inputType: "color", label, icon: "sicon-format-fill", required: false, description: desc, value,
 });
 const sw = (id, label, value, desc = null) => ({
   id, type: "boolean", format: "switch", label, icon: "sicon-toggle-off", required: false, description: desc, value, selected: value,
@@ -47,8 +47,9 @@ const image = (id, label, desc, value = "", labelHTML = "") => ({
   id, type: "string", format: "image", label, ...(labelHTML ? { labelHTML } : {}), icon: "sicon-image", required: false, description: desc, value,
 });
 const when = (id, label, value, desc) => ({
-  id, type: "string", format: "datetime-local", inputType: "datetime-local",
-  label, icon: "sicon-calendar-date", required: false, description: desc, value,
+  id, type: "string", format: "datetime", inputType: "datetime-local",
+  label, icon: "sicon-calendar-time", multilanguage: false, required: false,
+  description: desc, placeholder: "2026-12-05T23:59", minLength: 0, maxLength: 40, value,
 });
 const faviconImage = (id, value = "") => ({
   id,
@@ -135,6 +136,10 @@ const components = [
     fields: [
       text("announce", "الشريط الإعلاني", L("عبايات تُخاط بالطلب · التوصيل داخل المملكة", "Abayas cut to order · delivery across the Kingdom"), { desc: "يظهر فوق الشعار. اتركه فارغاً لإخفاء الشريط." }),
       drop("announce_mode", "حركة الشريط", [["move", "متحرك", KEY.annMove], ["still", "ثابت", KEY.annStill]], "move", "المتحرك يمرّ الجملة باستمرار. الثابت يُبقيها في الوسط."),
+      color("announce_bg", "خلفية الشريط في الفاتح", "", "اتركه فارغاً ليأخذ لون المتجر الأساسي."),
+      color("announce_ink", "كتابة الشريط في الفاتح", "", "اتركه فارغاً ليأخذ لون الكتابة المقابل للون الأساسي."),
+      color("announce_bg_dark", "خلفية الشريط في الداكن", "", "اتركه فارغاً ليبقى لون المتجر الأساسي في الداكن."),
+      color("announce_ink_dark", "كتابة الشريط في الداكن", "", "اتركه فارغاً ليبقى لون الكتابة المقابل في الداكن."),
       line("pb-announce"),
       image("logo", "شعار", "اتركه فارغاً ليظهر اسم الدار بخط العنوان. المقاس المقترح 280×80 بكسل."),
       image("logo_dark", "شعار للوضع الداكن", "يظهر عندما تكون الصفحة داكنة. بدونه يُستخدم الشعار الأساسي."),
@@ -184,9 +189,9 @@ const components = [
         image("image", "الصورة", "المقاس المقترح 900×1400 بكسل. الصورة الافتراضية مجانية من Pexels ويمكن استبدالها بصورة العباية."),
         text("caption", "التعليق", L("كريب مطفي", "Matte crepe")),
       ], [
-        { image: px(32279499, 1000), caption: L("عباية كريب مطفي", "Matte crepe abaya") },
-        { image: px(29188564, 1000), caption: L("عباية حرير مغسول", "Washed silk abaya") },
-        { image: px(29273199, 1000), caption: L("عباية كلوش", "Flared abaya") },
+        { image: px(32279508, 1000), caption: L("عباية كريب مطفي", "Matte crepe abaya") },
+        { image: px(5973508, 1000), caption: L("عباية حرير مغسول", "Washed silk abaya") },
+        { image: px(13862196, 1000), caption: L("عباية كلوش", "Flared abaya") },
       ], 1, 3),
       collection("stats", "رقم", [
         text("value", "الرقم", L("١٢٤٠٠", "12,400"), { max: 20 }),
@@ -241,9 +246,9 @@ const components = [
         text("compare", "السعر قبل الخصم", L("٦٢٠ ر.س", "SAR 620"), { max: 30 }),
         url("url", "الرابط", "#product"),
       ], [
-        { tag: L("الأكثر طلباً", "Most requested"), image: px(28222774, 900), caption: L("عباية كلوش", "Flared abaya"), title: L("عباية كلوش", "Flared abaya"), note: L("كريب مطفي · ٨ ألوان", "Matte crepe · 8 colors"), price: L("٤٩٥ ر.س", "SAR 495"), compare: L("٦٢٠ ر.س", "SAR 620"), url: "#product" },
-        { tag: L("جديدة", "New"), image: px(37368651, 900), caption: L("عباية مطرزة", "Embroidered abaya"), title: L("عباية مطرزة", "Embroidered abaya"), note: L("حرير مغسول · تطريز يدوي", "Washed silk · hand embroidery"), price: L("٧٨٠ ر.س", "SAR 780"), compare: L("٩٥٠ ر.س", "SAR 950"), url: "#product" },
-        { tag: L("يومية", "Everyday"), image: px(13838840, 900), caption: L("عباية مستقيمة", "Straight abaya"), title: L("عباية مستقيمة", "Straight abaya"), note: L("كريب خفيف · ٦ ألوان", "Light crepe · 6 colors"), price: L("٣٢٠ ر.س", "SAR 320"), compare: L("٤١٠ ر.س", "SAR 410"), url: "#product" },
+        { tag: L("الأكثر طلباً", "Most requested"), image: px(37368651, 900), caption: L("عباية كلوش", "Flared abaya"), title: L("عباية كلوش", "Flared abaya"), note: L("كريب مطفي · ٨ ألوان", "Matte crepe · 8 colors"), price: L("٤٩٥ ر.س", "SAR 495"), compare: L("٦٢٠ ر.س", "SAR 620"), url: "#product" },
+        { tag: L("جديدة", "New"), image: px(32279508, 900), caption: L("عباية مطرزة", "Embroidered abaya"), title: L("عباية مطرزة", "Embroidered abaya"), note: L("حرير مغسول · تطريز يدوي", "Washed silk · hand embroidery"), price: L("٧٨٠ ر.س", "SAR 780"), compare: L("٩٥٠ ر.س", "SAR 950"), url: "#product" },
+        { tag: L("يومية", "Everyday"), image: px(13862196, 900), caption: L("عباية مستقيمة", "Straight abaya"), title: L("عباية مستقيمة", "Straight abaya"), note: L("كريب خفيف · ٦ ألوان", "Light crepe · 6 colors"), price: L("٣٢٠ ر.س", "SAR 320"), compare: L("٤١٠ ر.س", "SAR 410"), url: "#product" },
       ], 1, 6),
       color("bg_color", "لون الخلفية"),
     ],
@@ -294,9 +299,9 @@ const components = [
         image("image", "الصورة", "المقاس المقترح 900×1200 بكسل. الصورة الافتراضية مجانية من Pexels ويمكن استبدالها."),
         text("caption", "التعليق", L("عباية نَسَق المطرزة", "Nasaq embroidered abaya")),
       ], [
-        { image: px(29188563, 1000), caption: L("عباية نَسَق المطرزة", "Nasaq embroidered abaya") },
-        { image: px(13791315, 1000), caption: L("التطريز", "Embroidery") },
-        { image: px(35324617, 1000), caption: L("البطانة", "The lining") },
+        { image: px(37368651, 1000), caption: L("عباية نَسَق المطرزة", "Nasaq embroidered abaya") },
+        { image: px(5973508, 1000), caption: L("التطريز", "Embroidery") },
+        { image: px(32688173, 1000), caption: L("البطانة", "The lining") },
       ], 1, 4),
       line("ps-options"),
       text("size_label", "عنوان المقاس", L("المقاس", "Size"), { max: 40 }),
@@ -349,7 +354,7 @@ const components = [
       text("kicker", "سطر صغير", L("عرض العبايات", "The abaya offer")),
       text("title", "العنوان", L("خصم ٢٠٪ على العبايات + تغليف هدية", "20% off the abayas, plus gift wrap")),
       area("text", "النص", L("ينتهي عرض العبايات في التاريخ المحدد، ولا يُمدّد.", "The abaya offer ends on the chosen date, and it is not extended.")),
-      when("ends_at", "تاريخ انتهاء العرض", "2026-12-05T23:59", "يُحسب العدّاد حتى هذا التاريخ والوقت. يوم وساعة ودقيقة وثانية تُعرض وحدها، بلا حقول مدة."),
+      when("ends_at", "تاريخ انتهاء العرض", "2026-12-05T23:59", "اختاري التاريخ من التقويم. العدّاد يحسب الأيام والساعات والدقائق والثواني حتى هذا الموعد."),
       sw("show_video", "خلفية فيديو", false, "عند التفعيل يظهر فيديو العباية خلف العدّاد بلا صوت، ويبقى النص فوقه. زر الشراء تضيفه سلة."),
       url("video_url", "رابط خلفية الفيديو", "", "ملف mp4 لعباية، أو رابط يوتيوب أو فيميو. لا يظهر إلا إذا كانت خلفية الفيديو مفعّلة."),
       color("bg_color", "لون الخلفية"),
@@ -449,8 +454,8 @@ const components = [
         area("quote", "الجملة", L("العباية تمشي مع الخطوة، وما تبين اللي تحتها.", "The abaya moves with the step, and nothing shows through.")),
       ], [
         { video_url: "", poster: px(32279508, 800), name: L("لمى", "Lama"), place: L("الرياض", "Riyadh"), quote: L("العباية تمشي مع الخطوة، وما تبين اللي تحتها.", "The abaya moves with the step, and nothing shows through.") },
-        { video_url: "", poster: px(32279505, 800), name: L("هيفاء", "Haifa"), place: L("جدة", "Jeddah"), quote: L("تطريز العباية من الداخل أنظف من الصورة.", "The abaya embroidery is cleaner on the inside than in the photo.") },
-        { video_url: "", poster: px(33713539, 800), name: L("نورة", "Noura"), place: L("الخبر", "Khobar"), quote: L("طلبت قياس العباية المخصّص، ووصل الطول على كعبي.", "I asked for a custom abaya measure, and the length met my heel.") },
+        { video_url: "", poster: px(13862196, 800), name: L("هيفاء", "Haifa"), place: L("جدة", "Jeddah"), quote: L("تطريز العباية من الداخل أنظف من الصورة.", "The abaya embroidery is cleaner on the inside than in the photo.") },
+        { video_url: "", poster: px(37368651, 800), name: L("نورة", "Noura"), place: L("الخبر", "Khobar"), quote: L("طلبت قياس العباية المخصّص، ووصل الطول على كعبي.", "I asked for a custom abaya measure, and the length met my heel.") },
       ], 0, 6),
       text("button_label", "نص الزر", L("تسوّقي العبايات", "Shop the abayas")),
       url("button_url", "رابط الزر", "#product", buyHint),
@@ -467,6 +472,10 @@ const components = [
     fields: [
       text("announce", "الشريط الإعلاني", L("المقاس يُضبط قبل القص · الاستبدال حسب سياسة الورشة", "The size is set before cutting · exchanges follow the workshop policy"), { desc: "يظهر فوق الفوتر. اتركه فارغاً لإخفاء الشريط." }),
       drop("announce_mode", "حركة الشريط", [["move", "متحرك", KEY.annMove], ["still", "ثابت", KEY.annStill]], "move", "المتحرك يمرّ الجملة باستمرار. الثابت يُبقيها في الوسط."),
+      color("announce_bg", "خلفية الشريط في الفاتح", "", "اتركه فارغاً ليأخذ لون المتجر الأساسي."),
+      color("announce_ink", "كتابة الشريط في الفاتح", "", "اتركه فارغاً ليأخذ لون الكتابة المقابل للون الأساسي."),
+      color("announce_bg_dark", "خلفية الشريط في الداكن", "", "اتركه فارغاً ليبقى لون المتجر الأساسي في الداكن."),
+      color("announce_ink_dark", "كتابة الشريط في الداكن", "", "اتركه فارغاً ليبقى لون الكتابة المقابل في الداكن."),
       line("ft-announce"),
       image("logo", "شعار", "اتركه فارغاً ليظهر اسم الدار. المقاس المقترح 280×80 بكسل."),
       image("logo_dark", "شعار للوضع الداكن", "يظهر عندما تكون الصفحة داكنة. بدونه يُستخدم الشعار الأساسي."),
