@@ -10,11 +10,11 @@ var __decorateClass = (decorators, target, key, kind) => {
   return result;
 };
 
-// tw-nasaq-landing/src/components/page-footer/index.ts
+// src/components/house-footer/index.ts
 import { html as html3, LitElement, nothing as nothing3 } from "lit";
 import { property, state } from "lit/decorators.js";
 
-// tw-nasaq-landing/src/utils/config.ts
+// src/utils/config.ts
 function getConfig(raw) {
   if (!raw) return {};
   if (raw.component && typeof raw.component === "object") return raw.component;
@@ -93,31 +93,60 @@ function watchLocale(host) {
 }
 __name(watchLocale, "watchLocale");
 
-// tw-nasaq-landing/src/utils/announce.ts
+// src/utils/announce.ts
 import { html, nothing } from "lit";
 var COPIES = 12;
-function announceCss(prefix) {
+var ANN_THUMB = {
+  tile: { w: 28, h: 28 },
+  bean: { w: 28, h: 28 },
+  arch: { w: 24, h: 30 },
+  slant: { w: 40, h: 26 }
+};
+var lookCss = /* @__PURE__ */ __name((p, look) => {
+  const box = ANN_THUMB[look];
+  const size = `.${p}-ann__media { width: ${box.w}px; height: ${box.h}px; }`;
+  if (look === "bean") return `${size}
+.${p}-ann__media { border-radius: 50%; box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 30%, transparent); }
+.${p}-ann__item .${p}-ann__text::after { width: .55rem; height: .32rem; border-radius: 50%; transform: rotate(-35deg); box-shadow: inset 1px 0 0 color-mix(in srgb, var(--ann-fill) 70%, transparent); }
+.${p}-anns.is-stack > .${p}-ann + .${p}-ann { box-shadow: none; background-image: linear-gradient(90deg, color-mix(in srgb, currentColor 35%, transparent) 50%, transparent 0); background-size: 10px 1px; background-repeat: repeat-x; }`;
+  if (look === "arch") return `${size}
+.${p}-ann__media { border-radius: 999px 999px 3px 3px; outline: 1px solid color-mix(in srgb, currentColor 45%, transparent); outline-offset: 2px; }
+.${p}-ann__label { letter-spacing: .02em; }
+.${p}-ann__item .${p}-ann__text::after { width: .38rem; height: .38rem; border-radius: 0; transform: rotate(45deg); opacity: .7; }`;
+  if (look === "slant") return `${size}
+.${p}-ann__media { border-radius: 0; clip-path: polygon(16% 0, 100% 0, 84% 100%, 0 100%); }
+.${p}-ann__label { font-weight: 800; font-style: italic; text-transform: uppercase; letter-spacing: .03em; }
+.${p}-ann__item .${p}-ann__text::after { content: "/"; width: auto; height: auto; border-radius: 0; background: none; font-weight: 900; font-style: normal; opacity: .6; }`;
+  return `${size}
+.${p}-ann__media { border-radius: 7px; }`;
+}, "lookCss");
+function announceCss(prefix, look = "tile") {
+  const p = prefix;
   return `
-.${prefix}-ann.${prefix}-ann {
+.${p}-ann.${p}-ann {
+  --ann-fill: var(--ann-bg-light, var(--ann-bg, var(--color-primary)));
+  --ann-text: var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff)));
   overflow: hidden;
   padding-block: 5px;
   border: 0;
   font-family: var(--font-main, inherit);
-  background: var(--ann-bg-light, var(--ann-bg, var(--color-primary)));
-  color: var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff)));
+  background: var(--ann-fill);
+  color: var(--ann-text);
 }
-html.${prefix}-mode-dark .${prefix}-ann.${prefix}-auto, .${prefix}-ann.${prefix}-dark {
-  background: var(--ann-bg-dark, var(--ann-bg-light, var(--ann-bg, var(--color-primary))));
-  color: var(--ann-ink-dark, var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff))));
+html.${p}-mode-dark .${p}-ann.${p}-auto, .${p}-ann.${p}-dark {
+  --ann-fill: var(--ann-bg-dark, var(--ann-bg-light, var(--ann-bg, var(--color-primary))));
+  --ann-text: var(--ann-ink-dark, var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff))));
 }
-.${prefix}-ann__still {
+.${p}-ann__still {
+  display: flex;
+  justify-content: center;
   padding: 5px 1.5rem;
   text-align: center;
   font-size: 15px;
   font-weight: 500;
   line-height: 26px;
 }
-.${prefix}-ann__list {
+.${p}-ann__list {
   display: flex;
   align-items: center;
   margin: 0;
@@ -125,40 +154,73 @@ html.${prefix}-mode-dark .${prefix}-ann.${prefix}-auto, .${prefix}-ann.${prefix}
   list-style: none;
   white-space: nowrap;
 }
-.${prefix}-ann__item {
+.${p}-ann__item {
   flex: none;
   display: flex;
   align-items: center;
   font-size: 15px;
   font-weight: 500;
   line-height: 26px;
-  animation: ${prefix}-ann-ltr var(--ann-speed, 18s) linear infinite;
+  animation: ${p}-ann-ltr var(--ann-speed, 18s) linear infinite;
 }
-.${prefix}-ann.is-rtl .${prefix}-ann__item { animation-name: ${prefix}-ann-rtl; }
-.${prefix}-ann__list:hover .${prefix}-ann__item { animation-play-state: paused; }
-.${prefix}-ann__text {
+.${p}-ann.is-rtl .${p}-ann__item { animation-name: ${p}-ann-rtl; }
+.${p}-ann__list:hover .${p}-ann__item { animation-play-state: paused; }
+.${p}-ann__text {
   display: inline-flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: .6rem;
   padding-inline: 1.5rem;
 }
-.${prefix}-ann__text::after {
+.${p}-ann__item .${p}-ann__text::after {
   content: "";
   width: .35rem;
   height: .35rem;
+  margin-inline-start: .9rem;
   border-radius: 50%;
   background: currentColor;
   opacity: .55;
   flex: none;
 }
-@keyframes ${prefix}-ann-ltr { to { transform: translateX(-100%); } }
-@keyframes ${prefix}-ann-rtl { to { transform: translateX(100%); } }
-@media (prefers-reduced-motion: reduce) {
-  .${prefix}-ann__item { animation: none; }
-  .${prefix}-ann__item[aria-hidden="true"] { display: none; }
-  .${prefix}-ann__list { justify-content: center; }
-  .${prefix}-ann__text::after { display: none; }
+.${p}-ann__still .${p}-ann__text { padding-inline: 0; }
+.${p}-ann__link { display: inline-flex; align-items: center; gap: .6rem; color: inherit; text-decoration: none; }
+.${p}-ann__link:hover .${p}-ann__label { text-decoration: underline; text-underline-offset: 3px; }
+.${p}-ann__link:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.${p}-ann__media {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 16%, transparent);
 }
+.${p}-ann__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.${p}-ann__media i { font-size: 15px; line-height: 1; }
+.${p}-ann__media.is-hint {
+  width: auto;
+  padding-inline: .45rem;
+  border: 1px dashed currentColor;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  clip-path: none;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  direction: ltr;
+}
+.${p}-anns { display: grid; }
+.${p}-anns.is-stack > .${p}-ann + .${p}-ann { box-shadow: inset 0 1px 0 color-mix(in srgb, currentColor 18%, transparent); }
+.${p}-anns.is-stack > .${p}-ann:nth-child(even):not(.is-own) { background-color: color-mix(in srgb, var(--ann-fill) 84%, #000); }
+.${p}-anns.is-rotate > .${p}-ann { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s linear .45s; }
+.${p}-anns.is-rotate > .${p}-ann.is-on { opacity: 1; visibility: visible; transition: opacity .45s ease; }
+@keyframes ${p}-ann-ltr { to { transform: translateX(-100%); } }
+@keyframes ${p}-ann-rtl { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .${p}-ann__item { animation: none; }
+  .${p}-ann__item[aria-hidden="true"] { display: none; }
+  .${p}-ann__list { justify-content: center; }
+  .${p}-ann__item .${p}-ann__text::after { display: none; }
+  .${p}-anns.is-rotate > .${p}-ann { transition: none; }
+}
+${lookCss(p, look)}
 `;
 }
 __name(announceCss, "announceCss");
@@ -175,23 +237,27 @@ function announceTone(cfg) {
   ].filter(Boolean).join(";");
 }
 __name(announceTone, "announceTone");
+function marquee(prefix, extraClass, style, body, own = false) {
+  const rtl = isRtl() ? " is-rtl" : "";
+  return html`<div class="${prefix}-ann${rtl}${own ? " is-own" : ""} ${extraClass}" style=${style}>
+    <ul class="${prefix}-ann__list">
+      ${Array.from({ length: COPIES }, (_, index) => html`<li class="${prefix}-ann__item" aria-hidden=${index ? "true" : "false"}><span class="${prefix}-ann__text">${body}</span></li>`)}
+    </ul>
+  </div>`;
+}
+__name(marquee, "marquee");
 function announceBar(cfg, prefix, extraClass = "", tone = "") {
   const text = localizedString(cfg.announce).trim();
   if (!text) return nothing;
   const moving = String(unwrapValue(cfg.announce_mode) || "move") !== "still";
   if (!moving) {
-    return html`<div class="${prefix}-ann ${prefix}-ann__still ${extraClass}" style=${tone}>${text}</div>`;
+    return html`<div class="${prefix}-ann ${prefix}-ann__still ${extraClass}" style=${tone}><span class="${prefix}-ann__text">${text}</span></div>`;
   }
-  const rtl = isRtl() ? " is-rtl" : "";
-  return html`<div class="${prefix}-ann${rtl} ${extraClass}" style=${tone}>
-    <ul class="${prefix}-ann__list">
-      ${Array.from({ length: COPIES }, (_, index) => html`<li class="${prefix}-ann__item" aria-hidden=${index ? "true" : "false"}><span class="${prefix}-ann__text">${text}</span></li>`)}
-    </ul>
-  </div>`;
+  return marquee(prefix, extraClass, tone, text);
 }
 __name(announceBar, "announceBar");
 
-// tw-nasaq-landing/src/utils/dock.ts
+// src/utils/dock.ts
 var WA = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2A7.8 7.8 0 0 0 5.3 16l-.7 3.2 3.3-.7A7.8 7.8 0 1 0 12 4.2Zm3.7 10.3c-.2.5-1 .9-1.4 1-.4.1-.8.1-1.3-.1-.3-.1-.7-.2-1.2-.5-2.1-1.1-3.4-3.2-3.5-3.4-.1-.2-.9-1.2-.9-2.3s.6-1.6.8-1.8c.2-.2.4-.3.6-.3h.4c.2 0 .3 0 .5.4.2.5.6 1.6.7 1.7.1.2 0 .3-.1.5l-.3.4c-.1.1-.2.2 0 .4.2.3.7 1 1.5 1.6.6.5 1.1.6 1.3.5l.4-.3c.2-.1.3-.1.5 0 .2.2 1 .8 1.1 1 .1.1.1.3 0 .5Z"></path></svg>`;
 var UP = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 19V8.8L7.4 12.4 6 11l6-6 6 6-1.4 1.4L13 8.8V19h-2Z"></path></svg>`;
 function shown(value) {
@@ -279,7 +345,7 @@ function clearDocks(nodes) {
 }
 __name(clearDocks, "clearDocks");
 
-// tw-nasaq-landing/src/utils/landing.ts
+// src/utils/landing.ts
 import { html as html2, nothing as nothing2 } from "lit";
 function currentTone() {
   return document.documentElement.classList.contains("nq-mode-dark") ? "dark" : "light";
@@ -293,8 +359,29 @@ function schemeOf(cfg) {
 }
 __name(schemeOf, "schemeOf");
 
-// tw-nasaq-landing/src/utils/styles.ts
+// src/utils/styles.ts
+function markEditing() {
+  const root = document.documentElement;
+  const read = /* @__PURE__ */ __name(() => {
+    let on = true;
+    try {
+      const salla = window.Salla;
+      on = window.self !== window.top || salla?.config?.get?.("page.is_landing_page") !== true;
+    } catch {
+      on = true;
+    }
+    root.dataset.lpEditing = on ? "1" : "0";
+  }, "read");
+  if (root.dataset.lpEditing) return;
+  read();
+  try {
+    window.Salla?.onReady?.(read);
+  } catch {
+  }
+}
+__name(markEditing, "markEditing");
 function injectStyles(id, css2) {
+  markEditing();
   let style = document.getElementById(id);
   if (!style) {
     style = document.createElement("style");
@@ -332,6 +419,7 @@ __name(sectionStyle, "sectionStyle");
 var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
 var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
 var baseCss = `
+html[data-lp-editing="0"] .nq-empty, html[data-lp-editing="0"] .nq-hint { display: none !important; }
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -391,7 +479,7 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
 }
 `;
 
-// tw-nasaq-landing/src/components/page-footer/index.ts
+// src/components/house-footer/index.ts
 var css = `
 .nq-foot { background: var(--nq-section-bg, var(--ink)); color: color-mix(in srgb, var(--ivory) 72%, transparent); padding-block: 48px 34px; font-size: .86rem; }
 .nq-foot .nq-flogo { color: var(--ivory); }
@@ -488,7 +576,7 @@ var _PageFooter = class _PageFooter extends LitElement {
     this.classList.add("nq-host");
     injectFonts();
     injectStyles("nq-base", baseCss);
-    injectStyles("nq-announce", announceCss("nq"));
+    injectStyles("nq-announce", announceCss("nq", "arch"));
     injectStyles("nq-page-footer", css);
     const stopLocale = watchLocale(this);
     const onTone = /* @__PURE__ */ __name(() => {
@@ -595,7 +683,7 @@ var _PageFooter = class _PageFooter extends LitElement {
           <div class="nq-about">
             <a href="#" class="nq-flogo">${logo ? html3`<img src=${logo} alt=${brand} />` : html3`${brand}${mark ? html3`<small>${mark}</small>` : nothing3}`}</a>
             ${localizedString(cfg.about) ? html3`<p>${localizedString(cfg.about)}</p>` : nothing3}
-            ${pays.length ? html3`<p class="nq-pay-size">${t({ ar: "\u0623\u064A\u0642\u0648\u0646\u0627\u062A \u0627\u0644\u062F\u0641\u0639 \u0666\u0664\xD7\u0666\u0664 \u0628\u0643\u0633\u0644", en: "Payment icons, 64\xD764 px" })}</p><div class="nq-pay">${pays.map((pay) => pay.image ? html3`<img src=${pay.image} alt=${pay.label} width="32" height="32" title=${pay.label} />` : html3`<span>${pay.label}</span>`)}</div>` : nothing3}
+            ${pays.length ? html3`<div class="nq-pay">${pays.map((pay) => pay.image ? html3`<img src=${pay.image} alt=${pay.label} width="32" height="32" title=${pay.label} />` : html3`<span>${pay.label}</span>`)}</div>` : nothing3}
           </div>
           ${columns.map((column) => html3`<div>
             ${column.title ? html3`<h5>${column.title}</h5>` : nothing3}
@@ -635,4 +723,4 @@ var PageFooter = _PageFooter;
 export {
   PageFooter as default
 };
-typeof PageFooter < "u" && PageFooter.registerSallaComponent("salla-page-footer");
+typeof PageFooter < "u" && PageFooter.registerSallaComponent("salla-house-footer");

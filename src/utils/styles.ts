@@ -1,4 +1,24 @@
+
+/** Editor hints ("add items in the settings") show in the Salla editor and local preview, never on the live page. */
+function markEditing(): void {
+  const root = document.documentElement;
+  const read = () => {
+    let on = true;
+    try {
+      const salla = (window as any).Salla;
+      on = window.self !== window.top || salla?.config?.get?.("page.is_landing_page") !== true;
+    } catch {
+      on = true;
+    }
+    root.dataset.lpEditing = on ? "1" : "0";
+  };
+  if (root.dataset.lpEditing) return;
+  read();
+  try { (window as any).Salla?.onReady?.(read); } catch { /* Salla is not on the page */ }
+}
+
 export function injectStyles(id: string, css: string): void {
+  markEditing();
   let style = document.getElementById(id) as HTMLStyleElement | null;
   if (!style) {
     style = document.createElement("style");
@@ -62,6 +82,7 @@ const LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd
 const DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
 
 export const baseCss = `
+html[data-lp-editing="0"] .nq-empty, html[data-lp-editing="0"] .nq-hint { display: none !important; }
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }

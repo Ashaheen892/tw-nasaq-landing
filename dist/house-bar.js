@@ -10,11 +10,11 @@ var __decorateClass = (decorators, target, key, kind) => {
   return result;
 };
 
-// tw-nasaq-landing/src/components/page-bar/index.ts
+// src/components/house-bar/index.ts
 import { html as html3, LitElement, nothing as nothing3 } from "lit";
 import { property, state } from "lit/decorators.js";
 
-// tw-nasaq-landing/src/utils/config.ts
+// src/utils/config.ts
 function getConfig(raw) {
   if (!raw) return {};
   if (raw.component && typeof raw.component === "object") return raw.component;
@@ -93,31 +93,61 @@ function watchLocale(host) {
 }
 __name(watchLocale, "watchLocale");
 
-// tw-nasaq-landing/src/utils/announce.ts
+// src/utils/announce.ts
 import { html, nothing } from "lit";
 var COPIES = 12;
-function announceCss(prefix) {
+var ROTATE_MS = 4200;
+var ANN_THUMB = {
+  tile: { w: 28, h: 28 },
+  bean: { w: 28, h: 28 },
+  arch: { w: 24, h: 30 },
+  slant: { w: 40, h: 26 }
+};
+var lookCss = /* @__PURE__ */ __name((p, look) => {
+  const box = ANN_THUMB[look];
+  const size = `.${p}-ann__media { width: ${box.w}px; height: ${box.h}px; }`;
+  if (look === "bean") return `${size}
+.${p}-ann__media { border-radius: 50%; box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 30%, transparent); }
+.${p}-ann__item .${p}-ann__text::after { width: .55rem; height: .32rem; border-radius: 50%; transform: rotate(-35deg); box-shadow: inset 1px 0 0 color-mix(in srgb, var(--ann-fill) 70%, transparent); }
+.${p}-anns.is-stack > .${p}-ann + .${p}-ann { box-shadow: none; background-image: linear-gradient(90deg, color-mix(in srgb, currentColor 35%, transparent) 50%, transparent 0); background-size: 10px 1px; background-repeat: repeat-x; }`;
+  if (look === "arch") return `${size}
+.${p}-ann__media { border-radius: 999px 999px 3px 3px; outline: 1px solid color-mix(in srgb, currentColor 45%, transparent); outline-offset: 2px; }
+.${p}-ann__label { letter-spacing: .02em; }
+.${p}-ann__item .${p}-ann__text::after { width: .38rem; height: .38rem; border-radius: 0; transform: rotate(45deg); opacity: .7; }`;
+  if (look === "slant") return `${size}
+.${p}-ann__media { border-radius: 0; clip-path: polygon(16% 0, 100% 0, 84% 100%, 0 100%); }
+.${p}-ann__label { font-weight: 800; font-style: italic; text-transform: uppercase; letter-spacing: .03em; }
+.${p}-ann__item .${p}-ann__text::after { content: "/"; width: auto; height: auto; border-radius: 0; background: none; font-weight: 900; font-style: normal; opacity: .6; }`;
+  return `${size}
+.${p}-ann__media { border-radius: 7px; }`;
+}, "lookCss");
+function announceCss(prefix, look = "tile") {
+  const p = prefix;
   return `
-.${prefix}-ann.${prefix}-ann {
+.${p}-ann.${p}-ann {
+  --ann-fill: var(--ann-bg-light, var(--ann-bg, var(--color-primary)));
+  --ann-text: var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff)));
   overflow: hidden;
   padding-block: 5px;
   border: 0;
   font-family: var(--font-main, inherit);
-  background: var(--ann-bg-light, var(--ann-bg, var(--color-primary)));
-  color: var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff)));
+  background: var(--ann-fill);
+  color: var(--ann-text);
 }
-html.${prefix}-mode-dark .${prefix}-ann.${prefix}-auto, .${prefix}-ann.${prefix}-dark {
-  background: var(--ann-bg-dark, var(--ann-bg-light, var(--ann-bg, var(--color-primary))));
-  color: var(--ann-ink-dark, var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff))));
+html.${p}-mode-dark .${p}-ann.${p}-auto, .${p}-ann.${p}-dark {
+  --ann-fill: var(--ann-bg-dark, var(--ann-bg-light, var(--ann-bg, var(--color-primary))));
+  --ann-text: var(--ann-ink-dark, var(--ann-ink-light, var(--ann-ink, var(--color-primary-reverse, #fff))));
 }
-.${prefix}-ann__still {
+.${p}-ann__still {
+  display: flex;
+  justify-content: center;
   padding: 5px 1.5rem;
   text-align: center;
   font-size: 15px;
   font-weight: 500;
   line-height: 26px;
 }
-.${prefix}-ann__list {
+.${p}-ann__list {
   display: flex;
   align-items: center;
   margin: 0;
@@ -125,40 +155,73 @@ html.${prefix}-mode-dark .${prefix}-ann.${prefix}-auto, .${prefix}-ann.${prefix}
   list-style: none;
   white-space: nowrap;
 }
-.${prefix}-ann__item {
+.${p}-ann__item {
   flex: none;
   display: flex;
   align-items: center;
   font-size: 15px;
   font-weight: 500;
   line-height: 26px;
-  animation: ${prefix}-ann-ltr var(--ann-speed, 18s) linear infinite;
+  animation: ${p}-ann-ltr var(--ann-speed, 18s) linear infinite;
 }
-.${prefix}-ann.is-rtl .${prefix}-ann__item { animation-name: ${prefix}-ann-rtl; }
-.${prefix}-ann__list:hover .${prefix}-ann__item { animation-play-state: paused; }
-.${prefix}-ann__text {
+.${p}-ann.is-rtl .${p}-ann__item { animation-name: ${p}-ann-rtl; }
+.${p}-ann__list:hover .${p}-ann__item { animation-play-state: paused; }
+.${p}-ann__text {
   display: inline-flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: .6rem;
   padding-inline: 1.5rem;
 }
-.${prefix}-ann__text::after {
+.${p}-ann__item .${p}-ann__text::after {
   content: "";
   width: .35rem;
   height: .35rem;
+  margin-inline-start: .9rem;
   border-radius: 50%;
   background: currentColor;
   opacity: .55;
   flex: none;
 }
-@keyframes ${prefix}-ann-ltr { to { transform: translateX(-100%); } }
-@keyframes ${prefix}-ann-rtl { to { transform: translateX(100%); } }
-@media (prefers-reduced-motion: reduce) {
-  .${prefix}-ann__item { animation: none; }
-  .${prefix}-ann__item[aria-hidden="true"] { display: none; }
-  .${prefix}-ann__list { justify-content: center; }
-  .${prefix}-ann__text::after { display: none; }
+.${p}-ann__still .${p}-ann__text { padding-inline: 0; }
+.${p}-ann__link { display: inline-flex; align-items: center; gap: .6rem; color: inherit; text-decoration: none; }
+.${p}-ann__link:hover .${p}-ann__label { text-decoration: underline; text-underline-offset: 3px; }
+.${p}-ann__link:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.${p}-ann__media {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 16%, transparent);
 }
+.${p}-ann__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.${p}-ann__media i { font-size: 15px; line-height: 1; }
+.${p}-ann__media.is-hint {
+  width: auto;
+  padding-inline: .45rem;
+  border: 1px dashed currentColor;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  clip-path: none;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  direction: ltr;
+}
+.${p}-anns { display: grid; }
+.${p}-anns.is-stack > .${p}-ann + .${p}-ann { box-shadow: inset 0 1px 0 color-mix(in srgb, currentColor 18%, transparent); }
+.${p}-anns.is-stack > .${p}-ann:nth-child(even):not(.is-own) { background-color: color-mix(in srgb, var(--ann-fill) 84%, #000); }
+.${p}-anns.is-rotate > .${p}-ann { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s linear .45s; }
+.${p}-anns.is-rotate > .${p}-ann.is-on { opacity: 1; visibility: visible; transition: opacity .45s ease; }
+@keyframes ${p}-ann-ltr { to { transform: translateX(-100%); } }
+@keyframes ${p}-ann-rtl { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .${p}-ann__item { animation: none; }
+  .${p}-ann__item[aria-hidden="true"] { display: none; }
+  .${p}-ann__list { justify-content: center; }
+  .${p}-ann__item .${p}-ann__text::after { display: none; }
+  .${p}-anns.is-rotate > .${p}-ann { transition: none; }
+}
+${lookCss(p, look)}
 `;
 }
 __name(announceCss, "announceCss");
@@ -175,23 +238,111 @@ function announceTone(cfg) {
   ].filter(Boolean).join(";");
 }
 __name(announceTone, "announceTone");
-function announceBar(cfg, prefix, extraClass = "", tone = "") {
-  const text = localizedString(cfg.announce).trim();
-  if (!text) return nothing;
-  const moving = String(unwrapValue(cfg.announce_mode) || "move") !== "still";
-  if (!moving) {
-    return html`<div class="${prefix}-ann ${prefix}-ann__still ${extraClass}" style=${tone}>${text}</div>`;
-  }
+function marquee(prefix, extraClass, style, body, own = false) {
   const rtl = isRtl() ? " is-rtl" : "";
-  return html`<div class="${prefix}-ann${rtl} ${extraClass}" style=${tone}>
+  return html`<div class="${prefix}-ann${rtl}${own ? " is-own" : ""} ${extraClass}" style=${style}>
     <ul class="${prefix}-ann__list">
-      ${Array.from({ length: COPIES }, (_, index) => html`<li class="${prefix}-ann__item" aria-hidden=${index ? "true" : "false"}><span class="${prefix}-ann__text">${text}</span></li>`)}
+      ${Array.from({ length: COPIES }, (_, index) => html`<li class="${prefix}-ann__item" aria-hidden=${index ? "true" : "false"}><span class="${prefix}-ann__text">${body}</span></li>`)}
     </ul>
   </div>`;
 }
-__name(announceBar, "announceBar");
+__name(marquee, "marquee");
+function readStrips(cfg) {
+  if (!Array.isArray(cfg.bars)) {
+    const text = localizedString(cfg.announce).trim();
+    if (!text) return [];
+    return [{ text, media: "none", icon: "", image: "", link: "", still: String(unwrapValue(cfg.announce_mode) || "move") === "still", bg: "", ink: "" }];
+  }
+  return getCollectionItems(cfg.bars, "bars").map((row) => {
+    const kind = String(unwrapValue(row.media) || "none");
+    return {
+      text: localizedString(row.text).trim(),
+      media: kind === "icon" || kind === "image" ? kind : "none",
+      icon: String(unwrapValue(row.icon) || "").trim(),
+      image: String(unwrapValue(row.image) || "").trim(),
+      link: linkHref(row.link),
+      still: String(unwrapValue(row.motion) || "move") === "still",
+      bg: String(row.bg || "").trim(),
+      ink: String(row.ink || "").trim()
+    };
+  }).filter((row) => row.text);
+}
+__name(readStrips, "readStrips");
+function stripBody(prefix, look, row) {
+  const box = ANN_THUMB[look];
+  let media = nothing;
+  if (row.media === "icon" && row.icon) {
+    media = html`<span class="${prefix}-ann__media is-icon" aria-hidden="true"><i class=${row.icon}></i></span>`;
+  } else if (row.media === "image" && row.image) {
+    media = html`<span class="${prefix}-ann__media"><img src=${row.image} alt="" width=${box.w * 2} height=${box.h * 2} loading="lazy" decoding="async" /></span>`;
+  } else if (row.media === "image") {
+    media = html`<span class="${prefix}-ann__media is-hint ${prefix}-hint" aria-hidden="true">${box.w * 4}×${box.h * 4}</span>`;
+  }
+  const inner = html`${media}<span class="${prefix}-ann__label">${row.text}</span>`;
+  return row.link ? html`<a class="${prefix}-ann__link" href=${row.link}>${inner}</a>` : inner;
+}
+__name(stripBody, "stripBody");
+function announceStrips(cfg, prefix, look, extraClass = "", tone = "") {
+  const rows = readStrips(cfg);
+  if (!rows.length) return nothing;
+  const rotate = rows.length > 1 && String(unwrapValue(cfg.bars_layout) || "stack") === "rotate";
+  const strips = rows.map((row, index) => {
+    const own = Boolean(row.bg || row.ink);
+    const style = [row.bg ? `--ann-fill:${row.bg}` : "", row.ink ? `--ann-text:${row.ink}` : ""].filter(Boolean).join(";");
+    const body = stripBody(prefix, look, row);
+    if (row.still || rotate) {
+      const on = rotate && index === 0 ? " is-on" : "";
+      return html`<div class="${prefix}-ann ${prefix}-ann__still${own ? " is-own" : ""}${on} ${extraClass}" style=${style} aria-hidden=${rotate && index ? "true" : "false"}><span class="${prefix}-ann__text">${body}</span></div>`;
+    }
+    return marquee(prefix, extraClass, style, body, own);
+  });
+  return html`<div class="${prefix}-anns ${rotate ? "is-rotate" : "is-stack"}" style=${tone} data-ann-rotate=${rotate ? String(rows.length) : "0"} role="region" aria-label=${isRtl() ? "\u0625\u0639\u0644\u0627\u0646\u0627\u062A \u0627\u0644\u0645\u062A\u062C\u0631" : "Store announcements"}>${strips}</div>`;
+}
+__name(announceStrips, "announceStrips");
+var timers = /* @__PURE__ */ new WeakMap();
+function rotateStrips(root, prefix) {
+  root.querySelectorAll(`.${prefix}-anns`).forEach((group) => {
+    const count = Number(group.dataset.annRotate || 0);
+    const running = timers.get(group);
+    if (running && running.count === count) return;
+    if (running) window.clearInterval(running.id);
+    timers.delete(group);
+    if (count < 2) return;
+    let index = 0;
+    if (!group.dataset.annHold) {
+      group.dataset.annHold = "0";
+      const hold = /* @__PURE__ */ __name((on) => () => {
+        group.dataset.annHold = on ? "1" : "0";
+      }, "hold");
+      group.addEventListener("mouseenter", hold(true));
+      group.addEventListener("mouseleave", hold(false));
+      group.addEventListener("focusin", hold(true));
+      group.addEventListener("focusout", hold(false));
+    }
+    const id = window.setInterval(() => {
+      if (group.dataset.annHold === "1" || document.hidden) return;
+      const items = [...group.children];
+      if (!items.length) return;
+      index = (index + 1) % items.length;
+      items.forEach((item, at) => {
+        item.classList.toggle("is-on", at === index);
+        item.setAttribute("aria-hidden", at === index ? "false" : "true");
+      });
+    }, ROTATE_MS);
+    timers.set(group, { id, count });
+  });
+}
+__name(rotateStrips, "rotateStrips");
+function stopStrips(root, prefix) {
+  root.querySelectorAll(`.${prefix}-anns`).forEach((group) => {
+    const running = timers.get(group);
+    if (running) window.clearInterval(running.id);
+    timers.delete(group);
+  });
+}
+__name(stopStrips, "stopStrips");
 
-// tw-nasaq-landing/src/utils/landing.ts
+// src/utils/landing.ts
 import { html as html2, nothing as nothing2 } from "lit";
 var TONE_KEY = "nq-landing-tone";
 function applyTone(mode) {
@@ -225,8 +376,29 @@ function schemeOf(cfg) {
 }
 __name(schemeOf, "schemeOf");
 
-// tw-nasaq-landing/src/utils/styles.ts
+// src/utils/styles.ts
+function markEditing() {
+  const root = document.documentElement;
+  const read = /* @__PURE__ */ __name(() => {
+    let on = true;
+    try {
+      const salla = window.Salla;
+      on = window.self !== window.top || salla?.config?.get?.("page.is_landing_page") !== true;
+    } catch {
+      on = true;
+    }
+    root.dataset.lpEditing = on ? "1" : "0";
+  }, "read");
+  if (root.dataset.lpEditing) return;
+  read();
+  try {
+    window.Salla?.onReady?.(read);
+  } catch {
+  }
+}
+__name(markEditing, "markEditing");
 function injectStyles(id, css2) {
+  markEditing();
   let style = document.getElementById(id);
   if (!style) {
     style = document.createElement("style");
@@ -288,6 +460,7 @@ __name(watchReveal, "watchReveal");
 var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
 var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
 var baseCss = `
+html[data-lp-editing="0"] .nq-empty, html[data-lp-editing="0"] .nq-hint { display: none !important; }
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -347,7 +520,7 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
 }
 `;
 
-// tw-nasaq-landing/src/components/page-bar/index.ts
+// src/components/house-bar/index.ts
 var css = `
 .nq-bar { position: relative; background: var(--nq-section-bg, color-mix(in srgb, var(--ivory) 86%, transparent)); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
 .nq-nav { display: flex; align-items: center; gap: 26px; min-height: 74px; }
@@ -390,7 +563,7 @@ var _PageBar = class _PageBar extends LitElement {
     this.classList.add("nq-host");
     injectFonts();
     injectStyles("nq-base", baseCss);
-    injectStyles("nq-announce", announceCss("nq"));
+    injectStyles("nq-announce", announceCss("nq", "arch"));
     injectStyles("nq-page-bar", css);
     const stopLocale = watchLocale(this);
     const stopReveal = watchReveal(this);
@@ -415,10 +588,12 @@ var _PageBar = class _PageBar extends LitElement {
     this.dark = currentTone() === "dark";
   }
   disconnectedCallback() {
+    stopStrips(this, "nq");
     this.stop();
     super.disconnectedCallback();
   }
   updated() {
+    rotateStrips(this, "nq");
     this.pin();
   }
   showMode(cfg) {
@@ -514,11 +689,11 @@ var _PageBar = class _PageBar extends LitElement {
   }
   render() {
     const cfg = getConfig(this.config);
-    const brand = localizedString(cfg.brand) || t({ ar: "\u0627\u0644\u0645\u062A\u062C\u0631", en: "Store" });
+    const brand = localizedString(cfg.brand) || window.Salla?.config?.get?.("store.name") || "";
     const mark = localizedString(cfg.mark);
     const links = getCollectionItems(cfg.links, "links").map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" })).filter((item) => item.label);
     const logo = this.dark && cfg.logo_dark || cfg.logo;
-    return html3`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
+    return html3`${announceStrips(cfg, "nq", "arch", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
     <header class=${`nq-root nq-bar ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
       <nav class="nq-nav nq-wrap ${this.open ? "is-open" : ""}">
         <a href=${linkHref(cfg.home_url) || "#"} class="nq-logo" aria-label=${brand}>
@@ -555,4 +730,4 @@ var PageBar = _PageBar;
 export {
   PageBar as default
 };
-typeof PageBar < "u" && PageBar.registerSallaComponent("salla-page-bar");
+typeof PageBar < "u" && PageBar.registerSallaComponent("salla-house-bar");

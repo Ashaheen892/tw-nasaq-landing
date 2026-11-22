@@ -1,38 +1,23 @@
 var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __decorateClass = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
-  for (var i = decorators.length - 1, decorator; i >= 0; i--)
-    if (decorator = decorators[i])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp(target, key, result);
-  return result;
-};
-
-// tw-nasaq-landing/src/components/stat-strip/index.ts
-import { html as html3, LitElement } from "lit";
+var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
+import { html, LitElement, nothing } from "lit";
 import { property } from "lit/decorators.js";
-
-// tw-nasaq-landing/src/utils/config.ts
 function getConfig(raw) {
-  if (!raw) return {};
-  if (raw.component && typeof raw.component === "object") return raw.component;
-  return raw;
+  return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  const lang = window.Salla?.lang?.getLocale?.() || document.documentElement.lang || "ar";
+  var _a, _b, _c;
+  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
 function localizedString(value) {
-  if (value === null || value === void 0 || value === "") return "";
-  if (typeof value === "string") return value;
-  if (typeof value === "object") {
-    const obj = value;
-    const text = obj[getLocale()] || obj.ar || obj.en;
-    return typeof text === "string" ? text : "";
+  if (value == null || value === "") return "";
+  if (typeof value == "string") return value;
+  if (typeof value == "object") {
+    const obj = value, text = obj[getLocale()] || obj.ar || obj.en;
+    return typeof text == "string" ? text : "";
   }
   return String(value);
 }
@@ -42,70 +27,67 @@ function t(strings) {
 }
 __name(t, "t");
 function unwrapValue(value) {
-  if (Array.isArray(value)) return unwrapValue(value[0]?.value ?? value[0] ?? "");
-  if (value && typeof value === "object" && "value" in value) return value.value;
-  return value ?? "";
+  var _a;
+  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function getCollectionItems(items, prefix) {
-  if (!Array.isArray(items)) return [];
-  return items.map((item) => {
-    if (!item || typeof item !== "object") return {};
+  return Array.isArray(items) ? items.map((item) => {
+    if (!item || typeof item != "object") return {};
     const normalized = {};
-    for (const [key, val] of Object.entries(item)) {
+    for (const [key, val] of Object.entries(item))
       normalized[key.startsWith(`${prefix}.`) ? key.slice(prefix.length + 1) : key] = val;
-    }
     return normalized;
-  });
+  }) : [];
 }
 __name(getCollectionItems, "getCollectionItems");
 function watchLocale(host) {
   const update = /* @__PURE__ */ __name(() => host.requestUpdate(), "update");
-  window.addEventListener("language-changed", update);
-  return () => window.removeEventListener("language-changed", update);
+  return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
-
-// tw-nasaq-landing/src/utils/landing.ts
-import { html, nothing } from "lit";
 function schemeOf(cfg) {
   const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
-  if (scheme === "dark") return "nq-dark";
-  if (scheme === "light") return "nq-light";
-  return "nq-auto";
+  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
 }
 __name(schemeOf, "schemeOf");
-
-// tw-nasaq-landing/src/utils/styles.ts
-function injectStyles(id, css2) {
-  let style = document.getElementById(id);
-  if (!style) {
-    style = document.createElement("style");
-    style.id = id;
-    document.head.appendChild(style);
+function markEditing() {
+  var _a, _b;
+  const root = document.documentElement, read = /* @__PURE__ */ __name(() => {
+    var _a2, _b2;
+    let on = !0;
+    try {
+      const salla = window.Salla;
+      on = window.self !== window.top || ((_b2 = (_a2 = salla == null ? void 0 : salla.config) == null ? void 0 : _a2.get) == null ? void 0 : _b2.call(_a2, "page.is_landing_page")) !== !0;
+    } catch {
+      on = !0;
+    }
+    root.dataset.lpEditing = on ? "1" : "0";
+  }, "read");
+  if (!root.dataset.lpEditing) {
+    read();
+    try {
+      (_b = (_a = window.Salla) == null ? void 0 : _a.onReady) == null || _b.call(_a, read);
+    } catch {
+    }
   }
-  if (style.textContent !== css2) style.textContent = css2;
+}
+__name(markEditing, "markEditing");
+function injectStyles(id, css2) {
+  markEditing();
+  let style = document.getElementById(id);
+  style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
 }
 __name(injectStyles, "injectStyles");
-var KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
 function setKitFont(on) {
-  document.documentElement.classList.toggle("nq-kit-font", on);
-  const current = document.getElementById("nq-fonts");
-  if (!on) {
-    current?.remove();
-    return;
-  }
-  if (current) return;
+  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
   const link = document.createElement("link");
-  link.id = "nq-fonts";
-  link.rel = "stylesheet";
-  link.href = KIT_FONT;
-  document.head.appendChild(link);
+  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
 }
 __name(setKitFont, "setKitFont");
 function injectFonts() {
-  if (!document.documentElement.classList.contains("nq-kit-font")) return;
-  setKitFont(true);
+  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -113,32 +95,21 @@ function sectionStyle(cfg) {
 }
 __name(sectionStyle, "sectionStyle");
 function watchReveal(host) {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduced) {
-    host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in"));
-    return () => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    return host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in")), () => {
     };
-  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add("in");
-      io.unobserve(entry.target);
+      entry.isIntersecting && (entry.target.classList.add("in"), io.unobserve(entry.target));
     });
-  }, { threshold: 0.14 });
-  const scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan");
-  const mo = new MutationObserver(scan);
-  mo.observe(host, { childList: true, subtree: true });
-  scan();
-  return () => {
-    io.disconnect();
-    mo.disconnect();
+  }, { threshold: 0.14 }), scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan"), mo = new MutationObserver(scan);
+  return mo.observe(host, { childList: !0, subtree: !0 }), scan(), () => {
+    io.disconnect(), mo.disconnect();
   };
 }
 __name(watchReveal, "watchReveal");
-var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
-var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
-var baseCss = `
+const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
+html[data-lp-editing="0"] .nq-empty, html[data-lp-editing="0"] .nq-hint { display: none !important; }
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -197,74 +168,57 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
   .nq-mq-track { animation: none !important; }
 }
 `;
-
-// tw-nasaq-landing/src/utils/ui.ts
-import { html as html2, nothing as nothing2 } from "lit";
 function emptyCopy() {
-  return html2`<p class="nq-empty">${t({ ar: "\u0623\u0636\u0641 \u0639\u0646\u0627\u0635\u0631 \u0647\u0630\u0627 \u0627\u0644\u0642\u0633\u0645 \u0645\u0646 \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A", en: "Add this section's items in the settings" })}</p>`;
+  return html`<p class="nq-empty">${t({ ar: "أضف عناصر هذا القسم من الإعدادات", en: "Add this section's items in the settings" })}</p>`;
 }
 __name(emptyCopy, "emptyCopy");
-
-// tw-nasaq-landing/src/components/stat-strip/index.ts
-var css = `
-.nq-stat-head { text-align: center; margin-bottom: clamp(28px, 4vw, 48px); }
-.nq-stat-head .nq-kicker { margin: 0 0 10px; color: var(--gold); letter-spacing: .18em; font-size: .75rem; }
-.nq-stat-head .nq-kicker::before, .nq-stat-head .nq-kicker::after { content: "\u25C6"; margin-inline: .7em; font-size: .55em; vertical-align: middle; }
-.nq-stats { display: grid; gap: 28px; }
-@container (min-width: 720px) { .nq-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; } }
-.nq-stat { position: relative; display: grid; justify-items: center; gap: 10px; padding: 8px 20px; text-align: center; }
-@container (min-width: 720px) { .nq-stat + .nq-stat::before { content: ""; position: absolute; inset-inline-start: 0; top: 12%; bottom: 12%; width: 1px; background: linear-gradient(transparent, var(--gold), transparent); } }
-.nq-stat b { font-family: var(--serif); font-size: clamp(2.3rem, 4.5vw, 3.6rem); font-weight: 700; line-height: 1; color: var(--ink); }
-.nq-stat i { width: 28px; height: 1px; background: var(--gold); }
-.nq-stat span { color: var(--muted); letter-spacing: .04em; }
-.nq-stat.nq-rev { transition-delay: calc(var(--i, 0) * 110ms); }
-`;
-var _StatStrip = class _StatStrip extends LitElement {
+var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name((decorators, target, key, kind) => {
+  for (var result = void 0, i = decorators.length - 1, decorator; i >= 0; i--)
+    (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
+  return result && __defProp2(target, key, result), result;
+}, "__decorateClass");
+const css = `
+.nq-brands { display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 0; padding-block: 8px; }
+.nq-brand { display: grid; justify-items: center; gap: 8px; min-width: 9rem; padding-inline: 1.3rem; color: inherit; text-decoration: none; }
+.nq-brand.nq-rev { transition-delay: calc(var(--i, 0) * 90ms); }
+.nq-brand + .nq-brand { box-shadow: -1px 0 0 var(--gold); }
+.nq-brand img { height: 36px; width: auto; max-width: 88px; object-fit: contain; }
+.nq-brand b { font-weight: 500; letter-spacing: .12em; }
+.nq-brand small { color: var(--muted); letter-spacing: .04em; }
+`, _BrandRow = class _BrandRow extends LitElement {
   constructor() {
-    super(...arguments);
-    this.stop = /* @__PURE__ */ __name(() => {
-    }, "stop");
+    super(...arguments), this.stop = () => {
+    };
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
-    super.connectedCallback();
-    this.classList.add("nq-host");
-    injectFonts();
-    injectStyles("nq-base", baseCss);
-    injectStyles("nq-stat-strip", css);
-    const stopLocale = watchLocale(this);
-    const stopReveal = watchReveal(this);
+    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-brand-row", css);
+    const stopLocale = watchLocale(this), stopReveal = watchReveal(this);
     this.stop = () => {
-      stopLocale();
-      stopReveal();
+      stopLocale(), stopReveal();
     };
   }
   disconnectedCallback() {
-    this.stop();
-    super.disconnectedCallback();
+    this.stop(), super.disconnectedCallback();
   }
   render() {
-    const cfg = getConfig(this.config);
-    const items = getCollectionItems(cfg.items, "items").map((item) => ({ value: localizedString(item.value), label: localizedString(item.label) })).filter((item) => item.value);
-    return html3`<section id="nq-stats" class=${`nq-root nq-sec ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${localizedString(cfg.title) || "stats"}>
+    const cfg = getConfig(this.config), items = getCollectionItems(cfg.items, "items").map((item) => ({ name: localizedString(item.name), note: localizedString(item.note), image: String(item.image || "").trim(), url: String(item.url || "").trim() })).filter((item) => item.name), mark = /* @__PURE__ */ __name((item) => html`${item.image ? html`<img src=${item.image} alt="" />` : nothing}<b>${item.name}</b>${item.note ? html`<small>${item.note}</small>` : nothing}`, "mark");
+    return html`<section id="nq-brands" class=${`nq-root nq-sec ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${localizedString(cfg.title) || "brands"}>
       <div class="nq-wrap">
-        <div class="nq-stat-head">
-          ${localizedString(cfg.kicker) ? html3`<p class="nq-kicker">${localizedString(cfg.kicker)}</p>` : ""}
-          ${localizedString(cfg.title) ? html3`<h2 class="nq-h2">${localizedString(cfg.title)}</h2>` : ""}
-        </div>
-        ${items.length ? html3`<div class="nq-stats">${items.map((item, index) => html3`<article class="nq-stat nq-rev" style=${`--i:${index}`}><b>${item.value}</b><i aria-hidden="true"></i><span>${item.label}</span></article>`)}</div>` : emptyCopy()}
+        ${localizedString(cfg.title) ? html`<h2 class="nq-h2" style="text-align:center">${localizedString(cfg.title)}</h2>` : nothing}
+        ${items.length ? html`<div class="nq-brands">${items.map((item, index) => item.url ? html`<a class="nq-brand nq-rev" style=${`--i:${index}`} href=${item.url}>${mark(item)}</a>` : html`<span class="nq-brand nq-rev" style=${`--i:${index}`}>${mark(item)}</span>`)}</div>` : emptyCopy()}
       </div>
     </section>`;
   }
 };
-__name(_StatStrip, "StatStrip");
+__name(_BrandRow, "BrandRow");
+let BrandRow = _BrandRow;
 __decorateClass([
   property({ type: Object })
-], _StatStrip.prototype, "config", 2);
-var StatStrip = _StatStrip;
+], BrandRow.prototype, "config");
+typeof BrandRow < "u" && BrandRow.registerSallaComponent("salla-fabric-houses");
 export {
-  StatStrip as default
+  BrandRow as default
 };
-typeof StatStrip < "u" && StatStrip.registerSallaComponent("salla-stat-strip");

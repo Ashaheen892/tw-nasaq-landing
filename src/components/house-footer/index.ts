@@ -67,7 +67,7 @@ export default class PageFooter extends LitElement {
     this.classList.add("nq-host");
     injectFonts();
     injectStyles("nq-base", baseCss);
-    injectStyles("nq-announce", announceCss("nq"));
+    injectStyles("nq-announce", announceCss("nq", "arch"));
     injectStyles("nq-page-footer", css);
     const stopLocale = watchLocale(this);
     const onTone = () => { this.dark = currentTone() === "dark"; };
@@ -216,7 +216,7 @@ export default class PageFooter extends LitElement {
           <div class="nq-about">
             <a href="#" class="nq-flogo">${logo ? html`<img src=${logo} alt=${brand} />` : html`${brand}${mark ? html`<small>${mark}</small>` : nothing}`}</a>
             ${localizedString(cfg.about) ? html`<p>${localizedString(cfg.about)}</p>` : nothing}
-            ${pays.length ? html`<p class="nq-pay-size">${t({ ar: "أيقونات الدفع ٦٤×٦٤ بكسل", en: "Payment icons, 64×64 px" })}</p><div class="nq-pay">${pays.map((pay) => pay.image
+            ${pays.length ? html`<div class="nq-pay">${pays.map((pay) => pay.image
               ? html`<img src=${pay.image} alt=${pay.label} width="32" height="32" title=${pay.label} />`
               : html`<span>${pay.label}</span>`)}</div>` : nothing}
           </div>

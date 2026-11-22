@@ -1,38 +1,23 @@
 var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __decorateClass = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
-  for (var i = decorators.length - 1, decorator; i >= 0; i--)
-    if (decorator = decorators[i])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp(target, key, result);
-  return result;
-};
-
-// tw-nasaq-landing/src/components/piece-stage/index.ts
-import { html as html3, LitElement, nothing as nothing3 } from "lit";
+var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
+import { nothing, html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
-
-// tw-nasaq-landing/src/utils/config.ts
 function getConfig(raw) {
-  if (!raw) return {};
-  if (raw.component && typeof raw.component === "object") return raw.component;
-  return raw;
+  return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  const lang = window.Salla?.lang?.getLocale?.() || document.documentElement.lang || "ar";
+  var _a, _b, _c;
+  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
 function localizedString(value) {
-  if (value === null || value === void 0 || value === "") return "";
-  if (typeof value === "string") return value;
-  if (typeof value === "object") {
-    const obj = value;
-    const text = obj[getLocale()] || obj.ar || obj.en;
-    return typeof text === "string" ? text : "";
+  if (value == null || value === "") return "";
+  if (typeof value == "string") return value;
+  if (typeof value == "object") {
+    const obj = value, text = obj[getLocale()] || obj.ar || obj.en;
+    return typeof text == "string" ? text : "";
   }
   return String(value);
 }
@@ -42,16 +27,15 @@ function t(strings) {
 }
 __name(t, "t");
 function unwrapValue(value) {
-  if (Array.isArray(value)) return unwrapValue(value[0]?.value ?? value[0] ?? "");
-  if (value && typeof value === "object" && "value" in value) return value.value;
-  return value ?? "";
+  var _a;
+  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function linkHref(value) {
   if (value == null || value === "") return "";
-  if (typeof value === "string") return value.trim();
+  if (typeof value == "string") return value.trim();
   if (Array.isArray(value)) return linkHref(value[0]);
-  if (typeof value === "object") {
+  if (typeof value == "object") {
     const obj = value;
     if (obj.url) return linkHref(obj.url);
     if ("value" in obj) return linkHref(obj.value);
@@ -61,55 +45,51 @@ function linkHref(value) {
 }
 __name(linkHref, "linkHref");
 function getCollectionItems(items, prefix) {
-  if (!Array.isArray(items)) return [];
-  return items.map((item) => {
-    if (!item || typeof item !== "object") return {};
+  return Array.isArray(items) ? items.map((item) => {
+    if (!item || typeof item != "object") return {};
     const normalized = {};
-    for (const [key, val] of Object.entries(item)) {
+    for (const [key, val] of Object.entries(item))
       normalized[key.startsWith(`${prefix}.`) ? key.slice(prefix.length + 1) : key] = val;
-    }
     return normalized;
-  });
+  }) : [];
 }
 __name(getCollectionItems, "getCollectionItems");
 function watchLocale(host) {
   const update = /* @__PURE__ */ __name(() => host.requestUpdate(), "update");
-  window.addEventListener("language-changed", update);
-  return () => window.removeEventListener("language-changed", update);
+  return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
-
-// tw-nasaq-landing/src/utils/landing.ts
-import { html, nothing } from "lit";
 function salla() {
   return window.Salla;
 }
 __name(salla, "salla");
 function landingSettings() {
-  return salla()?.config?.get("theme.settings") || {};
+  var _a, _b;
+  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("theme.settings")) || {};
 }
 __name(landingSettings, "landingSettings");
 function isLandingPage() {
-  return salla()?.config?.get("page.is_landing_page") === true;
+  var _a, _b;
+  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("page.is_landing_page")) === !0;
 }
 __name(isLandingPage, "isLandingPage");
 function pageMode() {
+  var _a;
   const value = landingSettings().page_for_product;
-  if (typeof value === "boolean" || value == null) return value === false ? "promotion" : "product";
-  if (typeof value === "string") return value === "promotion" ? "promotion" : "product";
-  return Array.isArray(value) && value[0]?.value === "promotion" ? "promotion" : "product";
+  return typeof value == "boolean" || value == null ? value === !1 ? "promotion" : "product" : typeof value == "string" ? value === "promotion" ? "promotion" : "product" : Array.isArray(value) && ((_a = value[0]) == null ? void 0 : _a.value) === "promotion" ? "promotion" : "product";
 }
 __name(pageMode, "pageMode");
 function landingProductId() {
+  var _a, _b;
   if (!isLandingPage() || pageMode() !== "product") return null;
-  const id = landingSettings().product?.value?.[0];
+  const id = (_b = (_a = landingSettings().product) == null ? void 0 : _a.value) == null ? void 0 : _b[0];
   return id ? String(id) : null;
 }
 __name(landingProductId, "landingProductId");
 function pickedId(value) {
   const first = Array.isArray(value) ? value[0] : value;
   if (first == null || first === "") return null;
-  if (typeof first === "object") {
+  if (typeof first == "object") {
     const id = first.value ?? first.id;
     return id ? String(id) : null;
   }
@@ -117,12 +97,13 @@ function pickedId(value) {
 }
 __name(pickedId, "pickedId");
 async function fetchProduct(id) {
+  var _a, _b, _c, _d;
   const api = window.Salla;
-  if (!id || !api?.product?.api?.getDetails) return null;
+  if (!id || !((_b = (_a = api == null ? void 0 : api.product) == null ? void 0 : _a.api) != null && _b.getDetails)) return null;
   try {
-    await api.onReady?.();
+    await ((_c = api.onReady) == null ? void 0 : _c.call(api));
     const res = await api.product.api.getDetails(id, ["images", "rating", "options"]);
-    return res?.data?.id ? res.data : null;
+    return (_d = res == null ? void 0 : res.data) != null && _d.id ? res.data : null;
   } catch {
     return null;
   }
@@ -130,7 +111,7 @@ async function fetchProduct(id) {
 __name(fetchProduct, "fetchProduct");
 function money(amount) {
   const api = window.Salla;
-  return api?.money ? api.money(amount) : String(amount);
+  return api != null && api.money ? api.money(amount) : String(amount);
 }
 __name(money, "money");
 function mainButton() {
@@ -139,8 +120,7 @@ function mainButton() {
 }
 __name(mainButton, "mainButton");
 function openCheckout() {
-  const checkout = document.querySelector(".s-block--fast-checkout");
-  const layout = checkout?.getAttribute("data-layout");
+  const checkout = document.querySelector(".s-block--fast-checkout"), layout = checkout == null ? void 0 : checkout.getAttribute("data-layout");
   if (window.innerWidth < 1024 || layout === "side-drawer" || !checkout) {
     window.dispatchEvent(new CustomEvent("open-checkout-drawer"));
     return;
@@ -151,55 +131,55 @@ __name(openCheckout, "openCheckout");
 function renderCta(labelValue, fallbackUrl = "", tone = "solid") {
   const label = localizedString(labelValue).trim();
   if (!label) return nothing;
-  const cls = tone === "ghost" ? "nq-btn ghost" : tone === "light" ? "nq-btn light" : "nq-btn";
-  const productPage = Boolean(landingProductId());
-  const demo = !isLandingPage();
-  if (productPage || demo && !fallbackUrl) {
+  const cls = tone === "ghost" ? "nq-btn ghost" : tone === "light" ? "nq-btn light" : "nq-btn", productPage = !!landingProductId(), demo = !isLandingPage();
+  if (productPage || demo && !fallbackUrl)
     return html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
-  }
   const href = (isLandingPage() && pageMode() === "promotion" ? mainButton().url : "") || fallbackUrl;
-  if (!href) return html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
-  return html`<a class=${cls} href=${href}>${label}</a>`;
+  return href ? html`<a class=${cls} href=${href}>${label}</a>` : html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
 }
 __name(renderCta, "renderCta");
 function schemeOf(cfg) {
   const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
-  if (scheme === "dark") return "nq-dark";
-  if (scheme === "light") return "nq-light";
-  return "nq-auto";
+  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
 }
 __name(schemeOf, "schemeOf");
-
-// tw-nasaq-landing/src/utils/styles.ts
-function injectStyles(id, css2) {
-  let style = document.getElementById(id);
-  if (!style) {
-    style = document.createElement("style");
-    style.id = id;
-    document.head.appendChild(style);
+function markEditing() {
+  var _a, _b;
+  const root = document.documentElement, read = /* @__PURE__ */ __name(() => {
+    var _a2, _b2;
+    let on = !0;
+    try {
+      const salla2 = window.Salla;
+      on = window.self !== window.top || ((_b2 = (_a2 = salla2 == null ? void 0 : salla2.config) == null ? void 0 : _a2.get) == null ? void 0 : _b2.call(_a2, "page.is_landing_page")) !== !0;
+    } catch {
+      on = !0;
+    }
+    root.dataset.lpEditing = on ? "1" : "0";
+  }, "read");
+  if (!root.dataset.lpEditing) {
+    read();
+    try {
+      (_b = (_a = window.Salla) == null ? void 0 : _a.onReady) == null || _b.call(_a, read);
+    } catch {
+    }
   }
-  if (style.textContent !== css2) style.textContent = css2;
+}
+__name(markEditing, "markEditing");
+function injectStyles(id, css2) {
+  markEditing();
+  let style = document.getElementById(id);
+  style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
 }
 __name(injectStyles, "injectStyles");
-var KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
 function setKitFont(on) {
-  document.documentElement.classList.toggle("nq-kit-font", on);
-  const current = document.getElementById("nq-fonts");
-  if (!on) {
-    current?.remove();
-    return;
-  }
-  if (current) return;
+  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
   const link = document.createElement("link");
-  link.id = "nq-fonts";
-  link.rel = "stylesheet";
-  link.href = KIT_FONT;
-  document.head.appendChild(link);
+  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
 }
 __name(setKitFont, "setKitFont");
 function injectFonts() {
-  if (!document.documentElement.classList.contains("nq-kit-font")) return;
-  setKitFont(true);
+  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -207,32 +187,21 @@ function sectionStyle(cfg) {
 }
 __name(sectionStyle, "sectionStyle");
 function watchReveal(host) {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduced) {
-    host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in"));
-    return () => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    return host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in")), () => {
     };
-  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add("in");
-      io.unobserve(entry.target);
+      entry.isIntersecting && (entry.target.classList.add("in"), io.unobserve(entry.target));
     });
-  }, { threshold: 0.14 });
-  const scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan");
-  const mo = new MutationObserver(scan);
-  mo.observe(host, { childList: true, subtree: true });
-  scan();
-  return () => {
-    io.disconnect();
-    mo.disconnect();
+  }, { threshold: 0.14 }), scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan"), mo = new MutationObserver(scan);
+  return mo.observe(host, { childList: !0, subtree: !0 }), scan(), () => {
+    io.disconnect(), mo.disconnect();
   };
 }
 __name(watchReveal, "watchReveal");
-var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
-var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
-var baseCss = `
+const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
+html[data-lp-editing="0"] .nq-empty, html[data-lp-editing="0"] .nq-hint { display: none !important; }
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -291,21 +260,17 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
   .nq-mq-track { animation: none !important; }
 }
 `;
-
-// tw-nasaq-landing/src/utils/ui.ts
-import { html as html2, nothing as nothing2 } from "lit";
 function silhouette() {
-  return html2`<svg class="nq-silhouette" viewBox="0 0 100 160" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="M50 18c6 0 9 4 9 9 0 5-2 7-2 10l14 7c6 3 9 8 10 15l6 81H13l6-81c1-7 4-12 10-15l14-7c0-3-2-5-2-10 0-5 3-9 9-9z" fill="rgba(16,16,20,.34)"/></svg>`;
+  return html`<svg class="nq-silhouette" viewBox="0 0 100 160" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="M50 18c6 0 9 4 9 9 0 5-2 7-2 10l14 7c6 3 9 8 10 15l6 81H13l6-81c1-7 4-12 10-15l14-7c0-3-2-5-2-10 0-5 3-9 9-9z" fill="rgba(16,16,20,.34)"/></svg>`;
 }
 __name(silhouette, "silhouette");
 function textOf(value) {
-  if (typeof value === "string") return value;
-  return localizedString(value);
+  return typeof value == "string" ? value : localizedString(value);
 }
 __name(textOf, "textOf");
 function amountOf(value) {
-  if (typeof value === "number" && Number.isFinite(value)) return value;
-  if (value && typeof value === "object" && "amount" in value) {
+  if (typeof value == "number" && Number.isFinite(value)) return value;
+  if (value && typeof value == "object" && "amount" in value) {
     const n = Number(value.amount);
     return Number.isFinite(n) ? n : null;
   }
@@ -313,12 +278,16 @@ function amountOf(value) {
 }
 __name(amountOf, "amountOf");
 function linesOf(value) {
-  return localizedString(value).split("\n").map((line) => line.trim()).filter(Boolean);
+  return localizedString(value).split(`
+`).map((line) => line.trim()).filter(Boolean);
 }
 __name(linesOf, "linesOf");
-
-// tw-nasaq-landing/src/components/piece-stage/index.ts
-var css = `
+var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name((decorators, target, key, kind) => {
+  for (var result = void 0, i = decorators.length - 1, decorator; i >= 0; i--)
+    (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
+  return result && __defProp2(target, key, result), result;
+}, "__decorateClass");
+const css = `
 .nq-piece { background: var(--nq-section-bg, var(--ivory)); }
 .nq-sp-g { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(26px, 5vw, 70px); align-items: center; }
 .nq-gal { display: grid; gap: 12px; grid-template-columns: 76px 1fr; }
@@ -350,166 +319,129 @@ var css = `
 .nq-panel ul { margin: 0; padding-inline-start: 18px; }
 .nq-hero-cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
 @container (max-width: 880px) { .nq-sp-g { grid-template-columns: 1fr; } }
-`;
-var _PieceStage = class _PieceStage extends LitElement {
+`, _PieceStage = class _PieceStage extends LitElement {
   constructor() {
-    super(...arguments);
-    this.product = null;
-    this.photo = 0;
-    this.size = "";
-    this.color = "";
-    this.tab = 0;
-    this.loadedId = "";
-    this.stop = /* @__PURE__ */ __name(() => {
-    }, "stop");
+    super(...arguments), this.product = null, this.photo = 0, this.size = "", this.color = "", this.tab = 0, this.loadedId = "", this.stop = () => {
+    };
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
-    super.connectedCallback();
-    this.classList.add("nq-host");
-    injectFonts();
-    injectStyles("nq-base", baseCss);
-    injectStyles("nq-piece-stage", css);
-    const stopLocale = watchLocale(this);
-    const stopReveal = watchReveal(this);
+    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-piece-stage", css);
+    const stopLocale = watchLocale(this), stopReveal = watchReveal(this);
     this.stop = () => {
-      stopLocale();
-      stopReveal();
+      stopLocale(), stopReveal();
     };
   }
   disconnectedCallback() {
-    this.stop();
-    super.disconnectedCallback();
+    this.stop(), super.disconnectedCallback();
   }
   updated() {
-    const cfg = getConfig(this.config);
-    const id = pickedId(cfg.product) || landingProductId() || "";
-    if (id && id !== this.loadedId) {
-      this.loadedId = id;
-      fetchProduct(id).then((product) => {
-        if (this.loadedId === id) this.product = product;
-      });
-    }
-    if (!id && this.loadedId) {
-      this.loadedId = "";
-      this.product = null;
-    }
+    const cfg = getConfig(this.config), id = pickedId(cfg.product) || landingProductId() || "";
+    id && id !== this.loadedId && (this.loadedId = id, fetchProduct(id).then((product) => {
+      this.loadedId === id && (this.product = product);
+    })), !id && this.loadedId && (this.loadedId = "", this.product = null);
   }
   render() {
-    const cfg = getConfig(this.config);
-    const photos = this.photos(cfg);
-    const sizes = this.sizes(cfg);
-    const colors = this.colors(cfg);
-    const tabs = this.tabs(cfg);
-    const active = photos[this.photo] || photos[0];
-    const title = textOf(this.product?.name) || localizedString(cfg.title);
-    const price = this.price(cfg);
-    const rating = this.rating(cfg);
-    const sizeLabel = this.size || sizes.find((item) => item.picked && !item.disabled)?.label || sizes.find((item) => !item.disabled)?.label || "";
-    const colorLabel = this.color || colors.find((item) => item.picked)?.label || colors[0]?.label || "";
-    const id = String(cfg.anchor || "product");
-    return html3`<section class=${`nq-root nq-sec nq-piece ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "product"}>
+    var _a, _b, _c, _d, _e;
+    const cfg = getConfig(this.config), photos = this.photos(cfg), sizes = this.sizes(cfg), colors = this.colors(cfg), tabs = this.tabs(cfg), active = photos[this.photo] || photos[0], title = textOf((_a = this.product) == null ? void 0 : _a.name) || localizedString(cfg.title), price = this.price(cfg), rating = this.rating(cfg), sizeLabel = this.size || ((_b = sizes.find((item) => item.picked && !item.disabled)) == null ? void 0 : _b.label) || ((_c = sizes.find((item) => !item.disabled)) == null ? void 0 : _c.label) || "", colorLabel = this.color || ((_d = colors.find((item) => item.picked)) == null ? void 0 : _d.label) || ((_e = colors[0]) == null ? void 0 : _e.label) || "", id = String(cfg.anchor || "product");
+    return html`<section class=${`nq-root nq-sec nq-piece ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "product"}>
       <div class="nq-wrap nq-sp-g">
         <div class="nq-gal nq-rev">
-          ${photos.length > 1 ? html3`<div class="nq-thumbs">
-            ${photos.map((item, index) => html3`<button type="button" class="nq-thumb" aria-label=${item.caption || String(index + 1)} aria-selected=${String(index === this.photo)} @click=${() => {
+          ${photos.length > 1 ? html`<div class="nq-thumbs">
+            ${photos.map((item, index) => html`<button type="button" class="nq-thumb" aria-label=${item.caption || String(index + 1)} aria-selected=${String(index === this.photo)} @click=${() => {
       this.photo = index;
     }}>
-              ${item.image ? html3`<img src=${item.image} alt="" />` : nothing3}
+              ${item.image ? html`<img src=${item.image} alt="" />` : nothing}
             </button>`)}
-          </div>` : nothing3}
+          </div>` : nothing}
           <div class="nq-ph">
-            ${active?.image ? html3`<img src=${active.image} alt=${active.caption || title} />` : silhouette()}
-            ${active?.caption ? html3`<figure><figcaption>${active.caption}</figcaption></figure>` : nothing3}
+            ${active != null && active.image ? html`<img src=${active.image} alt=${active.caption || title} />` : silhouette()}
+            ${active != null && active.caption ? html`<figure><figcaption>${active.caption}</figcaption></figure>` : nothing}
           </div>
         </div>
         <div class="nq-rev">
-          ${localizedString(cfg.kicker) ? html3`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing3}
-          ${title ? html3`<h2>${title}</h2>` : nothing3}
-          ${rating ? html3`<div class="nq-stars">★★★★★ <small>${rating}</small></div>` : nothing3}
+          ${localizedString(cfg.kicker) ? html`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing}
+          ${title ? html`<h2>${title}</h2>` : nothing}
+          ${rating ? html`<div class="nq-stars">★★★★★ <small>${rating}</small></div>` : nothing}
           <div class="nq-price-row">
-            ${price.current ? html3`<b>${price.current}</b>` : nothing3}
-            ${price.compare ? html3`<s>${price.compare}</s>` : nothing3}
-            ${price.save ? html3`<span class="nq-off">${price.save}</span>` : nothing3}
+            ${price.current ? html`<b>${price.current}</b>` : nothing}
+            ${price.compare ? html`<s>${price.compare}</s>` : nothing}
+            ${price.save ? html`<span class="nq-off">${price.save}</span>` : nothing}
           </div>
-          ${localizedString(cfg.text) && !this.product ? html3`<p class="nq-lead">${localizedString(cfg.text)}</p>` : nothing3}
-          ${this.product && textOf(this.product.promotion_title) ? html3`<p class="nq-lead">${textOf(this.product.promotion_title)}</p>` : nothing3}
-          ${sizes.length ? html3`<div class="nq-opts">
-            <h4>${localizedString(cfg.size_label) || t({ ar: "\u0627\u0644\u0645\u0642\u0627\u0633", en: "Size" })}</h4>
+          ${localizedString(cfg.text) && !this.product ? html`<p class="nq-lead">${localizedString(cfg.text)}</p>` : nothing}
+          ${this.product && textOf(this.product.promotion_title) ? html`<p class="nq-lead">${textOf(this.product.promotion_title)}</p>` : nothing}
+          ${sizes.length ? html`<div class="nq-opts">
+            <h4>${localizedString(cfg.size_label) || t({ ar: "المقاس", en: "Size" })}</h4>
             <div class="nq-sizes">
-              ${sizes.map((item) => html3`<button type="button" class="nq-size" ?disabled=${item.disabled} aria-pressed=${String(sizeLabel === item.label)} @click=${() => {
+              ${sizes.map((item) => html`<button type="button" class="nq-size" ?disabled=${item.disabled} aria-pressed=${String(sizeLabel === item.label)} @click=${() => {
       this.size = item.label;
     }}>${item.label}</button>`)}
             </div>
-          </div>` : nothing3}
-          ${colors.length ? html3`<div class="nq-opts">
-            <h4>${localizedString(cfg.color_label) || t({ ar: "\u0627\u0644\u0644\u0648\u0646", en: "Color" })}</h4>
+          </div>` : nothing}
+          ${colors.length ? html`<div class="nq-opts">
+            <h4>${localizedString(cfg.color_label) || t({ ar: "اللون", en: "Color" })}</h4>
             <div class="nq-swatches">
-              ${colors.map((item) => html3`<button type="button" class="nq-sw" style=${`background:${item.hex}`} aria-label=${item.label} aria-pressed=${String(colorLabel === item.label)} @click=${() => {
+              ${colors.map((item) => html`<button type="button" class="nq-sw" style=${`background:${item.hex}`} aria-label=${item.label} aria-pressed=${String(colorLabel === item.label)} @click=${() => {
       this.color = item.label;
     }}></button>`)}
             </div>
-          </div>` : nothing3}
+          </div>` : nothing}
           <div class="nq-hero-cta">
             ${renderCta(cfg.primary_label, linkHref(cfg.primary_url))}
-            ${localizedString(cfg.secondary_label) && linkHref(cfg.secondary_url) ? html3`<a class="nq-btn ghost" href=${linkHref(cfg.secondary_url)}>${localizedString(cfg.secondary_label)}</a>` : nothing3}
+            ${localizedString(cfg.secondary_label) && linkHref(cfg.secondary_url) ? html`<a class="nq-btn ghost" href=${linkHref(cfg.secondary_url)}>${localizedString(cfg.secondary_label)}</a>` : nothing}
           </div>
-          ${tabs.length ? html3`<div class="nq-tabs" role="tablist">
-            ${tabs.map((item, index) => html3`<button type="button" class="nq-tab" role="tab" aria-selected=${String(this.tab === index)} @click=${() => {
+          ${tabs.length ? html`<div class="nq-tabs" role="tablist">
+            ${tabs.map((item, index) => html`<button type="button" class="nq-tab" role="tab" aria-selected=${String(this.tab === index)} @click=${() => {
       this.tab = index;
     }}>${item.label}</button>`)}
           </div>
-          ${tabs.map((item, index) => html3`<div class="nq-panel" role="tabpanel" ?hidden=${this.tab !== index}><ul>${item.lines.map((line) => html3`<li>${line}</li>`)}</ul></div>`)}` : nothing3}
+          ${tabs.map((item, index) => html`<div class="nq-panel" role="tabpanel" ?hidden=${this.tab !== index}><ul>${item.lines.map((line) => html`<li>${line}</li>`)}</ul></div>`)}` : nothing}
         </div>
       </div>
     </section>`;
   }
   photos(cfg) {
-    const remote = Array.isArray(this.product?.images) ? this.product.images.map((item) => String(item?.url || "")).filter(Boolean).map((image) => ({ image, caption: textOf(this.product?.name) })) : [];
-    if (remote.length) return remote;
-    return getCollectionItems(cfg.photos, "photos").map((item) => ({ image: String(item.image || ""), caption: localizedString(item.caption) })).filter((item) => item.caption || item.image);
+    var _a;
+    const remote = Array.isArray((_a = this.product) == null ? void 0 : _a.images) ? this.product.images.map((item) => String((item == null ? void 0 : item.url) || "")).filter(Boolean).map((image) => {
+      var _a2;
+      return { image, caption: textOf((_a2 = this.product) == null ? void 0 : _a2.name) };
+    }) : [];
+    return remote.length ? remote : getCollectionItems(cfg.photos, "photos").map((item) => ({ image: String(item.image || ""), caption: localizedString(item.caption) })).filter((item) => item.caption || item.image);
   }
   sizes(cfg) {
     const remote = this.optionValues(cfg.size_label);
-    if (remote.length) return remote;
-    return getCollectionItems(cfg.sizes, "sizes").map((item) => ({
+    return remote.length ? remote : getCollectionItems(cfg.sizes, "sizes").map((item) => ({
       label: localizedString(item.label),
-      disabled: item.available === false || item.available === "false",
-      picked: item.picked === true || item.picked === "true"
+      disabled: item.available === !1 || item.available === "false",
+      picked: item.picked === !0 || item.picked === "true"
     })).filter((item) => item.label);
   }
   colors(cfg) {
     return getCollectionItems(cfg.colors, "colors").map((item) => ({
       label: localizedString(item.label),
       hex: String(item.hex || "#15151a"),
-      picked: item.picked === true || item.picked === "true"
+      picked: item.picked === !0 || item.picked === "true"
     })).filter((item) => item.label);
   }
   tabs(cfg) {
     return getCollectionItems(cfg.tabs, "tabs").map((item) => ({ label: localizedString(item.label), lines: linesOf(item.lines) })).filter((item) => item.label && item.lines.length);
   }
   optionValues(label) {
-    const options = Array.isArray(this.product?.options) ? this.product.options : [];
-    const wanted = localizedString(label);
-    const match = options.find((option) => textOf(option?.name) === wanted) || options[0];
-    const values = Array.isArray(match?.values) ? match.values : [];
-    if (!values.length || options.length > 2) return [];
-    return values.map((value) => ({
-      label: textOf(value?.name || value?.option_value),
-      disabled: Boolean(value?.is_out_of_stock || value?.is_out),
-      picked: false
+    var _a;
+    const options = Array.isArray((_a = this.product) == null ? void 0 : _a.options) ? this.product.options : [], wanted = localizedString(label), match = options.find((option) => textOf(option == null ? void 0 : option.name) === wanted) || options[0], values = Array.isArray(match == null ? void 0 : match.values) ? match.values : [];
+    return !values.length || options.length > 2 ? [] : values.map((value) => ({
+      label: textOf((value == null ? void 0 : value.name) || (value == null ? void 0 : value.option_value)),
+      disabled: !!(value != null && value.is_out_of_stock || value != null && value.is_out),
+      picked: !1
     })).filter((item) => item.label);
   }
   price(cfg) {
-    const sale = amountOf(this.product?.sale_price);
-    const regular = amountOf(this.product?.regular_price);
-    const currentAmount = amountOf(this.product?.price);
+    var _a, _b, _c;
+    const sale = amountOf((_a = this.product) == null ? void 0 : _a.sale_price), regular = amountOf((_b = this.product) == null ? void 0 : _b.regular_price), currentAmount = amountOf((_c = this.product) == null ? void 0 : _c.price);
     if (this.product && (sale || currentAmount)) {
-      const current = sale && sale > 0 ? sale : currentAmount;
-      const compare = regular && current && regular > current ? regular : null;
-      const save = compare && current ? localizedString(cfg.save_label).replace("{n}", String(Math.round((1 - current / compare) * 100))) : "";
+      const current = sale && sale > 0 ? sale : currentAmount, compare = regular && current && regular > current ? regular : null, save = compare && current ? localizedString(cfg.save_label).replace("{n}", String(Math.round((1 - current / compare) * 100))) : "";
       return {
         current: current != null ? money(current) : "",
         compare: compare != null ? money(compare) : "",
@@ -523,36 +455,36 @@ var _PieceStage = class _PieceStage extends LitElement {
     };
   }
   rating(cfg) {
-    const stars = Number(this.product?.rating?.stars ?? this.product?.rating?.average);
-    const count = Number(this.product?.rating?.count ?? this.product?.rating?.total_count);
+    var _a, _b, _c, _d, _e, _f, _g, _h;
+    const stars = Number(((_b = (_a = this.product) == null ? void 0 : _a.rating) == null ? void 0 : _b.stars) ?? ((_d = (_c = this.product) == null ? void 0 : _c.rating) == null ? void 0 : _d.average)), count = Number(((_f = (_e = this.product) == null ? void 0 : _e.rating) == null ? void 0 : _f.count) ?? ((_h = (_g = this.product) == null ? void 0 : _g.rating) == null ? void 0 : _h.total_count));
     if (Number.isFinite(stars) && stars > 0) {
       const score = stars.toFixed(1);
-      return count > 0 ? t({ ar: `${score} \u0645\u0646 ${count} \u062A\u0642\u064A\u064A\u0645\u0627\u064B`, en: `${score} from ${count} reviews` }) : score;
+      return count > 0 ? t({ ar: `${score} من ${count} تقييماً`, en: `${score} from ${count} reviews` }) : score;
     }
     return localizedString(cfg.rating_text);
   }
 };
 __name(_PieceStage, "PieceStage");
+let PieceStage = _PieceStage;
 __decorateClass([
   property({ type: Object })
-], _PieceStage.prototype, "config", 2);
+], PieceStage.prototype, "config");
 __decorateClass([
   state()
-], _PieceStage.prototype, "product", 2);
+], PieceStage.prototype, "product");
 __decorateClass([
   state()
-], _PieceStage.prototype, "photo", 2);
+], PieceStage.prototype, "photo");
 __decorateClass([
   state()
-], _PieceStage.prototype, "size", 2);
+], PieceStage.prototype, "size");
 __decorateClass([
   state()
-], _PieceStage.prototype, "color", 2);
+], PieceStage.prototype, "color");
 __decorateClass([
   state()
-], _PieceStage.prototype, "tab", 2);
-var PieceStage = _PieceStage;
+], PieceStage.prototype, "tab");
+typeof PieceStage < "u" && PieceStage.registerSallaComponent("salla-piece-stage");
 export {
   PieceStage as default
 };
-typeof PieceStage < "u" && PieceStage.registerSallaComponent("salla-piece-stage");

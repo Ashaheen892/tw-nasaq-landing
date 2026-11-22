@@ -1,53 +1,37 @@
 var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __decorateClass = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
-  for (var i = decorators.length - 1, decorator; i >= 0; i--)
-    if (decorator = decorators[i])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp(target, key, result);
-  return result;
-};
-
-// tw-nasaq-landing/src/components/close-invite/index.ts
-import { html as html2, LitElement, nothing as nothing2 } from "lit";
+var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
+import { nothing, html, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-
-// tw-nasaq-landing/src/utils/config.ts
 function getConfig(raw) {
-  if (!raw) return {};
-  if (raw.component && typeof raw.component === "object") return raw.component;
-  return raw;
+  return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  const lang = window.Salla?.lang?.getLocale?.() || document.documentElement.lang || "ar";
+  var _a, _b, _c;
+  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
 function localizedString(value) {
-  if (value === null || value === void 0 || value === "") return "";
-  if (typeof value === "string") return value;
-  if (typeof value === "object") {
-    const obj = value;
-    const text = obj[getLocale()] || obj.ar || obj.en;
-    return typeof text === "string" ? text : "";
+  if (value == null || value === "") return "";
+  if (typeof value == "string") return value;
+  if (typeof value == "object") {
+    const obj = value, text = obj[getLocale()] || obj.ar || obj.en;
+    return typeof text == "string" ? text : "";
   }
   return String(value);
 }
 __name(localizedString, "localizedString");
 function unwrapValue(value) {
-  if (Array.isArray(value)) return unwrapValue(value[0]?.value ?? value[0] ?? "");
-  if (value && typeof value === "object" && "value" in value) return value.value;
-  return value ?? "";
+  var _a;
+  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function linkHref(value) {
   if (value == null || value === "") return "";
-  if (typeof value === "string") return value.trim();
+  if (typeof value == "string") return value.trim();
   if (Array.isArray(value)) return linkHref(value[0]);
-  if (typeof value === "object") {
+  if (typeof value == "object") {
     const obj = value;
     if (obj.url) return linkHref(obj.url);
     if ("value" in obj) return linkHref(obj.value);
@@ -57,48 +41,44 @@ function linkHref(value) {
 }
 __name(linkHref, "linkHref");
 function getCollectionItems(items, prefix) {
-  if (!Array.isArray(items)) return [];
-  return items.map((item) => {
-    if (!item || typeof item !== "object") return {};
+  return Array.isArray(items) ? items.map((item) => {
+    if (!item || typeof item != "object") return {};
     const normalized = {};
-    for (const [key, val] of Object.entries(item)) {
+    for (const [key, val] of Object.entries(item))
       normalized[key.startsWith(`${prefix}.`) ? key.slice(prefix.length + 1) : key] = val;
-    }
     return normalized;
-  });
+  }) : [];
 }
 __name(getCollectionItems, "getCollectionItems");
 function watchLocale(host) {
   const update = /* @__PURE__ */ __name(() => host.requestUpdate(), "update");
-  window.addEventListener("language-changed", update);
-  return () => window.removeEventListener("language-changed", update);
+  return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
-
-// tw-nasaq-landing/src/utils/landing.ts
-import { html, nothing } from "lit";
 function salla() {
   return window.Salla;
 }
 __name(salla, "salla");
 function landingSettings() {
-  return salla()?.config?.get("theme.settings") || {};
+  var _a, _b;
+  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("theme.settings")) || {};
 }
 __name(landingSettings, "landingSettings");
 function isLandingPage() {
-  return salla()?.config?.get("page.is_landing_page") === true;
+  var _a, _b;
+  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("page.is_landing_page")) === !0;
 }
 __name(isLandingPage, "isLandingPage");
 function pageMode() {
+  var _a;
   const value = landingSettings().page_for_product;
-  if (typeof value === "boolean" || value == null) return value === false ? "promotion" : "product";
-  if (typeof value === "string") return value === "promotion" ? "promotion" : "product";
-  return Array.isArray(value) && value[0]?.value === "promotion" ? "promotion" : "product";
+  return typeof value == "boolean" || value == null ? value === !1 ? "promotion" : "product" : typeof value == "string" ? value === "promotion" ? "promotion" : "product" : Array.isArray(value) && ((_a = value[0]) == null ? void 0 : _a.value) === "promotion" ? "promotion" : "product";
 }
 __name(pageMode, "pageMode");
 function landingProductId() {
+  var _a, _b;
   if (!isLandingPage() || pageMode() !== "product") return null;
-  const id = landingSettings().product?.value?.[0];
+  const id = (_b = (_a = landingSettings().product) == null ? void 0 : _a.value) == null ? void 0 : _b[0];
   return id ? String(id) : null;
 }
 __name(landingProductId, "landingProductId");
@@ -108,8 +88,7 @@ function mainButton() {
 }
 __name(mainButton, "mainButton");
 function openCheckout() {
-  const checkout = document.querySelector(".s-block--fast-checkout");
-  const layout = checkout?.getAttribute("data-layout");
+  const checkout = document.querySelector(".s-block--fast-checkout"), layout = checkout == null ? void 0 : checkout.getAttribute("data-layout");
   if (window.innerWidth < 1024 || layout === "side-drawer" || !checkout) {
     window.dispatchEvent(new CustomEvent("open-checkout-drawer"));
     return;
@@ -120,55 +99,55 @@ __name(openCheckout, "openCheckout");
 function renderCta(labelValue, fallbackUrl = "", tone = "solid") {
   const label = localizedString(labelValue).trim();
   if (!label) return nothing;
-  const cls = tone === "ghost" ? "nq-btn ghost" : tone === "light" ? "nq-btn light" : "nq-btn";
-  const productPage = Boolean(landingProductId());
-  const demo = !isLandingPage();
-  if (productPage || demo && !fallbackUrl) {
+  const cls = tone === "ghost" ? "nq-btn ghost" : tone === "light" ? "nq-btn light" : "nq-btn", productPage = !!landingProductId(), demo = !isLandingPage();
+  if (productPage || demo && !fallbackUrl)
     return html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
-  }
   const href = (isLandingPage() && pageMode() === "promotion" ? mainButton().url : "") || fallbackUrl;
-  if (!href) return html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
-  return html`<a class=${cls} href=${href}>${label}</a>`;
+  return href ? html`<a class=${cls} href=${href}>${label}</a>` : html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
 }
 __name(renderCta, "renderCta");
 function schemeOf(cfg) {
   const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
-  if (scheme === "dark") return "nq-dark";
-  if (scheme === "light") return "nq-light";
-  return "nq-auto";
+  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
 }
 __name(schemeOf, "schemeOf");
-
-// tw-nasaq-landing/src/utils/styles.ts
-function injectStyles(id, css2) {
-  let style = document.getElementById(id);
-  if (!style) {
-    style = document.createElement("style");
-    style.id = id;
-    document.head.appendChild(style);
+function markEditing() {
+  var _a, _b;
+  const root = document.documentElement, read = /* @__PURE__ */ __name(() => {
+    var _a2, _b2;
+    let on = !0;
+    try {
+      const salla2 = window.Salla;
+      on = window.self !== window.top || ((_b2 = (_a2 = salla2 == null ? void 0 : salla2.config) == null ? void 0 : _a2.get) == null ? void 0 : _b2.call(_a2, "page.is_landing_page")) !== !0;
+    } catch {
+      on = !0;
+    }
+    root.dataset.lpEditing = on ? "1" : "0";
+  }, "read");
+  if (!root.dataset.lpEditing) {
+    read();
+    try {
+      (_b = (_a = window.Salla) == null ? void 0 : _a.onReady) == null || _b.call(_a, read);
+    } catch {
+    }
   }
-  if (style.textContent !== css2) style.textContent = css2;
+}
+__name(markEditing, "markEditing");
+function injectStyles(id, css2) {
+  markEditing();
+  let style = document.getElementById(id);
+  style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
 }
 __name(injectStyles, "injectStyles");
-var KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
 function setKitFont(on) {
-  document.documentElement.classList.toggle("nq-kit-font", on);
-  const current = document.getElementById("nq-fonts");
-  if (!on) {
-    current?.remove();
-    return;
-  }
-  if (current) return;
+  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
   const link = document.createElement("link");
-  link.id = "nq-fonts";
-  link.rel = "stylesheet";
-  link.href = KIT_FONT;
-  document.head.appendChild(link);
+  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
 }
 __name(setKitFont, "setKitFont");
 function injectFonts() {
-  if (!document.documentElement.classList.contains("nq-kit-font")) return;
-  setKitFont(true);
+  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -176,32 +155,21 @@ function sectionStyle(cfg) {
 }
 __name(sectionStyle, "sectionStyle");
 function watchReveal(host) {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduced) {
-    host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in"));
-    return () => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    return host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in")), () => {
     };
-  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add("in");
-      io.unobserve(entry.target);
+      entry.isIntersecting && (entry.target.classList.add("in"), io.unobserve(entry.target));
     });
-  }, { threshold: 0.14 });
-  const scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan");
-  const mo = new MutationObserver(scan);
-  mo.observe(host, { childList: true, subtree: true });
-  scan();
-  return () => {
-    io.disconnect();
-    mo.disconnect();
+  }, { threshold: 0.14 }), scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan"), mo = new MutationObserver(scan);
+  return mo.observe(host, { childList: !0, subtree: !0 }), scan(), () => {
+    io.disconnect(), mo.disconnect();
   };
 }
 __name(watchReveal, "watchReveal");
-var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
-var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
-var baseCss = `
+const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
+html[data-lp-editing="0"] .nq-empty, html[data-lp-editing="0"] .nq-hint { display: none !important; }
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -260,9 +228,12 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
   .nq-mq-track { animation: none !important; }
 }
 `;
-
-// tw-nasaq-landing/src/components/close-invite/index.ts
-var css = `
+var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name((decorators, target, key, kind) => {
+  for (var result = void 0, i = decorators.length - 1, decorator; i >= 0; i--)
+    (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
+  return result && __defProp2(target, key, result), result;
+}, "__decorateClass");
+const css = `
 .nq-fin { background: var(--nq-section-bg, linear-gradient(160deg, var(--sand) 0%, var(--sand-2) 100%)); position: relative; overflow: hidden; text-align: center; }
 .nq-fin::before { content: ""; position: absolute; inset: clamp(18px, 3vw, 36px); border: 1px solid rgba(255,255,255,.6); pointer-events: none; }
 .nq-fin-in { position: relative; z-index: 2; max-width: 62ch; margin-inline: auto; }
@@ -270,60 +241,47 @@ var css = `
 .nq-fin p { color: var(--ink-soft); margin: 0 0 30px; }
 .nq-fin .nq-cta { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
 .nq-perks { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin-top: 34px; font-size: .84rem; color: var(--ink-soft); }
-.nq-perks div::before { content: "\u25C6"; color: var(--gold); font-size: .5rem; margin-inline-end: 8px; vertical-align: middle; }
-`;
-var _CloseInvite = class _CloseInvite extends LitElement {
+.nq-perks div::before { content: "◆"; color: var(--gold); font-size: .5rem; margin-inline-end: 8px; vertical-align: middle; }
+`, _CloseInvite = class _CloseInvite extends LitElement {
   constructor() {
-    super(...arguments);
-    this.stop = /* @__PURE__ */ __name(() => {
-    }, "stop");
+    super(...arguments), this.stop = () => {
+    };
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
-    super.connectedCallback();
-    this.classList.add("nq-host");
-    injectFonts();
-    injectStyles("nq-base", baseCss);
-    injectStyles("nq-close-invite", css);
-    const stopLocale = watchLocale(this);
-    const stopReveal = watchReveal(this);
+    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-close-invite", css);
+    const stopLocale = watchLocale(this), stopReveal = watchReveal(this);
     this.stop = () => {
-      stopLocale();
-      stopReveal();
+      stopLocale(), stopReveal();
     };
   }
   disconnectedCallback() {
-    this.stop();
-    super.disconnectedCallback();
+    this.stop(), super.disconnectedCallback();
   }
   render() {
-    const cfg = getConfig(this.config);
-    const title = localizedString(cfg.title);
-    const perks = getCollectionItems(cfg.perks, "perks").map((item) => localizedString(item.text)).filter(Boolean);
-    const secondary = localizedString(cfg.secondary_label);
-    const secondaryUrl = linkHref(cfg.secondary_url);
-    return html2`<section class=${`nq-root nq-sec nq-fin ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${title || "close"}>
+    const cfg = getConfig(this.config), title = localizedString(cfg.title), perks = getCollectionItems(cfg.perks, "perks").map((item) => localizedString(item.text)).filter(Boolean), secondary = localizedString(cfg.secondary_label), secondaryUrl = linkHref(cfg.secondary_url);
+    return html`<section class=${`nq-root nq-sec nq-fin ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${title || "close"}>
       <div class="nq-wrap nq-fin-in nq-rev">
-        ${localizedString(cfg.kicker) ? html2`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing2}
-        ${title ? html2`<h2>${title}</h2>` : nothing2}
-        ${localizedString(cfg.text) ? html2`<p>${localizedString(cfg.text)}</p>` : nothing2}
+        ${localizedString(cfg.kicker) ? html`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing}
+        ${title ? html`<h2>${title}</h2>` : nothing}
+        ${localizedString(cfg.text) ? html`<p>${localizedString(cfg.text)}</p>` : nothing}
         <div class="nq-cta">
           ${renderCta(cfg.primary_label, linkHref(cfg.primary_url))}
-          ${secondary && secondaryUrl ? html2`<a class="nq-btn ghost" href=${secondaryUrl}>${secondary}</a>` : nothing2}
+          ${secondary && secondaryUrl ? html`<a class="nq-btn ghost" href=${secondaryUrl}>${secondary}</a>` : nothing}
         </div>
-        ${perks.length ? html2`<div class="nq-perks">${perks.map((perk) => html2`<div>${perk}</div>`)}</div>` : nothing2}
+        ${perks.length ? html`<div class="nq-perks">${perks.map((perk) => html`<div>${perk}</div>`)}</div>` : nothing}
       </div>
     </section>`;
   }
 };
 __name(_CloseInvite, "CloseInvite");
+let CloseInvite = _CloseInvite;
 __decorateClass([
   property({ type: Object })
-], _CloseInvite.prototype, "config", 2);
-var CloseInvite = _CloseInvite;
+], CloseInvite.prototype, "config");
+typeof CloseInvite < "u" && CloseInvite.registerSallaComponent("salla-last-look");
 export {
   CloseInvite as default
 };
-typeof CloseInvite < "u" && CloseInvite.registerSallaComponent("salla-close-invite");

@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 const root = fileURLToPath(new URL("..", import.meta.url));
 const bundle = JSON.parse(fs.readFileSync(path.join(root, "twilight-bundle.json"), "utf8"));
 const errors = [];
-const REQUIRED = ["stat-strip", "brand-row", "partner-row", "quick-contact"];
+const REQUIRED = ["house-figures", "fabric-houses", "arch-partners", "invite-card"];
 const BANNED = ["selia", "سيليا", "eslamoo"];
 
 if (!bundle.features?.includes("landing-page-templates")) errors.push("missing landing-page-templates");
@@ -29,8 +29,8 @@ for (const template of bundle.templates || []) {
   const file = template.path.replace("templates.", "");
   const page = JSON.parse(fs.readFileSync(path.join(root, "templates", `${file}.json`), "utf8"));
   const order = page.components.map((item) => item.name);
-  if (order[0] !== "page-bar") errors.push(`${file} should open with the page header`);
-  if (order.at(-1) !== "page-footer") errors.push(`${file} should end with the page footer`);
+  if (order[0] !== "house-bar") errors.push(`${file} should open with the page header`);
+  if (order.at(-1) !== "house-footer") errors.push(`${file} should end with the page footer`);
   for (const name of REQUIRED) if (!order.includes(name)) errors.push(`${file} is missing ${name}`);
   for (const name of order) if (!names.has(name)) errors.push(`${file} uses unknown section ${name}`);
 }

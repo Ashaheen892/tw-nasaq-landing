@@ -1,7 +1,7 @@
 import { html, LitElement, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { flag, getCollectionItems, getConfig, linkHref, localizedString, t, unwrapValue, watchLocale } from "../../utils/config.js";
-import { announceBar, announceCss, announceTone } from "../../utils/announce.js";
+import { announceCss, announceStrips, announceTone, rotateStrips, stopStrips } from "../../utils/announce.js";
 import { applyTone, currentTone, savedTone, schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, setKitFont, watchReveal } from "../../utils/styles.js";
 
@@ -47,7 +47,7 @@ export default class PageBar extends LitElement {
     this.classList.add("nq-host");
     injectFonts();
     injectStyles("nq-base", baseCss);
-    injectStyles("nq-announce", announceCss("nq"));
+    injectStyles("nq-announce", announceCss("nq", "arch"));
     injectStyles("nq-page-bar", css);
     const stopLocale = watchLocale(this);
     const stopReveal = watchReveal(this);
@@ -72,11 +72,13 @@ export default class PageBar extends LitElement {
   }
 
   disconnectedCallback() {
+    stopStrips(this, "nq");
     this.stop();
     super.disconnectedCallback();
   }
 
   protected updated() {
+    rotateStrips(this, "nq");
     this.pin();
   }
 
@@ -176,13 +178,13 @@ export default class PageBar extends LitElement {
 
   render() {
     const cfg = getConfig(this.config);
-    const brand = localizedString(cfg.brand) || t({ ar: "المتجر", en: "Store" });
+    const brand = localizedString(cfg.brand) || ((window as any).Salla?.config?.get?.("store.name") as string) || "";
     const mark = localizedString(cfg.mark);
     const links = getCollectionItems<Record<string, any>>(cfg.links, "links")
       .map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" }))
       .filter((item) => item.label);
     const logo = (this.dark && cfg.logo_dark) || cfg.logo;
-    return html`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
+    return html`${announceStrips(cfg, "nq", "arch", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
     <header class=${`nq-root nq-bar ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
       <nav class="nq-nav nq-wrap ${this.open ? "is-open" : ""}">
         <a href=${linkHref(cfg.home_url) || "#"} class="nq-logo" aria-label=${brand}>

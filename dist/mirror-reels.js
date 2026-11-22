@@ -1,38 +1,23 @@
 var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __decorateClass = (decorators, target, key, kind) => {
-  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
-  for (var i = decorators.length - 1, decorator; i >= 0; i--)
-    if (decorator = decorators[i])
-      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
-  if (kind && result) __defProp(target, key, result);
-  return result;
-};
-
-// tw-nasaq-landing/src/components/mirror-reels/index.ts
-import { html as html3, LitElement, nothing as nothing3 } from "lit";
+var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
+import { nothing, html, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
-
-// tw-nasaq-landing/src/utils/config.ts
 function getConfig(raw) {
-  if (!raw) return {};
-  if (raw.component && typeof raw.component === "object") return raw.component;
-  return raw;
+  return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  const lang = window.Salla?.lang?.getLocale?.() || document.documentElement.lang || "ar";
+  var _a, _b, _c;
+  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
 function localizedString(value) {
-  if (value === null || value === void 0 || value === "") return "";
-  if (typeof value === "string") return value;
-  if (typeof value === "object") {
-    const obj = value;
-    const text = obj[getLocale()] || obj.ar || obj.en;
-    return typeof text === "string" ? text : "";
+  if (value == null || value === "") return "";
+  if (typeof value == "string") return value;
+  if (typeof value == "object") {
+    const obj = value, text = obj[getLocale()] || obj.ar || obj.en;
+    return typeof text == "string" ? text : "";
   }
   return String(value);
 }
@@ -42,54 +27,49 @@ function t(strings) {
 }
 __name(t, "t");
 function unwrapValue(value) {
-  if (Array.isArray(value)) return unwrapValue(value[0]?.value ?? value[0] ?? "");
-  if (value && typeof value === "object" && "value" in value) return value.value;
-  return value ?? "";
+  var _a;
+  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function getCollectionItems(items, prefix) {
-  if (!Array.isArray(items)) return [];
-  return items.map((item) => {
-    if (!item || typeof item !== "object") return {};
+  return Array.isArray(items) ? items.map((item) => {
+    if (!item || typeof item != "object") return {};
     const normalized = {};
-    for (const [key, val] of Object.entries(item)) {
+    for (const [key, val] of Object.entries(item))
       normalized[key.startsWith(`${prefix}.`) ? key.slice(prefix.length + 1) : key] = val;
-    }
     return normalized;
-  });
+  }) : [];
 }
 __name(getCollectionItems, "getCollectionItems");
 function watchLocale(host) {
   const update = /* @__PURE__ */ __name(() => host.requestUpdate(), "update");
-  window.addEventListener("language-changed", update);
-  return () => window.removeEventListener("language-changed", update);
+  return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
-
-// tw-nasaq-landing/src/utils/landing.ts
-import { html, nothing } from "lit";
 function salla() {
   return window.Salla;
 }
 __name(salla, "salla");
 function landingSettings() {
-  return salla()?.config?.get("theme.settings") || {};
+  var _a, _b;
+  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("theme.settings")) || {};
 }
 __name(landingSettings, "landingSettings");
 function isLandingPage() {
-  return salla()?.config?.get("page.is_landing_page") === true;
+  var _a, _b;
+  return ((_b = (_a = salla()) == null ? void 0 : _a.config) == null ? void 0 : _b.get("page.is_landing_page")) === !0;
 }
 __name(isLandingPage, "isLandingPage");
 function pageMode() {
+  var _a;
   const value = landingSettings().page_for_product;
-  if (typeof value === "boolean" || value == null) return value === false ? "promotion" : "product";
-  if (typeof value === "string") return value === "promotion" ? "promotion" : "product";
-  return Array.isArray(value) && value[0]?.value === "promotion" ? "promotion" : "product";
+  return typeof value == "boolean" || value == null ? value === !1 ? "promotion" : "product" : typeof value == "string" ? value === "promotion" ? "promotion" : "product" : Array.isArray(value) && ((_a = value[0]) == null ? void 0 : _a.value) === "promotion" ? "promotion" : "product";
 }
 __name(pageMode, "pageMode");
 function landingProductId() {
+  var _a, _b;
   if (!isLandingPage() || pageMode() !== "product") return null;
-  const id = landingSettings().product?.value?.[0];
+  const id = (_b = (_a = landingSettings().product) == null ? void 0 : _a.value) == null ? void 0 : _b[0];
   return id ? String(id) : null;
 }
 __name(landingProductId, "landingProductId");
@@ -99,8 +79,7 @@ function mainButton() {
 }
 __name(mainButton, "mainButton");
 function openCheckout() {
-  const checkout = document.querySelector(".s-block--fast-checkout");
-  const layout = checkout?.getAttribute("data-layout");
+  const checkout = document.querySelector(".s-block--fast-checkout"), layout = checkout == null ? void 0 : checkout.getAttribute("data-layout");
   if (window.innerWidth < 1024 || layout === "side-drawer" || !checkout) {
     window.dispatchEvent(new CustomEvent("open-checkout-drawer"));
     return;
@@ -111,66 +90,63 @@ __name(openCheckout, "openCheckout");
 function renderCta(labelValue, fallbackUrl = "", tone = "solid") {
   const label = localizedString(labelValue).trim();
   if (!label) return nothing;
-  const cls = tone === "ghost" ? "nq-btn ghost" : tone === "light" ? "nq-btn light" : "nq-btn";
-  const productPage = Boolean(landingProductId());
-  const demo = !isLandingPage();
-  if (productPage || demo && !fallbackUrl) {
+  const cls = tone === "ghost" ? "nq-btn ghost" : tone === "light" ? "nq-btn light" : "nq-btn", productPage = !!landingProductId(), demo = !isLandingPage();
+  if (productPage || demo && !fallbackUrl)
     return html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
-  }
   const href = (isLandingPage() && pageMode() === "promotion" ? mainButton().url : "") || fallbackUrl;
-  if (!href) return html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
-  return html`<a class=${cls} href=${href}>${label}</a>`;
+  return href ? html`<a class=${cls} href=${href}>${label}</a>` : html`<button type="button" class=${cls} @click=${() => openCheckout()}>${label}</button>`;
 }
 __name(renderCta, "renderCta");
 function schemeOf(cfg) {
   const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
-  if (scheme === "dark") return "nq-dark";
-  if (scheme === "light") return "nq-light";
-  return "nq-auto";
+  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
 }
 __name(schemeOf, "schemeOf");
-
-// tw-nasaq-landing/src/utils/ui.ts
-import { html as html2, nothing as nothing2 } from "lit";
 function arDigits(n) {
-  return String(Math.max(0, n)).padStart(2, "0").replace(/\d/g, (d) => "\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"[Number(d)]);
+  return String(Math.max(0, n)).padStart(2, "0").replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
 }
 __name(arDigits, "arDigits");
 function emptyCopy() {
-  return html2`<p class="nq-empty">${t({ ar: "\u0623\u0636\u0641 \u0639\u0646\u0627\u0635\u0631 \u0647\u0630\u0627 \u0627\u0644\u0642\u0633\u0645 \u0645\u0646 \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A", en: "Add this section's items in the settings" })}</p>`;
+  return html`<p class="nq-empty">${t({ ar: "أضف عناصر هذا القسم من الإعدادات", en: "Add this section's items in the settings" })}</p>`;
 }
 __name(emptyCopy, "emptyCopy");
-
-// tw-nasaq-landing/src/utils/styles.ts
-function injectStyles(id, css2) {
-  let style = document.getElementById(id);
-  if (!style) {
-    style = document.createElement("style");
-    style.id = id;
-    document.head.appendChild(style);
+function markEditing() {
+  var _a, _b;
+  const root = document.documentElement, read = /* @__PURE__ */ __name(() => {
+    var _a2, _b2;
+    let on = !0;
+    try {
+      const salla2 = window.Salla;
+      on = window.self !== window.top || ((_b2 = (_a2 = salla2 == null ? void 0 : salla2.config) == null ? void 0 : _a2.get) == null ? void 0 : _b2.call(_a2, "page.is_landing_page")) !== !0;
+    } catch {
+      on = !0;
+    }
+    root.dataset.lpEditing = on ? "1" : "0";
+  }, "read");
+  if (!root.dataset.lpEditing) {
+    read();
+    try {
+      (_b = (_a = window.Salla) == null ? void 0 : _a.onReady) == null || _b.call(_a, read);
+    } catch {
+    }
   }
-  if (style.textContent !== css2) style.textContent = css2;
+}
+__name(markEditing, "markEditing");
+function injectStyles(id, css2) {
+  markEditing();
+  let style = document.getElementById(id);
+  style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
 }
 __name(injectStyles, "injectStyles");
-var KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
 function setKitFont(on) {
-  document.documentElement.classList.toggle("nq-kit-font", on);
-  const current = document.getElementById("nq-fonts");
-  if (!on) {
-    current?.remove();
-    return;
-  }
-  if (current) return;
+  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
   const link = document.createElement("link");
-  link.id = "nq-fonts";
-  link.rel = "stylesheet";
-  link.href = KIT_FONT;
-  document.head.appendChild(link);
+  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
 }
 __name(setKitFont, "setKitFont");
 function injectFonts() {
-  if (!document.documentElement.classList.contains("nq-kit-font")) return;
-  setKitFont(true);
+  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -178,32 +154,21 @@ function sectionStyle(cfg) {
 }
 __name(sectionStyle, "sectionStyle");
 function watchReveal(host) {
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduced) {
-    host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in"));
-    return () => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    return host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in")), () => {
     };
-  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add("in");
-      io.unobserve(entry.target);
+      entry.isIntersecting && (entry.target.classList.add("in"), io.unobserve(entry.target));
     });
-  }, { threshold: 0.14 });
-  const scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan");
-  const mo = new MutationObserver(scan);
-  mo.observe(host, { childList: true, subtree: true });
-  scan();
-  return () => {
-    io.disconnect();
-    mo.disconnect();
+  }, { threshold: 0.14 }), scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan"), mo = new MutationObserver(scan);
+  return mo.observe(host, { childList: !0, subtree: !0 }), scan(), () => {
+    io.disconnect(), mo.disconnect();
   };
 }
 __name(watchReveal, "watchReveal");
-var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
-var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
-var baseCss = `
+const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
+html[data-lp-editing="0"] .nq-empty, html[data-lp-editing="0"] .nq-hint { display: none !important; }
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -262,14 +227,12 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
   .nq-mq-track { animation: none !important; }
 }
 `;
-
-// tw-nasaq-landing/src/utils/video.ts
 function clipUrl(value) {
   const raw = unwrapValue(value);
-  if (typeof raw === "string") return raw.trim();
-  if (raw && typeof raw === "object") {
+  if (typeof raw == "string") return raw.trim();
+  if (raw && typeof raw == "object") {
     const url = raw.url ?? raw.src;
-    if (typeof url === "string") return url.trim();
+    if (typeof url == "string") return url.trim();
   }
   return "";
 }
@@ -290,6 +253,7 @@ function kindOf(url) {
 }
 __name(kindOf, "kindOf");
 function frameSrc(url) {
+  var _a, _b;
   let frame = url;
   const kind = kindOf(url);
   try {
@@ -297,50 +261,32 @@ function frameSrc(url) {
     if (kind === "youtube") {
       const host = parsed.hostname.replace(/^www\./, "");
       let id = "";
-      if (host === "youtu.be") id = parsed.pathname.split("/").filter(Boolean)[0] || "";
-      else if (parsed.pathname.includes("/embed/")) id = parsed.pathname.split("/embed/")[1]?.split("/")[0] || "";
-      else if (parsed.pathname.includes("/shorts/")) id = parsed.pathname.split("/shorts/")[1]?.split("/")[0] || "";
-      else id = parsed.searchParams.get("v") || "";
-      if (id) frame = `https://www.youtube-nocookie.com/embed/${id}`;
+      host === "youtu.be" ? id = parsed.pathname.split("/").filter(Boolean)[0] || "" : parsed.pathname.includes("/embed/") ? id = ((_a = parsed.pathname.split("/embed/")[1]) == null ? void 0 : _a.split("/")[0]) || "" : parsed.pathname.includes("/shorts/") ? id = ((_b = parsed.pathname.split("/shorts/")[1]) == null ? void 0 : _b.split("/")[0]) || "" : id = parsed.searchParams.get("v") || "", id && (frame = `https://www.youtube-nocookie.com/embed/${id}`);
     } else if (kind === "vimeo") {
       const id = parsed.pathname.split("/").filter(Boolean).pop() || "";
-      if (/^\d+$/.test(id)) frame = `https://player.vimeo.com/video/${id}`;
+      /^\d+$/.test(id) && (frame = `https://player.vimeo.com/video/${id}`);
     }
   } catch {
     frame = url;
   }
   if (kind === "file") return frame;
   const params = new URLSearchParams();
-  params.set("autoplay", "1");
-  params.set("playsinline", "1");
-  if (kind === "youtube") {
-    params.set("mute", "1");
-    params.set("rel", "0");
-    params.set("enablejsapi", "1");
-  } else if (kind === "vimeo") {
-    params.set("muted", "1");
-  } else {
-    params.set("mute", "1");
-    params.set("muted", "1");
-  }
-  return `${frame}${frame.includes("?") ? "&" : "?"}${params.toString()}`;
+  return params.set("autoplay", "1"), params.set("playsinline", "1"), kind === "youtube" ? (params.set("mute", "1"), params.set("rel", "0"), params.set("enablejsapi", "1")) : (kind === "vimeo" || params.set("mute", "1"), params.set("muted", "1")), `${frame}${frame.includes("?") ? "&" : "?"}${params.toString()}`;
 }
 __name(frameSrc, "frameSrc");
 function setFrameSound(frame, on) {
   const win = frame.contentWindow;
   if (!win) return;
   const src = frame.src || "";
-  if (src.includes("youtube")) {
-    win.postMessage(JSON.stringify({ event: "command", func: on ? "unMute" : "mute", args: "" }), "*");
-    win.postMessage(JSON.stringify({ event: "command", func: "setVolume", args: [on ? 100 : 0] }), "*");
-  } else if (src.includes("vimeo")) {
-    win.postMessage(JSON.stringify({ method: "setVolume", value: on ? 1 : 0 }), "*");
-  }
+  src.includes("youtube") ? (win.postMessage(JSON.stringify({ event: "command", func: on ? "unMute" : "mute", args: "" }), "*"), win.postMessage(JSON.stringify({ event: "command", func: "setVolume", args: [on ? 100 : 0] }), "*")) : src.includes("vimeo") && win.postMessage(JSON.stringify({ method: "setVolume", value: on ? 1 : 0 }), "*");
 }
 __name(setFrameSound, "setFrameSound");
-
-// tw-nasaq-landing/src/components/mirror-reels/index.ts
-var css = `
+var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name((decorators, target, key, kind) => {
+  for (var result = void 0, i = decorators.length - 1, decorator; i >= 0; i--)
+    (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
+  return result && __defProp2(target, key, result), result;
+}, "__decorateClass");
+const css = `
 .nq-mirror { background: var(--nq-section-bg, var(--ivory)); }
 .nq-mirror-head { display: flex; justify-content: space-between; align-items: end; gap: 28px; }
 .nq-mirror-head .nq-lead { max-width: 36ch; margin: 0; }
@@ -371,61 +317,40 @@ var css = `
   .nq-mirror-head, .nq-board { display: grid; grid-template-columns: 1fr; }
   .nq-phone { max-width: 360px; }
 }
-`;
-var _MirrorReels = class _MirrorReels extends LitElement {
+`, _MirrorReels = class _MirrorReels extends LitElement {
   constructor() {
-    super(...arguments);
-    this.pick = 0;
-    this.playing = false;
-    this.sound = false;
-    this.stop = /* @__PURE__ */ __name(() => {
-    }, "stop");
-    /** Play inside the click, while the video is already on the page. */
-    this.start = /* @__PURE__ */ __name(() => {
-      this.playing = true;
+    super(...arguments), this.pick = 0, this.playing = !1, this.sound = !1, this.stop = () => {
+    }, this.start = () => {
+      this.playing = !0;
       const video = this.querySelector(".nq-reel");
-      if (video instanceof HTMLVideoElement) {
-        video.muted = !this.sound;
-        void video.play().catch(() => void 0);
-      }
-    }, "start");
+      video instanceof HTMLVideoElement && (video.muted = !this.sound, video.play().catch(() => {
+      }));
+    };
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
-    super.connectedCallback();
-    this.classList.add("nq-host");
-    injectFonts();
-    injectStyles("nq-base", baseCss);
-    injectStyles("nq-mirror-reels", css);
-    const stopLocale = watchLocale(this);
-    const stopReveal = watchReveal(this);
+    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-mirror-reels", css);
+    const stopLocale = watchLocale(this), stopReveal = watchReveal(this);
     this.stop = () => {
-      stopLocale();
-      stopReveal();
+      stopLocale(), stopReveal();
     };
   }
   disconnectedCallback() {
-    this.stop();
-    super.disconnectedCallback();
+    this.stop(), super.disconnectedCallback();
   }
   updated() {
     this.sync();
   }
   sync() {
     const video = this.querySelector(".nq-reel");
-    if (video instanceof HTMLVideoElement) {
-      video.muted = !this.sound;
-      video.volume = this.sound ? 1 : 0;
-      if (this.playing && video.paused) void video.play().catch(() => void 0);
-      if (!this.playing && !video.paused) video.pause();
-    }
+    video instanceof HTMLVideoElement && (video.muted = !this.sound, video.volume = this.sound ? 1 : 0, this.playing && video.paused && video.play().catch(() => {
+    }), !this.playing && !video.paused && video.pause());
     const frame = this.querySelector("iframe");
     if (frame instanceof HTMLIFrameElement && this.playing) {
       const send = /* @__PURE__ */ __name(() => setFrameSound(frame, this.sound), "send");
-      frame.addEventListener("load", send, { once: true });
-      window.setTimeout(send, 600);
+      frame.addEventListener("load", send, { once: !0 }), window.setTimeout(send, 600);
     }
   }
   clips() {
@@ -438,48 +363,40 @@ var _MirrorReels = class _MirrorReels extends LitElement {
     })).filter((item) => item.source || item.poster || item.quote || item.name);
   }
   choose(index) {
-    this.pick = index;
-    this.sound = false;
-    this.playing = true;
+    this.pick = index, this.sound = !1, this.playing = !0;
   }
   render() {
-    const cfg = getConfig(this.config);
-    const items = this.clips();
-    const item = items[this.pick] || items[0];
-    const title = localizedString(cfg.title);
-    const file = item ? isFileClip(item.source) : false;
-    const id = String(cfg.anchor || "reels").replace(/^#/, "");
-    const indexLabel = `${arDigits(this.pick + 1)} / ${arDigits(items.length)}`;
-    return html3`<section class=${`nq-root nq-sec nq-mirror ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "reels"}>
+    const cfg = getConfig(this.config), items = this.clips(), item = items[this.pick] || items[0], title = localizedString(cfg.title), file = item ? isFileClip(item.source) : !1, id = String(cfg.anchor || "reels").replace(/^#/, ""), indexLabel = `${arDigits(this.pick + 1)} / ${arDigits(items.length)}`;
+    return html`<section class=${`nq-root nq-sec nq-mirror ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "reels"}>
       <div class="nq-wrap">
         <div class="nq-mirror-head nq-rev">
           <div>
-            ${localizedString(cfg.kicker) ? html3`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing3}
-            ${title ? html3`<h2 class="nq-h2">${title}</h2>` : nothing3}
+            ${localizedString(cfg.kicker) ? html`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing}
+            ${title ? html`<h2 class="nq-h2">${title}</h2>` : nothing}
           </div>
-          ${localizedString(cfg.text) ? html3`<p class="nq-lead">${localizedString(cfg.text)}</p>` : nothing3}
+          ${localizedString(cfg.text) ? html`<p class="nq-lead">${localizedString(cfg.text)}</p>` : nothing}
         </div>
-        ${item ? html3`<div class="nq-board">
+        ${item ? html`<div class="nq-board">
           <div class="nq-phone">
-            ${file ? html3`<video class="nq-reel" src=${item.source} poster=${item.poster || nothing3} muted playsinline loop preload="auto"></video>` : this.playing && item.source ? html3`<iframe src=${frameSrc(item.source)} title=${item.name || title || "reel"} allow="autoplay; encrypted-media; picture-in-picture"></iframe>` : item.poster ? html3`<img class="nq-poster" src=${item.poster} alt=${item.name || ""} />` : html3`<div class="nq-still"><p>${item.name || "\u0639\u0628\u0627\u064A\u0629"}${item.place ? ` \xB7 ${item.place}` : ""}</p></div>`}
-            ${item.source ? this.playing ? html3`<button type="button" class="nq-sound" aria-pressed=${this.sound ? "true" : "false"} @click=${() => {
+            ${file ? html`<video class="nq-reel" src=${item.source} poster=${item.poster || nothing} muted playsinline loop preload="auto"></video>` : this.playing && item.source ? html`<iframe src=${frameSrc(item.source)} title=${item.name || title || "reel"} allow="autoplay; encrypted-media; picture-in-picture"></iframe>` : item.poster ? html`<img class="nq-poster" src=${item.poster} alt=${item.name || ""} />` : html`<div class="nq-still"><p>${item.name || "عباية"}${item.place ? ` · ${item.place}` : ""}</p></div>`}
+            ${item.source ? this.playing ? html`<button type="button" class="nq-sound" aria-pressed=${this.sound ? "true" : "false"} @click=${() => {
       this.sound = !this.sound;
-    }}>${this.sound ? t({ ar: "\u0643\u062A\u0645", en: "Mute" }) : t({ ar: "\u0635\u0648\u062A", en: "Sound" })}</button>` : html3`<button type="button" class="nq-play" aria-label=${t({ ar: "\u062A\u0634\u063A\u064A\u0644", en: "Play" })} @click=${this.start}><span aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13l11-6.5z" /></svg></span></button>` : nothing3}
-            ${item.name || item.place ? html3`<p class="nq-live"><b>${item.name}</b><span>${item.place}</span></p>` : nothing3}
+    }}>${this.sound ? t({ ar: "كتم", en: "Mute" }) : t({ ar: "صوت", en: "Sound" })}</button>` : html`<button type="button" class="nq-play" aria-label=${t({ ar: "تشغيل", en: "Play" })} @click=${this.start}><span aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13l11-6.5z" /></svg></span></button>` : nothing}
+            ${item.name || item.place ? html`<p class="nq-live"><b>${item.name}</b><span>${item.place}</span></p>` : nothing}
           </div>
           <div class="nq-side">
             <div>
               <p class="nq-index">${indexLabel}</p>
-              ${item.quote ? html3`<p class="nq-quote">${item.quote}</p>` : nothing3}
-              ${item.name || item.place ? html3`<p class="nq-who">${item.name}${item.place ? ` \xB7 ${item.place}` : ""}</p>` : nothing3}
+              ${item.quote ? html`<p class="nq-quote">${item.quote}</p>` : nothing}
+              ${item.name || item.place ? html`<p class="nq-who">${item.name}${item.place ? ` · ${item.place}` : ""}</p>` : nothing}
             </div>
             <div>
-              ${items.length > 1 ? html3`<div class="nq-film" role="tablist">
-                ${items.map((clip, index) => html3`<button type="button" class=${`nq-reel-thumb ${index === this.pick ? "is-on" : ""}`} role="tab" aria-selected=${index === this.pick ? "true" : "false"} aria-label=${clip.name || `${index + 1}`} @click=${() => this.choose(index)}>
-                  ${clip.poster ? html3`<img src=${clip.poster} alt="" />` : nothing3}
+              ${items.length > 1 ? html`<div class="nq-film" role="tablist">
+                ${items.map((clip, index) => html`<button type="button" class=${`nq-reel-thumb ${index === this.pick ? "is-on" : ""}`} role="tab" aria-selected=${index === this.pick ? "true" : "false"} aria-label=${clip.name || `${index + 1}`} @click=${() => this.choose(index)}>
+                  ${clip.poster ? html`<img src=${clip.poster} alt="" />` : nothing}
                   <b>${clip.name || index + 1}</b>
                 </button>`)}
-              </div>` : nothing3}
+              </div>` : nothing}
               <div class="nq-actions">${renderCta(cfg.button_label, String(cfg.button_url || ""), "light")}</div>
             </div>
           </div>
@@ -489,20 +406,20 @@ var _MirrorReels = class _MirrorReels extends LitElement {
   }
 };
 __name(_MirrorReels, "MirrorReels");
+let MirrorReels = _MirrorReels;
 __decorateClass([
   property({ type: Object })
-], _MirrorReels.prototype, "config", 2);
+], MirrorReels.prototype, "config");
 __decorateClass([
   state()
-], _MirrorReels.prototype, "pick", 2);
+], MirrorReels.prototype, "pick");
 __decorateClass([
   state()
-], _MirrorReels.prototype, "playing", 2);
+], MirrorReels.prototype, "playing");
 __decorateClass([
   state()
-], _MirrorReels.prototype, "sound", 2);
-var MirrorReels = _MirrorReels;
+], MirrorReels.prototype, "sound");
+typeof MirrorReels < "u" && MirrorReels.registerSallaComponent("salla-mirror-reels");
 export {
   MirrorReels as default
 };
-typeof MirrorReels < "u" && MirrorReels.registerSallaComponent("salla-mirror-reels");

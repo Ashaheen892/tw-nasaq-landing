@@ -85,6 +85,9 @@ const products = (id, label, desc) => ({
   placeholder: "ابحث عن منتج", required: false, description: desc,
   options: [], selected: [], value: [], searchable: true, multichoice: false,
 });
+const icon = (id, label, value) => ({
+  id, type: "string", format: "icon", label, icon: "sicon-star2", required: false, class: "form--inline", value,
+});
 const collection = (id, itemLabel, fields, value, min, max) => ({
   id, type: "collection", format: "collection", required: min > 0, minLength: min, maxLength: max,
   item_label: itemLabel,
@@ -127,15 +130,28 @@ const scheme = (selected = "auto") => drop(
 
 const components = [
   {
-    title: "رأس الصفحة",
+    title: "رأس الدار",
     icon: "sicon-store",
-    name: "page-bar",
+    name: "house-bar",
     key: "987655b7-d713-48a7-9760-6700de724ed8",
     image: "",
     props: { "min-height": "74px" },
     fields: [
-      text("announce", "الشريط الإعلاني", L("عبايات تُخاط بالطلب · التوصيل داخل المملكة", "Abayas cut to order · delivery across the Kingdom"), { desc: "يظهر فوق الشعار. اتركه فارغاً لإخفاء الشريط." }),
-      drop("announce_mode", "حركة الشريط", [["move", "متحرك", KEY.annMove], ["still", "ثابت", KEY.annStill]], "move", "المتحرك يمرّ الجملة باستمرار. الثابت يُبقيها في الوسط."),
+      collection("bars", "شريط", [
+        text("text", "نص الشريط", L("", ""), { max: 140 }),
+        drop("media", "بجانب النص", [["none", "بدون", "767bce96-fd9b-4603-bbf9-bef7df05377c"], ["icon", "أيقونة", "e92f6793-5d24-4a85-a037-0ce8b0e50bd9"], ["image", "صورة مصغرة", "70cb26e0-b117-4bb2-abdd-ce70e72aaec3"]], "icon", "اختر أيقونة من مكتبة سلة أو صورة صغيرة لمنتج أو شعار."),
+        icon("icon", "الأيقونة", "sicon-megaphone"),
+        image("image", "الصورة المصغرة", "المقاس المقترح 96×120 بكسل، طولية، تُقص على شكل قوس، PNG أو WebP بخلفية شفافة أو صورة منتج. تظهر بحجم ٢٤×٣٠ بكسل بأعلى مقوس، فاجعل القطعة في منتصف الصورة. تُستخدم عند اختيار «صورة مصغرة» في «بجانب النص»."),
+        drop("motion", "حركة الشريط", [["move", "متحرك", "f49590e8-a17c-4d00-882b-88d3f7b373f5"], ["still", "ثابت", "03f1a091-c316-4f5a-84e2-a8e5b5a0fed2"]], "move", "المتحرك يمرّ الجملة باستمرار. الثابت يُبقيها في الوسط."),
+        url("link", "رابط الشريط", "", "اختياري. يفتح عند الضغط على الشريط."),
+        color("bg", "خلفية هذا الشريط", "", "اتركه فارغاً ليأخذ لون الشريط العام."),
+        color("ink", "كتابة هذا الشريط", "", "اتركه فارغاً ليأخذ لون الكتابة العام."),
+      ], [
+        { text: L("عبايات تُخاط بالطلب", "Abayas cut to order"), media: [{ label: "أيقونة", value: "icon", key: "e92f6793-5d24-4a85-a037-0ce8b0e50bd9" }], icon: "sicon-calendar-time", image: "", motion: [{ label: "متحرك", value: "move", key: "f49590e8-a17c-4d00-882b-88d3f7b373f5" }], link: "", bg: "", ink: "" },
+        { text: L("مجموعة الموسم متاحة للحجز", "The season collection is open for orders"), media: [{ label: "صورة مصغرة", value: "image", key: "70cb26e0-b117-4bb2-abdd-ce70e72aaec3" }], icon: "sicon-megaphone", image: "https://images.pexels.com/photos/37368651/pexels-photo-37368651.jpeg?auto=compress&cs=tinysrgb&w=200", motion: [{ label: "ثابت", value: "still", key: "03f1a091-c316-4f5a-84e2-a8e5b5a0fed2" }], link: "", bg: "", ink: "" },
+        { text: L("التوصيل داخل المملكة", "Delivery across the Kingdom"), media: [{ label: "أيقونة", value: "icon", key: "e92f6793-5d24-4a85-a037-0ce8b0e50bd9" }], icon: "sicon-shipping-fast", image: "", motion: [{ label: "متحرك", value: "move", key: "f49590e8-a17c-4d00-882b-88d3f7b373f5" }], link: "", bg: "", ink: "" },
+      ], 0, 5),
+      drop("bars_layout", "عرض الأشرطة", [["stack", "كل شريط في سطر", "042195bb-7168-4dfa-8be9-f6cbabb4cc7c"], ["rotate", "شريط واحد يتبدل", "f7fc6ee6-f52a-41b7-8007-53d1e148823e"]], "rotate", "كل شريط في سطر يعرض الأشرطة فوق بعضها. شريط واحد يتبدل يعرض شريطاً كل ٤ ثوانٍ ويتوقف عند مرور المؤشر."),
       color("announce_bg", "خلفية الشريط في الفاتح", "", "اتركه فارغاً ليأخذ لون المتجر الأساسي."),
       color("announce_ink", "كتابة الشريط في الفاتح", "", "اتركه فارغاً ليأخذ لون الكتابة المقابل للون الأساسي."),
       color("announce_bg_dark", "خلفية الشريط في الداكن", "", "اتركه فارغاً ليبقى لون المتجر الأساسي في الداكن."),
@@ -344,9 +360,9 @@ const components = [
     ],
   },
   {
-    title: "عدّاد العرض",
+    title: "ساعة الموسم (عدّاد العرض)",
     icon: "sicon-time",
-    name: "offer-clock",
+    name: "season-clock",
     key: "47ba2d9d-8269-445f-ab0b-38c83b33eb2e",
     image: "",
     props: { "min-height": "220px" },
@@ -384,9 +400,9 @@ const components = [
     ],
   },
   {
-    title: "أسئلة قبل الطلب",
+    title: "أسئلة العباية",
     icon: "sicon-list",
-    name: "ask-list",
+    name: "abaya-faq",
     key: "beca001a-7963-4760-8ca8-05c86770fbb7",
     image: "",
     props: { "min-height": "420px" },
@@ -409,9 +425,9 @@ const components = [
     ],
   },
   {
-    title: "دعوة الختام",
+    title: "النظرة الأخيرة (دعوة الختام)",
     icon: "sicon-megaphone",
-    name: "close-invite",
+    name: "last-look",
     key: "27ec15c9-328c-438b-9a04-966c9b2b8cae",
     image: "",
     props: { "min-height": "360px" },
@@ -463,9 +479,9 @@ const components = [
     ],
   },
   {
-    title: "فوتر الصفحة",
+    title: "ذيل الدار",
     icon: "sicon-link",
-    name: "page-footer",
+    name: "house-footer",
     key: "c8fa9e35-19fc-427b-99a0-e6ba7d5a1fb3",
     image: "",
     props: { "min-height": "280px" },
@@ -539,6 +555,36 @@ const components = [
   },
 ];
 
+
+// Looks slider: each slide is a photo, a video file, or a YouTube / Vimeo link.
+components.splice(1, 0, {
+  title: "سلايدر الإطلالات",
+  icon: "sicon-image",
+  name: "look-slider",
+  key: "81a8cd41-fcc5-417f-82f7-5b07922dfdf6",
+  image: "",
+  props: { "min-height": "620px" },
+  fields: [
+    text("kicker", "السطر العلوي", L("إطلالات الموسم", "Season looks")),
+    text("title", "اسم القسم", L("إطلالات", "Looks")),
+    collection("items", "إطلالة", [
+      image("image", "الصورة", "المقاس المقترح 1200×1500 بكسل، صورة طولية. مع الفيديو تظهر قبل تحميله."),
+      url("video", "فيديو الإطلالة (اختياري)", "", "رابط ملف MP4 أو يوتيوب أو فيميو. يعمل بلا صوت، وزر الصوت يظهر للملف. الشريحة تنتقل عند انتهاء الملف."),
+      text("alt", "وصف الصورة", L("عباية سوداء", "A black abaya")),
+      text("tag", "اسم القطعة على الصورة", L("عباية كلوش", "Flared abaya"), { max: 40 }),
+      text("title", "العنوان", L("قصّة تمشي مع الخطوة", "A cut that moves with the step")),
+      area("text", "النص", L("جملة عن القماش أو المناسبة.", "One line about the fabric or the occasion.")),
+      text("button", "نص الزر", L("اطلبي الإطلالة", "Order the look")),
+      url("url", "رابط الزر", "", buyHint),
+    ], [
+      { image: px(37368651, 1200), alt: L("عباية سوداء بتطريز ذهبي", "A black abaya with gold embroidery"), tag: L("العباية المطرزة", "The embroidered abaya"), title: L("تطريز ذهبي يُرى من قريب فقط", "Gold embroidery you only notice up close"), text: L("حرير مغسول وتطريز يدوي على الأكمام. البطانة قطن ١٠٠٪.", "Washed silk with hand embroidery on the sleeves. A 100% cotton lining."), button: L("اطلبي المطرزة", "Order the embroidered one"), url: "#product" },
+      { image: px(32279508, 1200), alt: L("عباية كريب سوداء واسعة", "A wide black crepe abaya"), tag: L("عباية الكريب", "The crepe abaya"), title: L("كريب مطفي لا يلمع تحت الضوء", "Matte crepe that never shines under light"), text: L("قصة واسعة تناسب الدوام والمشاوير الطويلة.", "A wide cut for work and long errands."), button: L("اطلبي الكريب", "Order the crepe"), url: "#product" },
+      { image: px(13862196, 1200), alt: L("عباية كلوش سوداء", "A black flared abaya"), tag: L("عباية الكلوش", "The flared abaya"), title: L("كلوش يتحرك معك في المناسبة", "A flare that moves with you at the event"), text: L("طول حسب مقاسك، وتصل قبل المناسبة بثلاثة أيام.", "Cut to your length, delivered three days before the event."), button: L("اطلبي الكلوش", "Order the flare"), url: "#product" },
+    ], 1, 6),
+    color("bg_color", "لون الخلفية"),
+  ],
+});
+
 for (const component of components) component.fields.push(scheme());
 
 const templates = [
@@ -547,14 +593,14 @@ const templates = [
     id: "5f79e7d6-62a7-40a2-b12d-1a6a5988cb62",
     is_default: true,
     primary_color: "#101014",
-    order: ["page-bar", "hero-stage", "ribbon-line", "cut-grid", "craft-row", "piece-stage", "mirror-reels", "offer-clock", "guest-notes", "ask-list", "close-invite", "page-footer"],
+    order: ["house-bar", "hero-stage", "ribbon-line", "cut-grid", "craft-row", "piece-stage", "mirror-reels", "season-clock", "guest-notes", "abaya-faq", "last-look", "house-footer"],
   },
   {
     name: "wasl",
     id: "605cc08e-57b1-46eb-ace2-d6c52dd52d4e",
     is_default: false,
     primary_color: "#b8945f",
-    order: ["page-bar", "piece-stage", "offer-clock", "ask-list", "close-invite", "page-footer"],
+    order: ["house-bar", "look-slider", "piece-stage", "season-clock", "abaya-faq", "last-look", "house-footer"],
   },
 ];
 
