@@ -1,14 +1,28 @@
 var __defProp = Object.defineProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
-import { nothing, html, LitElement } from "lit";
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp(target, key, result);
+  return result;
+};
+
+// tw-nasaq-landing/src/components/page-footer/index.ts
+import { html as html3, LitElement, nothing as nothing3 } from "lit";
 import { property, state } from "lit/decorators.js";
+
+// tw-nasaq-landing/src/utils/config.ts
 function getConfig(raw) {
-  return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
+  if (!raw) return {};
+  if (raw.component && typeof raw.component === "object") return raw.component;
+  return raw;
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  var _a, _b, _c;
-  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
+  const lang = window.Salla?.lang?.getLocale?.() || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
@@ -17,11 +31,12 @@ function isRtl() {
 }
 __name(isRtl, "isRtl");
 function localizedString(value) {
-  if (value == null || value === "") return "";
-  if (typeof value == "string") return value;
-  if (typeof value == "object") {
-    const obj = value, text = obj[getLocale()] || obj.ar || obj.en;
-    return typeof text == "string" ? text : "";
+  if (value === null || value === void 0 || value === "") return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "object") {
+    const obj = value;
+    const text = obj[getLocale()] || obj.ar || obj.en;
+    return typeof text === "string" ? text : "";
   }
   return String(value);
 }
@@ -31,15 +46,16 @@ function t(strings) {
 }
 __name(t, "t");
 function unwrapValue(value) {
-  var _a;
-  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
+  if (Array.isArray(value)) return unwrapValue(value[0]?.value ?? value[0] ?? "");
+  if (value && typeof value === "object" && "value" in value) return value.value;
+  return value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function linkHref(value) {
   if (value == null || value === "") return "";
-  if (typeof value == "string") return value.trim();
+  if (typeof value === "string") return value.trim();
   if (Array.isArray(value)) return linkHref(value[0]);
-  if (typeof value == "object") {
+  if (typeof value === "object") {
     const obj = value;
     if (obj.url) return linkHref(obj.url);
     if ("value" in obj) return linkHref(obj.value);
@@ -50,30 +66,36 @@ function linkHref(value) {
 __name(linkHref, "linkHref");
 function flag(value) {
   const raw = unwrapValue(value);
-  if (raw === !0 || raw === 1) return !0;
-  if (typeof raw == "string") {
+  if (raw === true || raw === 1) return true;
+  if (typeof raw === "string") {
     const text = raw.trim().toLowerCase();
     return text === "true" || text === "1" || text === "on" || text === "yes";
   }
-  return !1;
+  return false;
 }
 __name(flag, "flag");
 function getCollectionItems(items, prefix) {
-  return Array.isArray(items) ? items.map((item) => {
-    if (!item || typeof item != "object") return {};
+  if (!Array.isArray(items)) return [];
+  return items.map((item) => {
+    if (!item || typeof item !== "object") return {};
     const normalized = {};
-    for (const [key, val] of Object.entries(item))
+    for (const [key, val] of Object.entries(item)) {
       normalized[key.startsWith(`${prefix}.`) ? key.slice(prefix.length + 1) : key] = val;
+    }
     return normalized;
-  }) : [];
+  });
 }
 __name(getCollectionItems, "getCollectionItems");
 function watchLocale(host) {
   const update = /* @__PURE__ */ __name(() => host.requestUpdate(), "update");
-  return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
+  window.addEventListener("language-changed", update);
+  return () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
-const COPIES = 12;
+
+// tw-nasaq-landing/src/utils/announce.ts
+import { html, nothing } from "lit";
+var COPIES = 12;
 function announceCss(prefix) {
   return `
 .${prefix}-ann.${prefix}-ann {
@@ -156,8 +178,10 @@ __name(announceTone, "announceTone");
 function announceBar(cfg, prefix, extraClass = "", tone = "") {
   const text = localizedString(cfg.announce).trim();
   if (!text) return nothing;
-  if (!(String(unwrapValue(cfg.announce_mode) || "move") !== "still"))
+  const moving = String(unwrapValue(cfg.announce_mode) || "move") !== "still";
+  if (!moving) {
     return html`<div class="${prefix}-ann ${prefix}-ann__still ${extraClass}" style=${tone}>${text}</div>`;
+  }
   const rtl = isRtl() ? " is-rtl" : "";
   return html`<div class="${prefix}-ann${rtl} ${extraClass}" style=${tone}>
     <ul class="${prefix}-ann__list">
@@ -166,9 +190,13 @@ function announceBar(cfg, prefix, extraClass = "", tone = "") {
   </div>`;
 }
 __name(announceBar, "announceBar");
-const WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2A7.8 7.8 0 0 0 5.3 16l-.7 3.2 3.3-.7A7.8 7.8 0 1 0 12 4.2Zm3.7 10.3c-.2.5-1 .9-1.4 1-.4.1-.8.1-1.3-.1-.3-.1-.7-.2-1.2-.5-2.1-1.1-3.4-3.2-3.5-3.4-.1-.2-.9-1.2-.9-2.3s.6-1.6.8-1.8c.2-.2.4-.3.6-.3h.4c.2 0 .3 0 .5.4.2.5.6 1.6.7 1.7.1.2 0 .3-.1.5l-.3.4c-.1.1-.2.2 0 .4.2.3.7 1 1.5 1.6.6.5 1.1.6 1.3.5l.4-.3c.2-.1.3-.1.5 0 .2.2 1 .8 1.1 1 .1.1.1.3 0 .5Z"></path></svg>', UP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 19V8.8L7.4 12.4 6 11l6-6 6 6-1.4 1.4L13 8.8V19h-2Z"></path></svg>';
+
+// tw-nasaq-landing/src/utils/dock.ts
+var WA = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2A7.8 7.8 0 0 0 5.3 16l-.7 3.2 3.3-.7A7.8 7.8 0 1 0 12 4.2Zm3.7 10.3c-.2.5-1 .9-1.4 1-.4.1-.8.1-1.3-.1-.3-.1-.7-.2-1.2-.5-2.1-1.1-3.4-3.2-3.5-3.4-.1-.2-.9-1.2-.9-2.3s.6-1.6.8-1.8c.2-.2.4-.3.6-.3h.4c.2 0 .3 0 .5.4.2.5.6 1.6.7 1.7.1.2 0 .3-.1.5l-.3.4c-.1.1-.2.2 0 .4.2.3.7 1 1.5 1.6.6.5 1.1.6 1.3.5l.4-.3c.2-.1.3-.1.5 0 .2.2 1 .8 1.1 1 .1.1.1.3 0 .5Z"></path></svg>`;
+var UP = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M11 19V8.8L7.4 12.4 6 11l6-6 6 6-1.4 1.4L13 8.8V19h-2Z"></path></svg>`;
 function shown(value) {
-  return value == null || value === "" ? !0 : flag(value);
+  if (value == null || value === "") return true;
+  return flag(value);
 }
 __name(shown, "shown");
 function sideOf(value, fallback) {
@@ -176,76 +204,134 @@ function sideOf(value, fallback) {
 }
 __name(sideOf, "sideOf");
 function digitsOf(value) {
-  return (typeof value == "string" ? value : localizedString(value)).replace(/\D/g, "");
+  const raw = typeof value === "string" ? value : localizedString(value);
+  return raw.replace(/\D/g, "");
 }
 __name(digitsOf, "digitsOf");
 function paint(el, bg, ink) {
-  el.style.background = String(bg || "").trim(), el.style.color = String(ink || "").trim();
+  el.style.background = String(bg || "").trim();
+  el.style.color = String(ink || "").trim();
 }
 __name(paint, "paint");
 function place(el, side, raised) {
-  el.style.bottom = raised ? "5.6rem" : "1.15rem", el.style.insetInlineStart = side === "start" ? "1.15rem" : "auto", el.style.insetInlineEnd = side === "end" ? "1.15rem" : "auto";
+  el.style.bottom = raised ? "5.6rem" : "1.15rem";
+  el.style.insetInlineStart = side === "start" ? "1.15rem" : "auto";
+  el.style.insetInlineEnd = side === "end" ? "1.15rem" : "auto";
 }
 __name(place, "place");
 function syncDocks(cfg, prefix, nodes, onTop, options = {}) {
-  const showWa = shown(cfg.show_whatsapp), showTop = shown(cfg.show_top) && !options.hideTop, waSide = sideOf(cfg.whatsapp_side, "start"), topSide = sideOf(cfg.top_side, "end"), stacked = showWa && showTop && waSide === topSide, digits = digitsOf(cfg.whatsapp_number || "201153958512"), message = localizedString(cfg.whatsapp_message), href = digits ? `https://wa.me/${digits}${message ? `?text=${encodeURIComponent(message)}` : ""}` : "";
+  const showWa = shown(cfg.show_whatsapp);
+  const showTop = shown(cfg.show_top) && !options.hideTop;
+  const waSide = sideOf(cfg.whatsapp_side, "start");
+  const topSide = sideOf(cfg.top_side, "end");
+  const stacked = showWa && showTop && waSide === topSide;
+  const digits = digitsOf(cfg.whatsapp_number || "201153958512");
+  const message = localizedString(cfg.whatsapp_message);
+  const href = digits ? `https://wa.me/${digits}${message ? `?text=${encodeURIComponent(message)}` : ""}` : "";
   if (showWa && href) {
     if (!nodes.wa) {
       const link = document.createElement("a");
-      link.className = `${prefix}-dock ${prefix}-dock--wa`, link.target = "_blank", link.rel = "noopener noreferrer", link.innerHTML = WA, document.body.appendChild(link), nodes.wa = link;
+      link.className = `${prefix}-dock ${prefix}-dock--wa`;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.innerHTML = WA;
+      document.body.appendChild(link);
+      nodes.wa = link;
     }
-    nodes.wa.href = href, nodes.wa.setAttribute("aria-label", t({ ar: "واتساب", en: "WhatsApp" })), paint(nodes.wa, cfg.whatsapp_bg, cfg.whatsapp_ink), place(nodes.wa, waSide, stacked), nodes.wa.hidden = !1;
-  } else nodes.wa && (nodes.wa.hidden = !0);
-  const label = localizedString(cfg.top_label) || t({ ar: "أعلى", en: "Top" });
+    nodes.wa.href = href;
+    nodes.wa.setAttribute("aria-label", t({ ar: "\u0648\u0627\u062A\u0633\u0627\u0628", en: "WhatsApp" }));
+    paint(nodes.wa, cfg.whatsapp_bg, cfg.whatsapp_ink);
+    place(nodes.wa, waSide, stacked);
+    nodes.wa.hidden = false;
+  } else if (nodes.wa) nodes.wa.hidden = true;
+  const label = localizedString(cfg.top_label) || t({ ar: "\u0623\u0639\u0644\u0649", en: "Top" });
   if (shown(cfg.show_top)) {
     if (!nodes.top) {
       const button = document.createElement("button");
-      button.type = "button", button.className = `${prefix}-dock ${prefix}-dock--top`, button.innerHTML = UP, button.addEventListener("click", onTop), document.body.appendChild(button), nodes.top = button;
+      button.type = "button";
+      button.className = `${prefix}-dock ${prefix}-dock--top`;
+      button.innerHTML = UP;
+      button.addEventListener("click", onTop);
+      document.body.appendChild(button);
+      nodes.top = button;
     }
-    if (nodes.top.setAttribute("aria-label", label), options.topText) {
+    nodes.top.setAttribute("aria-label", label);
+    if (options.topText) {
       let caption = nodes.top.querySelector("span");
-      caption || (caption = document.createElement("span"), nodes.top.appendChild(caption)), caption.textContent = label;
+      if (!caption) {
+        caption = document.createElement("span");
+        nodes.top.appendChild(caption);
+      }
+      caption.textContent = label;
     }
-    paint(nodes.top, cfg.top_bg, cfg.top_ink), place(nodes.top, topSide, !1), nodes.top.hidden = !showTop;
-  } else nodes.top && (nodes.top.hidden = !0);
+    paint(nodes.top, cfg.top_bg, cfg.top_ink);
+    place(nodes.top, topSide, false);
+    nodes.top.hidden = !showTop;
+  } else if (nodes.top) nodes.top.hidden = true;
   return nodes;
 }
 __name(syncDocks, "syncDocks");
 function clearDocks(nodes) {
-  var _a, _b;
-  (_a = nodes.wa) == null || _a.remove(), (_b = nodes.top) == null || _b.remove(), nodes.wa = null, nodes.top = null;
+  nodes.wa?.remove();
+  nodes.top?.remove();
+  nodes.wa = null;
+  nodes.top = null;
 }
 __name(clearDocks, "clearDocks");
+
+// tw-nasaq-landing/src/utils/landing.ts
+import { html as html2, nothing as nothing2 } from "lit";
 function currentTone() {
   return document.documentElement.classList.contains("nq-mode-dark") ? "dark" : "light";
 }
 __name(currentTone, "currentTone");
 function schemeOf(cfg) {
   const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
-  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
+  if (scheme === "dark") return "nq-dark";
+  if (scheme === "light") return "nq-light";
+  return "nq-auto";
 }
 __name(schemeOf, "schemeOf");
+
+// tw-nasaq-landing/src/utils/styles.ts
 function injectStyles(id, css2) {
   let style = document.getElementById(id);
-  style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
+  if (!style) {
+    style = document.createElement("style");
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  if (style.textContent !== css2) style.textContent = css2;
 }
 __name(injectStyles, "injectStyles");
-const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+var KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
 function setKitFont(on) {
-  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
+  document.documentElement.classList.toggle("nq-kit-font", on);
+  const current = document.getElementById("nq-fonts");
+  if (!on) {
+    current?.remove();
+    return;
+  }
+  if (current) return;
   const link = document.createElement("link");
-  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
+  link.id = "nq-fonts";
+  link.rel = "stylesheet";
+  link.href = KIT_FONT;
+  document.head.appendChild(link);
 }
 __name(setKitFont, "setKitFont");
 function injectFonts() {
-  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
+  if (!document.documentElement.classList.contains("nq-kit-font")) return;
+  setKitFont(true);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
   return cfg.bg_color ? `--nq-section-bg:${cfg.bg_color}` : "";
 }
 __name(sectionStyle, "sectionStyle");
-const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
+var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
+var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
+var baseCss = `
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -304,14 +390,11 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
   .nq-mq-track { animation: none !important; }
 }
 `;
-var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name((decorators, target, key, kind) => {
-  for (var result = void 0, i = decorators.length - 1, decorator; i >= 0; i--)
-    (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
-  return result && __defProp2(target, key, result), result;
-}, "__decorateClass");
-const css = `
+
+// tw-nasaq-landing/src/components/page-footer/index.ts
+var css = `
 .nq-foot { background: var(--nq-section-bg, var(--ink)); color: color-mix(in srgb, var(--ivory) 72%, transparent); padding-block: 48px 34px; font-size: .86rem; }
-.nq-foot .nq-logo { color: var(--ivory); }
+.nq-foot .nq-flogo { color: var(--ivory); }
 .nq-ft { display: flex; flex-wrap: wrap; gap: 30px 48px; justify-content: space-between; align-items: flex-start; }
 .nq-ft h5 { color: var(--ivory); font-family: var(--serif); font-size: 1rem; margin: 0 0 14px; font-weight: 700; }
 .nq-ft ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
@@ -325,7 +408,7 @@ const css = `
 .nq-social a { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--ivory) 28%, transparent); color: var(--ivory); }
 .nq-social a:hover { border-color: var(--gold); color: var(--gold); }
 .nq-social svg { width: 18px; height: 18px; display: block; }
-.nq-copy { margin-top: 34px; padding-top: 20px; border-top: 1px solid color-mix(in srgb, var(--ivory) 16%, transparent); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: .78rem; }
+.nq-foot-copy { margin-top: 34px; padding-top: 20px; border-top: 1px solid color-mix(in srgb, var(--ivory) 16%, transparent); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: .78rem; }
 .nq-totop, .nq-top { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 8px 18px; border: 1px solid color-mix(in srgb, var(--ivory) 28%, transparent); background: transparent; color: var(--ivory); font-family: var(--sans); font-size: .78rem; letter-spacing: .14em; cursor: pointer; transition: .3s; }
 .nq-foot .nq-totop { display: flex; width: fit-content; margin: 28px auto 0; }
 .nq-totop:hover, .nq-top:hover { border-color: var(--gold); color: var(--gold); }
@@ -335,36 +418,59 @@ const css = `
 .nq-dock[hidden] { display: none; }
 .nq-dock svg { width: 1.2rem; height: 1.2rem; display: block; }
 .nq-dock--wa { width: 3.45rem; height: 3.45rem; padding: 0; }
-.nq-logo { font-family: var(--serif); font-weight: 700; font-size: 1.5rem; letter-spacing: .02em; line-height: 1; color: var(--ivory); }
-.nq-logo small { display: block; font-family: var(--sans); font-size: .6rem; letter-spacing: .4em; color: var(--gold); font-weight: 400; margin-top: 4px; }
-.nq-logo img { height: 42px; width: auto; object-fit: contain; }
+.nq-flogo { font-family: var(--serif); font-weight: 700; font-size: 1.5rem; letter-spacing: .02em; line-height: 1; color: var(--ivory); }
+.nq-flogo small { display: block; font-family: var(--sans); font-size: .6rem; letter-spacing: .4em; color: var(--gold); font-weight: 400; margin-top: 4px; }
+.nq-flogo img { height: 42px; width: auto; object-fit: contain; }
 `;
 function socialIcon(name) {
-  return name === "instagram" ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"></rect><circle cx="12" cy="12" r="3.2"></circle><circle cx="17.2" cy="6.8" r=".8" fill="currentColor" stroke="none"></circle></svg>` : name === "snapchat" ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 4c2.4 0 4 1.8 4 4.2 0 1.2-.2 2 .4 2.6.3.3.8.4 1.1.6.4.3.3 1-.2 1.2-.8.3-1.3.2-1.7.6-.3.3-.4.8-.2 1.4.2.5-.2.9-.8.9-.7 0-1.1.4-1.6.7-.4.2-.7.2-1 .2s-.6 0-1-.2c-.5-.3-.9-.7-1.6-.7-.6 0-1-.4-.8-.9.2-.6.1-1.1-.2-1.4-.4-.4-.9-.3-1.7-.6-.5-.2-.6-.9-.2-1.2.3-.2.8-.3 1.1-.6.6-.6.4-1.4.4-2.6C8 5.8 9.6 4 12 4Z"></path></svg>` : name === "tiktok" ? html`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 6c.6 2.2 2 3.6 4 4v2.2c-1.4 0-2.7-.4-4-1.2v5.2a5.2 5.2 0 1 1-5.2-5.2c.3 0 .6 0 .8.1v2.3a2.9 2.9 0 1 0 2 2.8V6H14Z"></path></svg>` : name === "whatsapp" ? html`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2A7.8 7.8 0 0 0 5.3 16l-.7 3.2 3.3-.7A7.8 7.8 0 1 0 12 4.2Zm3.7 10.3c-.2.5-1 .9-1.4 1-.4.1-.8.1-1.3-.1-.3-.1-.7-.2-1.2-.5-2.1-1.1-3.4-3.2-3.5-3.4-.1-.2-.9-1.2-.9-2.3s.6-1.6.8-1.8c.2-.2.4-.3.6-.3h.4c.2 0 .3 0 .5.4.2.5.6 1.6.7 1.7.1.2 0 .3-.1.5l-.3.4c-.1.1-.2.2 0 .4.2.3.7 1 1.5 1.6.6.5 1.1.6 1.3.5l.4-.3c.2-.1.3-.1.5 0 .2.2 1 .8 1.1 1 .1.1.1.3 0 .5Z"></path></svg>` : name === "youtube" ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="7" width="17" height="11" rx="2.5"></rect><path d="m11 10 4 2.2-4 2.2V10Z" fill="currentColor" stroke="none"></path></svg>` : name === "x" ? html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>` : html`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="7"></circle></svg>`;
+  if (name === "instagram") return html3`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4"></rect><circle cx="12" cy="12" r="3.2"></circle><circle cx="17.2" cy="6.8" r=".8" fill="currentColor" stroke="none"></circle></svg>`;
+  if (name === "snapchat") return html3`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 4c2.4 0 4 1.8 4 4.2 0 1.2-.2 2 .4 2.6.3.3.8.4 1.1.6.4.3.3 1-.2 1.2-.8.3-1.3.2-1.7.6-.3.3-.4.8-.2 1.4.2.5-.2.9-.8.9-.7 0-1.1.4-1.6.7-.4.2-.7.2-1 .2s-.6 0-1-.2c-.5-.3-.9-.7-1.6-.7-.6 0-1-.4-.8-.9.2-.6.1-1.1-.2-1.4-.4-.4-.9-.3-1.7-.6-.5-.2-.6-.9-.2-1.2.3-.2.8-.3 1.1-.6.6-.6.4-1.4.4-2.6C8 5.8 9.6 4 12 4Z"></path></svg>`;
+  if (name === "tiktok") return html3`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 6c.6 2.2 2 3.6 4 4v2.2c-1.4 0-2.7-.4-4-1.2v5.2a5.2 5.2 0 1 1-5.2-5.2c.3 0 .6 0 .8.1v2.3a2.9 2.9 0 1 0 2 2.8V6H14Z"></path></svg>`;
+  if (name === "whatsapp") return html3`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 4.2A7.8 7.8 0 0 0 5.3 16l-.7 3.2 3.3-.7A7.8 7.8 0 1 0 12 4.2Zm3.7 10.3c-.2.5-1 .9-1.4 1-.4.1-.8.1-1.3-.1-.3-.1-.7-.2-1.2-.5-2.1-1.1-3.4-3.2-3.5-3.4-.1-.2-.9-1.2-.9-2.3s.6-1.6.8-1.8c.2-.2.4-.3.6-.3h.4c.2 0 .3 0 .5.4.2.5.6 1.6.7 1.7.1.2 0 .3-.1.5l-.3.4c-.1.1-.2.2 0 .4.2.3.7 1 1.5 1.6.6.5 1.1.6 1.3.5l.4-.3c.2-.1.3-.1.5 0 .2.2 1 .8 1.1 1 .1.1.1.3 0 .5Z"></path></svg>`;
+  if (name === "youtube") return html3`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3.5" y="7" width="17" height="11" rx="2.5"></rect><path d="m11 10 4 2.2-4 2.2V10Z" fill="currentColor" stroke="none"></path></svg>`;
+  if (name === "x") return html3`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>`;
+  return html3`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="7"></circle></svg>`;
 }
 __name(socialIcon, "socialIcon");
-const _PageFooter = class _PageFooter extends LitElement {
+var _PageFooter = class _PageFooter extends LitElement {
   constructor() {
-    super(...arguments), this.storeName = "", this.dark = !1, this.raised = !1, this.atFooter = !1, this.stop = () => {
-    }, this.floater = null, this.docks = { wa: null, top: null }, this.onScroll = (event) => {
-      const target = event == null ? void 0 : event.target, nested = target instanceof Element ? target.scrollTop : 0, next = Math.max(window.scrollY || 0, document.documentElement.scrollTop || 0, nested) > 360;
-      next !== this.raised && (this.raised = next);
-    }, this.toTop = (event) => {
+    super(...arguments);
+    this.storeName = "";
+    this.dark = false;
+    this.raised = false;
+    this.atFooter = false;
+    this.stop = /* @__PURE__ */ __name(() => {
+    }, "stop");
+    this.floater = null;
+    this.docks = { wa: null, top: null };
+    this.onScroll = /* @__PURE__ */ __name((event) => {
+      const target = event?.target;
+      const nested = target instanceof Element ? target.scrollTop : 0;
+      const top = Math.max(window.scrollY || 0, document.documentElement.scrollTop || 0, nested);
+      const next = top > 360;
+      if (next !== this.raised) this.raised = next;
+    }, "onScroll");
+    this.toTop = /* @__PURE__ */ __name((event) => {
       event.preventDefault();
       const docs = [document];
       try {
-        window.parent && window.parent !== window && docs.push(window.parent.document);
+        if (window.parent && window.parent !== window) docs.push(window.parent.document);
       } catch {
       }
       const nodes = /* @__PURE__ */ new Set();
       docs.forEach((doc) => {
-        nodes.add(doc.documentElement), doc.body && nodes.add(doc.body), doc.scrollingElement && nodes.add(doc.scrollingElement), doc.querySelectorAll("*").forEach((el) => {
-          el.scrollTop > 0 && nodes.add(el);
+        nodes.add(doc.documentElement);
+        if (doc.body) nodes.add(doc.body);
+        if (doc.scrollingElement) nodes.add(doc.scrollingElement);
+        doc.querySelectorAll("*").forEach((el) => {
+          if (el.scrollTop > 0) nodes.add(el);
         });
       });
       let node = this;
-      for (; node; )
-        nodes.add(node), node = node.parentElement;
+      while (node) {
+        nodes.add(node);
+        node = node.parentElement;
+      }
       nodes.forEach((el) => {
         try {
           el.scrollTo({ top: 0, behavior: "smooth" });
@@ -372,99 +478,136 @@ const _PageFooter = class _PageFooter extends LitElement {
           el.scrollTop = 0;
         }
       });
-    };
+    }, "toTop");
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
-    var _a;
-    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-announce", announceCss("nq")), injectStyles("nq-page-footer", css);
-    const stopLocale = watchLocale(this), onTone = /* @__PURE__ */ __name(() => {
+    super.connectedCallback();
+    this.classList.add("nq-host");
+    injectFonts();
+    injectStyles("nq-base", baseCss);
+    injectStyles("nq-announce", announceCss("nq"));
+    injectStyles("nq-page-footer", css);
+    const stopLocale = watchLocale(this);
+    const onTone = /* @__PURE__ */ __name(() => {
       this.dark = currentTone() === "dark";
     }, "onTone");
-    window.addEventListener("nq-tone", onTone), this.dark = currentTone() === "dark", this.stop = () => {
-      stopLocale(), window.removeEventListener("nq-tone", onTone);
-    }, document.addEventListener("scroll", this.onScroll, { capture: !0, passive: !0 });
-    const api = window.Salla, read = /* @__PURE__ */ __name(() => {
-      var _a2;
-      this.storeName = ((_a2 = api == null ? void 0 : api.config) == null ? void 0 : _a2.get("store.name")) || "";
+    window.addEventListener("nq-tone", onTone);
+    this.dark = currentTone() === "dark";
+    this.stop = () => {
+      stopLocale();
+      window.removeEventListener("nq-tone", onTone);
+    };
+    document.addEventListener("scroll", this.onScroll, { capture: true, passive: true });
+    const api = window.Salla;
+    const read = /* @__PURE__ */ __name(() => {
+      this.storeName = api?.config?.get("store.name") || "";
     }, "read");
-    read(), (_a = api == null ? void 0 : api.onReady) == null || _a.call(api).then(read), this.onScroll();
+    read();
+    api?.onReady?.().then(read);
+    this.onScroll();
   }
   disconnectedCallback() {
-    var _a, _b;
-    this.stop(), document.removeEventListener("scroll", this.onScroll, { capture: !0 }), (_a = this.seen) == null || _a.disconnect(), (_b = this.floater) == null || _b.remove(), this.floater = null, clearDocks(this.docks), super.disconnectedCallback();
+    this.stop();
+    document.removeEventListener("scroll", this.onScroll, { capture: true });
+    this.seen?.disconnect();
+    this.floater?.remove();
+    this.floater = null;
+    clearDocks(this.docks);
+    super.disconnectedCallback();
   }
   updated() {
-    var _a, _b;
-    (_a = this.floater) == null || _a.remove(), this.floater = null, this.docks = syncDocks(getConfig(this.config), "nq", this.docks, this.toTop, { hideTop: this.atFooter, topText: !0 });
+    this.floater?.remove();
+    this.floater = null;
+    this.docks = syncDocks(getConfig(this.config), "nq", this.docks, this.toTop, { hideTop: this.atFooter, topText: true });
     const button = this.querySelector(".nq-totop");
-    if ((_b = this.seen) == null || _b.disconnect(), !button) {
-      this.atFooter = !1;
+    this.seen?.disconnect();
+    if (!button) {
+      this.atFooter = false;
       return;
     }
     this.seen = new IntersectionObserver(([entry]) => {
       this.atFooter = entry.isIntersecting;
-    }, { threshold: 0.5 }), this.seen.observe(button);
+    }, { threshold: 0.5 });
+    this.seen.observe(button);
   }
   shown(value) {
-    return value == null || value === "" ? !0 : flag(value);
+    if (value == null || value === "") return true;
+    return flag(value);
   }
   syncFloater() {
-    var _a;
     const cfg = getConfig(this.config);
-    if (!(this.shown(cfg.show_top) && this.raised && !this.atFooter)) {
-      (_a = this.floater) == null || _a.classList.remove("show");
+    const show = this.shown(cfg.show_top) && this.raised && !this.atFooter;
+    if (!show) {
+      this.floater?.classList.remove("show");
       return;
     }
     if (!this.floater) {
       const button = document.createElement("button");
-      button.type = "button", button.className = "nq-top", button.addEventListener("click", this.toTop), document.body.appendChild(button), this.floater = button;
+      button.type = "button";
+      button.className = "nq-top";
+      button.addEventListener("click", this.toTop);
+      document.body.appendChild(button);
+      this.floater = button;
     }
-    const label = localizedString(cfg.top_label) || t({ ar: "العودة للأعلى", en: "Back to top" });
-    this.floater.setAttribute("aria-label", label), this.floater.replaceChildren();
+    const label = localizedString(cfg.top_label) || t({ ar: "\u0627\u0644\u0639\u0648\u062F\u0629 \u0644\u0644\u0623\u0639\u0644\u0649", en: "Back to top" });
+    this.floater.setAttribute("aria-label", label);
+    this.floater.replaceChildren();
     const text = document.createElement("span");
     text.textContent = label;
     const mark = document.createElement("span");
-    mark.setAttribute("aria-hidden", "true"), mark.textContent = "↑", this.floater.append(text, mark), this.floater.classList.add("show");
+    mark.setAttribute("aria-hidden", "true");
+    mark.textContent = "\u2191";
+    this.floater.append(text, mark);
+    this.floater.classList.add("show");
   }
   render() {
-    const cfg = getConfig(this.config), brand = localizedString(cfg.brand) || this.storeName || t({ ar: "المتجر", en: "Store" }), showTop = this.shown(cfg.show_top), topLabel = localizedString(cfg.top_label) || t({ ar: "العودة للأعلى", en: "Back to top" }), mark = localizedString(cfg.mark), columns = [1, 2].map((index) => ({
+    const cfg = getConfig(this.config);
+    const brand = localizedString(cfg.brand) || this.storeName || t({ ar: "\u0627\u0644\u0645\u062A\u062C\u0631", en: "Store" });
+    const showTop = this.shown(cfg.show_top);
+    const topLabel = localizedString(cfg.top_label) || t({ ar: "\u0627\u0644\u0639\u0648\u062F\u0629 \u0644\u0644\u0623\u0639\u0644\u0649", en: "Back to top" });
+    const mark = localizedString(cfg.mark);
+    const columns = [1, 2].map((index) => ({
       title: localizedString(cfg[`col${index}_title`]),
       links: getCollectionItems(cfg[`col${index}`], `col${index}`).map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" })).filter((item) => item.label)
-    })).filter((column) => column.title || column.links.length), socialTitle = localizedString(cfg.col3_title), socials = getCollectionItems(cfg.social, "social").map((item) => ({
+    })).filter((column) => column.title || column.links.length);
+    const socialTitle = localizedString(cfg.col3_title);
+    const socials = getCollectionItems(cfg.social, "social").map((item) => ({
       network: String(unwrapValue(item.network) || "instagram"),
       url: linkHref(item.url) || "#",
       label: {
-        instagram: t({ ar: "إنستغرام", en: "Instagram" }),
-        snapchat: t({ ar: "سناب شات", en: "Snapchat" }),
-        tiktok: t({ ar: "تيك توك", en: "TikTok" }),
-        whatsapp: t({ ar: "واتساب", en: "WhatsApp" }),
-        x: t({ ar: "إكس", en: "X" }),
-        youtube: t({ ar: "يوتيوب", en: "YouTube" })
-      }[String(unwrapValue(item.network) || "instagram")] || t({ ar: "تواصل", en: "Social" })
-    })).filter((item) => item.url), pays = getCollectionItems(cfg.payments, "payments").map((item) => ({ image: String(item.image || ""), label: localizedString(item.label) })).filter((item) => item.image || item.label), logo = this.dark && cfg.logo_dark || cfg.logo;
-    return html`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
+        instagram: t({ ar: "\u0625\u0646\u0633\u062A\u063A\u0631\u0627\u0645", en: "Instagram" }),
+        snapchat: t({ ar: "\u0633\u0646\u0627\u0628 \u0634\u0627\u062A", en: "Snapchat" }),
+        tiktok: t({ ar: "\u062A\u064A\u0643 \u062A\u0648\u0643", en: "TikTok" }),
+        whatsapp: t({ ar: "\u0648\u0627\u062A\u0633\u0627\u0628", en: "WhatsApp" }),
+        x: t({ ar: "\u0625\u0643\u0633", en: "X" }),
+        youtube: t({ ar: "\u064A\u0648\u062A\u064A\u0648\u0628", en: "YouTube" })
+      }[String(unwrapValue(item.network) || "instagram")] || t({ ar: "\u062A\u0648\u0627\u0635\u0644", en: "Social" })
+    })).filter((item) => item.url);
+    const pays = getCollectionItems(cfg.payments, "payments").map((item) => ({ image: String(item.image || ""), label: localizedString(item.label) })).filter((item) => item.image || item.label);
+    const logo = this.dark && cfg.logo_dark || cfg.logo;
+    return html3`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
     <footer class=${`nq-root nq-foot ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
       <div class="nq-wrap">
         <div class="nq-ft">
           <div class="nq-about">
-            <a href="#" class="nq-logo">${logo ? html`<img src=${logo} alt=${brand} />` : html`${brand}${mark ? html`<small>${mark}</small>` : nothing}`}</a>
-            ${localizedString(cfg.about) ? html`<p>${localizedString(cfg.about)}</p>` : nothing}
-            ${pays.length ? html`<p class="nq-pay-size">${t({ ar: "أيقونات الدفع ٦٤×٦٤ بكسل", en: "Payment icons, 64×64 px" })}</p><div class="nq-pay">${pays.map((pay) => pay.image ? html`<img src=${pay.image} alt=${pay.label} width="32" height="32" title=${pay.label} />` : html`<span>${pay.label}</span>`)}</div>` : nothing}
+            <a href="#" class="nq-flogo">${logo ? html3`<img src=${logo} alt=${brand} />` : html3`${brand}${mark ? html3`<small>${mark}</small>` : nothing3}`}</a>
+            ${localizedString(cfg.about) ? html3`<p>${localizedString(cfg.about)}</p>` : nothing3}
+            ${pays.length ? html3`<p class="nq-pay-size">${t({ ar: "\u0623\u064A\u0642\u0648\u0646\u0627\u062A \u0627\u0644\u062F\u0641\u0639 \u0666\u0664\xD7\u0666\u0664 \u0628\u0643\u0633\u0644", en: "Payment icons, 64\xD764 px" })}</p><div class="nq-pay">${pays.map((pay) => pay.image ? html3`<img src=${pay.image} alt=${pay.label} width="32" height="32" title=${pay.label} />` : html3`<span>${pay.label}</span>`)}</div>` : nothing3}
           </div>
-          ${columns.map((column) => html`<div>
-            ${column.title ? html`<h5>${column.title}</h5>` : nothing}
-            <ul>${column.links.map((link) => html`<li><a href=${link.url}>${link.label}</a></li>`)}</ul>
+          ${columns.map((column) => html3`<div>
+            ${column.title ? html3`<h5>${column.title}</h5>` : nothing3}
+            <ul>${column.links.map((link) => html3`<li><a href=${link.url}>${link.label}</a></li>`)}</ul>
           </div>`)}
-          ${socialTitle || socials.length ? html`<div>
-            ${socialTitle ? html`<h5>${socialTitle}</h5>` : nothing}
-            <div class="nq-social">${socials.map((item) => html`<a href=${item.url} aria-label=${item.label} target="_blank" rel="noopener noreferrer">${socialIcon(item.network)}</a>`)}</div>
-          </div>` : nothing}
+          ${socialTitle || socials.length ? html3`<div>
+            ${socialTitle ? html3`<h5>${socialTitle}</h5>` : nothing3}
+            <div class="nq-social">${socials.map((item) => html3`<a href=${item.url} aria-label=${item.label} target="_blank" rel="noopener noreferrer">${socialIcon(item.network)}</a>`)}</div>
+          </div>` : nothing3}
         </div>
-        ${showTop ? html`<button type="button" class="nq-totop" @click=${this.toTop}>${topLabel} <span aria-hidden="true">↑</span></button>` : nothing}
-        <div class="nq-copy">
+        ${showTop ? html3`<button type="button" class="nq-totop" @click=${this.toTop}>${topLabel} <span aria-hidden="true">↑</span></button>` : nothing3}
+        <div class="nq-foot-copy">
           <span>${localizedString(cfg.copyright)}</span>
           <span>${localizedString(cfg.legal)}</span>
         </div>
@@ -473,23 +616,23 @@ const _PageFooter = class _PageFooter extends LitElement {
   }
 };
 __name(_PageFooter, "PageFooter");
-let PageFooter = _PageFooter;
 __decorateClass([
   property({ type: Object })
-], PageFooter.prototype, "config");
+], _PageFooter.prototype, "config", 2);
 __decorateClass([
   state()
-], PageFooter.prototype, "storeName");
+], _PageFooter.prototype, "storeName", 2);
 __decorateClass([
   state()
-], PageFooter.prototype, "dark");
+], _PageFooter.prototype, "dark", 2);
 __decorateClass([
   state()
-], PageFooter.prototype, "raised");
+], _PageFooter.prototype, "raised", 2);
 __decorateClass([
   state()
-], PageFooter.prototype, "atFooter");
-typeof PageFooter < "u" && PageFooter.registerSallaComponent("salla-page-footer");
+], _PageFooter.prototype, "atFooter", 2);
+var PageFooter = _PageFooter;
 export {
   PageFooter as default
 };
+typeof PageFooter < "u" && PageFooter.registerSallaComponent("salla-page-footer");

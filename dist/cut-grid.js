@@ -1,23 +1,38 @@
 var __defProp = Object.defineProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
-import { nothing, html, LitElement } from "lit";
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp(target, key, result);
+  return result;
+};
+
+// tw-nasaq-landing/src/components/cut-grid/index.ts
+import { html as html3, LitElement, nothing as nothing3 } from "lit";
 import { property } from "lit/decorators.js";
+
+// tw-nasaq-landing/src/utils/config.ts
 function getConfig(raw) {
-  return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
+  if (!raw) return {};
+  if (raw.component && typeof raw.component === "object") return raw.component;
+  return raw;
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  var _a, _b, _c;
-  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
+  const lang = window.Salla?.lang?.getLocale?.() || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
 function localizedString(value) {
-  if (value == null || value === "") return "";
-  if (typeof value == "string") return value;
-  if (typeof value == "object") {
-    const obj = value, text = obj[getLocale()] || obj.ar || obj.en;
-    return typeof text == "string" ? text : "";
+  if (value === null || value === void 0 || value === "") return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "object") {
+    const obj = value;
+    const text = obj[getLocale()] || obj.ar || obj.en;
+    return typeof text === "string" ? text : "";
   }
   return String(value);
 }
@@ -27,15 +42,16 @@ function t(strings) {
 }
 __name(t, "t");
 function unwrapValue(value) {
-  var _a;
-  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
+  if (Array.isArray(value)) return unwrapValue(value[0]?.value ?? value[0] ?? "");
+  if (value && typeof value === "object" && "value" in value) return value.value;
+  return value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function linkHref(value) {
   if (value == null || value === "") return "";
-  if (typeof value == "string") return value.trim();
+  if (typeof value === "string") return value.trim();
   if (Array.isArray(value)) return linkHref(value[0]);
-  if (typeof value == "object") {
+  if (typeof value === "object") {
     const obj = value;
     if (obj.url) return linkHref(obj.url);
     if ("value" in obj) return linkHref(obj.value);
@@ -45,39 +61,64 @@ function linkHref(value) {
 }
 __name(linkHref, "linkHref");
 function getCollectionItems(items, prefix) {
-  return Array.isArray(items) ? items.map((item) => {
-    if (!item || typeof item != "object") return {};
+  if (!Array.isArray(items)) return [];
+  return items.map((item) => {
+    if (!item || typeof item !== "object") return {};
     const normalized = {};
-    for (const [key, val] of Object.entries(item))
+    for (const [key, val] of Object.entries(item)) {
       normalized[key.startsWith(`${prefix}.`) ? key.slice(prefix.length + 1) : key] = val;
+    }
     return normalized;
-  }) : [];
+  });
 }
 __name(getCollectionItems, "getCollectionItems");
 function watchLocale(host) {
   const update = /* @__PURE__ */ __name(() => host.requestUpdate(), "update");
-  return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
+  window.addEventListener("language-changed", update);
+  return () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
+
+// tw-nasaq-landing/src/utils/landing.ts
+import { html, nothing } from "lit";
 function schemeOf(cfg) {
   const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
-  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
+  if (scheme === "dark") return "nq-dark";
+  if (scheme === "light") return "nq-light";
+  return "nq-auto";
 }
 __name(schemeOf, "schemeOf");
+
+// tw-nasaq-landing/src/utils/styles.ts
 function injectStyles(id, css2) {
   let style = document.getElementById(id);
-  style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
+  if (!style) {
+    style = document.createElement("style");
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  if (style.textContent !== css2) style.textContent = css2;
 }
 __name(injectStyles, "injectStyles");
-const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+var KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
 function setKitFont(on) {
-  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
+  document.documentElement.classList.toggle("nq-kit-font", on);
+  const current = document.getElementById("nq-fonts");
+  if (!on) {
+    current?.remove();
+    return;
+  }
+  if (current) return;
   const link = document.createElement("link");
-  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
+  link.id = "nq-fonts";
+  link.rel = "stylesheet";
+  link.href = KIT_FONT;
+  document.head.appendChild(link);
 }
 __name(setKitFont, "setKitFont");
 function injectFonts() {
-  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
+  if (!document.documentElement.classList.contains("nq-kit-font")) return;
+  setKitFont(true);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -85,20 +126,32 @@ function sectionStyle(cfg) {
 }
 __name(sectionStyle, "sectionStyle");
 function watchReveal(host) {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-    return host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in")), () => {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) {
+    host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in"));
+    return () => {
     };
+  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      entry.isIntersecting && (entry.target.classList.add("in"), io.unobserve(entry.target));
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("in");
+      io.unobserve(entry.target);
     });
-  }, { threshold: 0.14 }), scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan"), mo = new MutationObserver(scan);
-  return mo.observe(host, { childList: !0, subtree: !0 }), scan(), () => {
-    io.disconnect(), mo.disconnect();
+  }, { threshold: 0.14 });
+  const scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan");
+  const mo = new MutationObserver(scan);
+  mo.observe(host, { childList: true, subtree: true });
+  scan();
+  return () => {
+    io.disconnect();
+    mo.disconnect();
   };
 }
 __name(watchReveal, "watchReveal");
-const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
+var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
+var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
+var baseCss = `
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -157,27 +210,27 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
   .nq-mq-track { animation: none !important; }
 }
 `;
+
+// tw-nasaq-landing/src/utils/ui.ts
+import { html as html2, nothing as nothing2 } from "lit";
 function emptyCopy() {
-  return html`<p class="nq-empty">${t({ ar: "أضف عناصر هذا القسم من الإعدادات", en: "Add this section's items in the settings" })}</p>`;
+  return html2`<p class="nq-empty">${t({ ar: "\u0623\u0636\u0641 \u0639\u0646\u0627\u0635\u0631 \u0647\u0630\u0627 \u0627\u0644\u0642\u0633\u0645 \u0645\u0646 \u0627\u0644\u0625\u0639\u062F\u0627\u062F\u0627\u062A", en: "Add this section's items in the settings" })}</p>`;
 }
 __name(emptyCopy, "emptyCopy");
 function silhouette() {
-  return html`<svg class="nq-silhouette" viewBox="0 0 100 160" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="M50 18c6 0 9 4 9 9 0 5-2 7-2 10l14 7c6 3 9 8 10 15l6 81H13l6-81c1-7 4-12 10-15l14-7c0-3-2-5-2-10 0-5 3-9 9-9z" fill="rgba(16,16,20,.34)"/></svg>`;
+  return html2`<svg class="nq-silhouette" viewBox="0 0 100 160" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path d="M50 18c6 0 9 4 9 9 0 5-2 7-2 10l14 7c6 3 9 8 10 15l6 81H13l6-81c1-7 4-12 10-15l14-7c0-3-2-5-2-10 0-5 3-9 9-9z" fill="rgba(16,16,20,.34)"/></svg>`;
 }
 __name(silhouette, "silhouette");
 function frame(src, caption, extra = "") {
-  return html`<div class="nq-ph ${extra}">
-    ${src ? html`<img src=${src} alt=${caption} />` : silhouette()}
-    ${caption ? html`<figure><figcaption>${caption}</figcaption></figure>` : nothing}
+  return html2`<div class="nq-ph ${extra}">
+    ${src ? html2`<img src=${src} alt=${caption} />` : silhouette()}
+    ${caption ? html2`<figure><figcaption>${caption}</figcaption></figure>` : nothing2}
   </div>`;
 }
 __name(frame, "frame");
-var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name((decorators, target, key, kind) => {
-  for (var result = void 0, i = decorators.length - 1, decorator; i >= 0; i--)
-    (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
-  return result && __defProp2(target, key, result), result;
-}, "__decorateClass");
-const css = `
+
+// tw-nasaq-landing/src/components/cut-grid/index.ts
+var css = `
 .nq-cuts { background: var(--nq-section-bg, var(--ivory)); }
 .nq-lb { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(14px, 2.4vw, 26px); margin-top: 46px; }
 .nq-card { position: relative; overflow: hidden; background: var(--card); border: 1px solid var(--line); color: inherit; display: block; }
@@ -191,26 +244,37 @@ const css = `
 .nq-tagline { position: absolute; top: 14px; inset-inline-start: 14px; z-index: 4; background: var(--ivory); padding: 5px 12px; font-size: .68rem; letter-spacing: .16em; }
 @container (max-width: 900px) { .nq-lb { grid-template-columns: repeat(2, 1fr); } }
 @container (max-width: 600px) { .nq-lb { grid-template-columns: 1fr; } }
-`, _CutGrid = class _CutGrid extends LitElement {
+`;
+var _CutGrid = class _CutGrid extends LitElement {
   constructor() {
-    super(...arguments), this.stop = () => {
-    };
+    super(...arguments);
+    this.stop = /* @__PURE__ */ __name(() => {
+    }, "stop");
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
-    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-cut-grid", css);
-    const stopLocale = watchLocale(this), stopReveal = watchReveal(this);
+    super.connectedCallback();
+    this.classList.add("nq-host");
+    injectFonts();
+    injectStyles("nq-base", baseCss);
+    injectStyles("nq-cut-grid", css);
+    const stopLocale = watchLocale(this);
+    const stopReveal = watchReveal(this);
     this.stop = () => {
-      stopLocale(), stopReveal();
+      stopLocale();
+      stopReveal();
     };
   }
   disconnectedCallback() {
-    this.stop(), super.disconnectedCallback();
+    this.stop();
+    super.disconnectedCallback();
   }
   render() {
-    const cfg = getConfig(this.config), title = localizedString(cfg.title), cards = getCollectionItems(cfg.cards, "cards").map((item) => ({
+    const cfg = getConfig(this.config);
+    const title = localizedString(cfg.title);
+    const cards = getCollectionItems(cfg.cards, "cards").map((item) => ({
       tag: localizedString(item.tag),
       image: String(item.image || ""),
       caption: localizedString(item.caption),
@@ -219,34 +283,35 @@ const css = `
       price: localizedString(item.price),
       compare: localizedString(item.compare),
       url: linkHref(item.url)
-    })).filter((item) => item.title), id = String(cfg.anchor || "lookbook");
-    return html`<section class=${`nq-root nq-sec nq-cuts ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "lookbook"}>
+    })).filter((item) => item.title);
+    const id = String(cfg.anchor || "lookbook");
+    return html3`<section class=${`nq-root nq-sec nq-cuts ${schemeOf(cfg)}`} id=${id} style=${sectionStyle(cfg)} aria-label=${title || "lookbook"}>
       <div class="nq-wrap">
         <div class="nq-rev">
-          ${localizedString(cfg.kicker) ? html`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing}
-          ${title ? html`<h2 class="nq-h2">${title}</h2>` : nothing}
-          ${localizedString(cfg.text) ? html`<p class="nq-lead">${localizedString(cfg.text)}</p>` : nothing}
+          ${localizedString(cfg.kicker) ? html3`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : nothing3}
+          ${title ? html3`<h2 class="nq-h2">${title}</h2>` : nothing3}
+          ${localizedString(cfg.text) ? html3`<p class="nq-lead">${localizedString(cfg.text)}</p>` : nothing3}
         </div>
-        ${cards.length ? html`<div class="nq-lb">${cards.map((card) => {
-      const body = html`
-            ${card.tag ? html`<span class="nq-tagline">${card.tag}</span>` : nothing}
+        ${cards.length ? html3`<div class="nq-lb">${cards.map((card) => {
+      const body = html3`
+            ${card.tag ? html3`<span class="nq-tagline">${card.tag}</span>` : nothing3}
             ${frame(card.image, card.caption)}
             <div class="nq-card-b">
-              <div><h3>${card.title}</h3>${card.note ? html`<p>${card.note}</p>` : nothing}</div>
-              ${card.price ? html`<div class="nq-price">${card.price}${card.compare ? html`<s>${card.compare}</s>` : nothing}</div>` : nothing}
+              <div><h3>${card.title}</h3>${card.note ? html3`<p>${card.note}</p>` : nothing3}</div>
+              ${card.price ? html3`<div class="nq-price">${card.price}${card.compare ? html3`<s>${card.compare}</s>` : nothing3}</div>` : nothing3}
             </div>`;
-      return card.url ? html`<a class="nq-card nq-rev" href=${card.url}>${body}</a>` : html`<article class="nq-card nq-rev">${body}</article>`;
+      return card.url ? html3`<a class="nq-card nq-rev" href=${card.url}>${body}</a>` : html3`<article class="nq-card nq-rev">${body}</article>`;
     })}</div>` : emptyCopy()}
       </div>
     </section>`;
   }
 };
 __name(_CutGrid, "CutGrid");
-let CutGrid = _CutGrid;
 __decorateClass([
   property({ type: Object })
-], CutGrid.prototype, "config");
-typeof CutGrid < "u" && CutGrid.registerSallaComponent("salla-cut-grid");
+], _CutGrid.prototype, "config", 2);
+var CutGrid = _CutGrid;
 export {
   CutGrid as default
 };
+typeof CutGrid < "u" && CutGrid.registerSallaComponent("salla-cut-grid");

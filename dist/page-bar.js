@@ -1,14 +1,28 @@
 var __defProp = Object.defineProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
-import { nothing, html, LitElement } from "lit";
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp(target, key, result);
+  return result;
+};
+
+// tw-nasaq-landing/src/components/page-bar/index.ts
+import { html as html3, LitElement, nothing as nothing3 } from "lit";
 import { property, state } from "lit/decorators.js";
+
+// tw-nasaq-landing/src/utils/config.ts
 function getConfig(raw) {
-  return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
+  if (!raw) return {};
+  if (raw.component && typeof raw.component === "object") return raw.component;
+  return raw;
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  var _a, _b, _c;
-  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
+  const lang = window.Salla?.lang?.getLocale?.() || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
@@ -17,11 +31,12 @@ function isRtl() {
 }
 __name(isRtl, "isRtl");
 function localizedString(value) {
-  if (value == null || value === "") return "";
-  if (typeof value == "string") return value;
-  if (typeof value == "object") {
-    const obj = value, text = obj[getLocale()] || obj.ar || obj.en;
-    return typeof text == "string" ? text : "";
+  if (value === null || value === void 0 || value === "") return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "object") {
+    const obj = value;
+    const text = obj[getLocale()] || obj.ar || obj.en;
+    return typeof text === "string" ? text : "";
   }
   return String(value);
 }
@@ -31,15 +46,16 @@ function t(strings) {
 }
 __name(t, "t");
 function unwrapValue(value) {
-  var _a;
-  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
+  if (Array.isArray(value)) return unwrapValue(value[0]?.value ?? value[0] ?? "");
+  if (value && typeof value === "object" && "value" in value) return value.value;
+  return value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function linkHref(value) {
   if (value == null || value === "") return "";
-  if (typeof value == "string") return value.trim();
+  if (typeof value === "string") return value.trim();
   if (Array.isArray(value)) return linkHref(value[0]);
-  if (typeof value == "object") {
+  if (typeof value === "object") {
     const obj = value;
     if (obj.url) return linkHref(obj.url);
     if ("value" in obj) return linkHref(obj.value);
@@ -50,30 +66,36 @@ function linkHref(value) {
 __name(linkHref, "linkHref");
 function flag(value) {
   const raw = unwrapValue(value);
-  if (raw === !0 || raw === 1) return !0;
-  if (typeof raw == "string") {
+  if (raw === true || raw === 1) return true;
+  if (typeof raw === "string") {
     const text = raw.trim().toLowerCase();
     return text === "true" || text === "1" || text === "on" || text === "yes";
   }
-  return !1;
+  return false;
 }
 __name(flag, "flag");
 function getCollectionItems(items, prefix) {
-  return Array.isArray(items) ? items.map((item) => {
-    if (!item || typeof item != "object") return {};
+  if (!Array.isArray(items)) return [];
+  return items.map((item) => {
+    if (!item || typeof item !== "object") return {};
     const normalized = {};
-    for (const [key, val] of Object.entries(item))
+    for (const [key, val] of Object.entries(item)) {
       normalized[key.startsWith(`${prefix}.`) ? key.slice(prefix.length + 1) : key] = val;
+    }
     return normalized;
-  }) : [];
+  });
 }
 __name(getCollectionItems, "getCollectionItems");
 function watchLocale(host) {
   const update = /* @__PURE__ */ __name(() => host.requestUpdate(), "update");
-  return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
+  window.addEventListener("language-changed", update);
+  return () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
-const COPIES = 12;
+
+// tw-nasaq-landing/src/utils/announce.ts
+import { html, nothing } from "lit";
+var COPIES = 12;
 function announceCss(prefix) {
   return `
 .${prefix}-ann.${prefix}-ann {
@@ -156,8 +178,10 @@ __name(announceTone, "announceTone");
 function announceBar(cfg, prefix, extraClass = "", tone = "") {
   const text = localizedString(cfg.announce).trim();
   if (!text) return nothing;
-  if (!(String(unwrapValue(cfg.announce_mode) || "move") !== "still"))
+  const moving = String(unwrapValue(cfg.announce_mode) || "move") !== "still";
+  if (!moving) {
     return html`<div class="${prefix}-ann ${prefix}-ann__still ${extraClass}" style=${tone}>${text}</div>`;
+  }
   const rtl = isRtl() ? " is-rtl" : "";
   return html`<div class="${prefix}-ann${rtl} ${extraClass}" style=${tone}>
     <ul class="${prefix}-ann__list">
@@ -166,9 +190,13 @@ function announceBar(cfg, prefix, extraClass = "", tone = "") {
   </div>`;
 }
 __name(announceBar, "announceBar");
-const TONE_KEY = "nq-landing-tone";
+
+// tw-nasaq-landing/src/utils/landing.ts
+import { html as html2, nothing as nothing2 } from "lit";
+var TONE_KEY = "nq-landing-tone";
 function applyTone(mode) {
-  document.documentElement.classList.remove("nq-mode-light", "nq-mode-dark"), document.documentElement.classList.add(mode === "dark" ? "nq-mode-dark" : "nq-mode-light");
+  document.documentElement.classList.remove("nq-mode-light", "nq-mode-dark");
+  document.documentElement.classList.add(mode === "dark" ? "nq-mode-dark" : "nq-mode-light");
   try {
     localStorage.setItem(TONE_KEY, mode);
   } catch {
@@ -191,29 +219,42 @@ function savedTone() {
 __name(savedTone, "savedTone");
 function schemeOf(cfg) {
   const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
-  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
+  if (scheme === "dark") return "nq-dark";
+  if (scheme === "light") return "nq-light";
+  return "nq-auto";
 }
 __name(schemeOf, "schemeOf");
+
+// tw-nasaq-landing/src/utils/styles.ts
 function injectStyles(id, css2) {
   let style = document.getElementById(id);
-  style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
+  if (!style) {
+    style = document.createElement("style");
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  if (style.textContent !== css2) style.textContent = css2;
 }
 __name(injectStyles, "injectStyles");
-const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+var KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
 function setKitFont(on) {
   document.documentElement.classList.toggle("nq-kit-font", on);
   const current = document.getElementById("nq-fonts");
   if (!on) {
-    current == null || current.remove();
+    current?.remove();
     return;
   }
   if (current) return;
   const link = document.createElement("link");
-  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
+  link.id = "nq-fonts";
+  link.rel = "stylesheet";
+  link.href = KIT_FONT;
+  document.head.appendChild(link);
 }
 __name(setKitFont, "setKitFont");
 function injectFonts() {
-  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
+  if (!document.documentElement.classList.contains("nq-kit-font")) return;
+  setKitFont(true);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -221,20 +262,32 @@ function sectionStyle(cfg) {
 }
 __name(sectionStyle, "sectionStyle");
 function watchReveal(host) {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-    return host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in")), () => {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) {
+    host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in"));
+    return () => {
     };
+  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      entry.isIntersecting && (entry.target.classList.add("in"), io.unobserve(entry.target));
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("in");
+      io.unobserve(entry.target);
     });
-  }, { threshold: 0.14 }), scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan"), mo = new MutationObserver(scan);
-  return mo.observe(host, { childList: !0, subtree: !0 }), scan(), () => {
-    io.disconnect(), mo.disconnect();
+  }, { threshold: 0.14 });
+  const scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan");
+  const mo = new MutationObserver(scan);
+  mo.observe(host, { childList: true, subtree: true });
+  scan();
+  return () => {
+    io.disconnect();
+    mo.disconnect();
   };
 }
 __name(watchReveal, "watchReveal");
-const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
+var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
+var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
+var baseCss = `
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -293,12 +346,9 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
   .nq-mq-track { animation: none !important; }
 }
 `;
-var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name((decorators, target, key, kind) => {
-  for (var result = void 0, i = decorators.length - 1, decorator; i >= 0; i--)
-    (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
-  return result && __defProp2(target, key, result), result;
-}, "__decorateClass");
-const css = `
+
+// tw-nasaq-landing/src/components/page-bar/index.ts
+var css = `
 .nq-bar { position: relative; background: var(--nq-section-bg, color-mix(in srgb, var(--ivory) 86%, transparent)); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
 .nq-nav { display: flex; align-items: center; gap: 26px; min-height: 74px; }
 .nq-logo { font-family: var(--serif); font-weight: 700; font-size: 1.5rem; letter-spacing: .02em; line-height: 1; }
@@ -320,41 +370,65 @@ const css = `
   .nq-nav ul a { display: block; padding: 12px var(--pad); }
   .nq-menu { display: inline-grid; }
 }
-`, _PageBar = class _PageBar extends LitElement {
+`;
+var _PageBar = class _PageBar extends LitElement {
   constructor() {
-    super(...arguments), this.open = !1, this.dark = !1, this.stop = () => {
-    }, this.pinned = null, this.opened = [], this.modeKey = "";
+    super(...arguments);
+    this.open = false;
+    this.dark = false;
+    this.stop = /* @__PURE__ */ __name(() => {
+    }, "stop");
+    this.pinned = null;
+    this.opened = [];
+    this.modeKey = "";
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
-    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-announce", announceCss("nq")), injectStyles("nq-page-bar", css);
-    const stopLocale = watchLocale(this), stopReveal = watchReveal(this), onTone = /* @__PURE__ */ __name(() => {
+    super.connectedCallback();
+    this.classList.add("nq-host");
+    injectFonts();
+    injectStyles("nq-base", baseCss);
+    injectStyles("nq-announce", announceCss("nq"));
+    injectStyles("nq-page-bar", css);
+    const stopLocale = watchLocale(this);
+    const stopReveal = watchReveal(this);
+    const onTone = /* @__PURE__ */ __name(() => {
       this.dark = currentTone() === "dark";
     }, "onTone");
-    window.addEventListener("nq-tone", onTone), this.stop = () => {
-      stopLocale(), stopReveal(), window.removeEventListener("nq-tone", onTone), this.release();
+    window.addEventListener("nq-tone", onTone);
+    this.stop = () => {
+      stopLocale();
+      stopReveal();
+      window.removeEventListener("nq-tone", onTone);
+      this.release();
     };
   }
   willUpdate() {
     const cfg = getConfig(this.config);
     setKitFont(this.kitFont(cfg));
     const key = `${unwrapValue(cfg.default_mode) || "light"}|${this.showMode(cfg)}`;
-    key !== this.modeKey && (this.modeKey = key, applyTone(this.openingMode(cfg)), this.dark = currentTone() === "dark");
+    if (key === this.modeKey) return;
+    this.modeKey = key;
+    applyTone(this.openingMode(cfg));
+    this.dark = currentTone() === "dark";
   }
   disconnectedCallback() {
-    this.stop(), super.disconnectedCallback();
+    this.stop();
+    super.disconnectedCallback();
   }
   updated() {
     this.pin();
   }
   showMode(cfg) {
-    return cfg.show_mode_toggle == null || cfg.show_mode_toggle === "" ? !0 : flag(cfg.show_mode_toggle);
+    if (cfg.show_mode_toggle == null || cfg.show_mode_toggle === "") return true;
+    return flag(cfg.show_mode_toggle);
   }
   /** Missing or off inherits the Salla store font. On uses the kit typeface. */
   kitFont(cfg) {
-    return cfg.use_kit_font == null || cfg.use_kit_font === "" ? !1 : flag(cfg.use_kit_font);
+    if (cfg.use_kit_font == null || cfg.use_kit_font === "") return false;
+    return flag(cfg.use_kit_font);
   }
   openingMode(cfg) {
     const base = String(unwrapValue(cfg.default_mode) || "light");
@@ -362,7 +436,8 @@ const css = `
       const saved = savedTone();
       if (saved) return saved;
     }
-    return base === "system" ? window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : base === "dark" ? "dark" : "light";
+    if (base === "system") return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return base === "dark" ? "dark" : "light";
   }
   /** Keep the page where it was. Focusing the sticky header otherwise jumps to the top. */
   place(run) {
@@ -372,62 +447,94 @@ const css = `
       return;
     }
     const nodes = /* @__PURE__ */ new Set([this.ownerDocument.documentElement, this.ownerDocument.body]);
-    this.ownerDocument.scrollingElement && nodes.add(this.ownerDocument.scrollingElement);
+    if (this.ownerDocument.scrollingElement) nodes.add(this.ownerDocument.scrollingElement);
     let node = this;
-    for (; node; )
-      nodes.add(node), node = node.parentElement;
-    const marks = [...nodes].map((el) => [el, el.scrollTop]), x = view.scrollX, y = view.scrollY, put = /* @__PURE__ */ __name(() => {
-      for (const [el, top] of marks) el.scrollTop !== top && (el.scrollTop = top);
-      (Math.abs(view.scrollY - y) > 1 || Math.abs(view.scrollX - x) > 1) && view.scrollTo(x, y);
+    while (node) {
+      nodes.add(node);
+      node = node.parentElement;
+    }
+    const marks = [...nodes].map((el) => [el, el.scrollTop]);
+    const x = view.scrollX;
+    const y = view.scrollY;
+    const put = /* @__PURE__ */ __name(() => {
+      for (const [el, top] of marks) if (el.scrollTop !== top) el.scrollTop = top;
+      if (Math.abs(view.scrollY - y) > 1 || Math.abs(view.scrollX - x) > 1) view.scrollTo(x, y);
     }, "put");
-    run(), put(), view.requestAnimationFrame(() => {
-      put(), view.requestAnimationFrame(put);
+    run();
+    put();
+    view.requestAnimationFrame(() => {
+      put();
+      view.requestAnimationFrame(put);
     });
   }
   outerBox() {
     let node = this;
-    for (; node.parentElement && node.parentElement !== document.body && node.parentElement !== document.documentElement; ) {
+    while (node.parentElement && node.parentElement !== document.body && node.parentElement !== document.documentElement) {
       const parent = node.parentElement;
-      if ([...parent.children].filter((el) => el.tagName !== "SCRIPT" && el.tagName !== "STYLE").length > 1) return node;
+      const sections = [...parent.children].filter((el) => el.tagName !== "SCRIPT" && el.tagName !== "STYLE");
+      if (sections.length > 1) return node;
       node = parent;
     }
     return node;
   }
   pin() {
-    const cfg = getConfig(this.config), sticky = flag(cfg.sticky), outer = this.outerBox();
-    if (this.pinned && this.pinned !== outer && this.release(), this.pinned = outer, outer.style.position = sticky ? "sticky" : "", outer.style.top = sticky ? "0" : "", outer.style.zIndex = sticky ? "40" : "", this.opened.forEach((el) => {
+    const cfg = getConfig(this.config);
+    const sticky = flag(cfg.sticky);
+    const outer = this.outerBox();
+    if (this.pinned && this.pinned !== outer) this.release();
+    this.pinned = outer;
+    outer.style.position = sticky ? "sticky" : "";
+    outer.style.top = sticky ? "0" : "";
+    outer.style.zIndex = sticky ? "40" : "";
+    this.opened.forEach((el) => {
       el.style.overflow = "";
-    }), this.opened = [], !sticky) return;
+    });
+    this.opened = [];
+    if (!sticky) return;
     let node = outer.parentElement;
-    for (; node && node !== document.body && node !== document.documentElement; ) {
+    while (node && node !== document.body && node !== document.documentElement) {
       const flow = getComputedStyle(node);
       if (flow.overflowY === "auto" || flow.overflowY === "scroll") break;
-      (flow.overflowY === "hidden" || flow.overflowX === "hidden") && (node.style.overflow = "clip", this.opened.push(node)), node = node.parentElement;
+      if (flow.overflowY === "hidden" || flow.overflowX === "hidden") {
+        node.style.overflow = "clip";
+        this.opened.push(node);
+      }
+      node = node.parentElement;
     }
   }
   release() {
-    this.pinned && (this.pinned.style.position = this.pinned.style.top = this.pinned.style.zIndex = "", this.pinned = null), this.opened.forEach((el) => {
+    if (this.pinned) {
+      this.pinned.style.position = this.pinned.style.top = this.pinned.style.zIndex = "";
+      this.pinned = null;
+    }
+    this.opened.forEach((el) => {
       el.style.overflow = "";
-    }), this.opened = [];
+    });
+    this.opened = [];
   }
   render() {
-    const cfg = getConfig(this.config), brand = localizedString(cfg.brand) || t({ ar: "المتجر", en: "Store" }), mark = localizedString(cfg.mark), links = getCollectionItems(cfg.links, "links").map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" })).filter((item) => item.label), logo = this.dark && cfg.logo_dark || cfg.logo;
-    return html`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
+    const cfg = getConfig(this.config);
+    const brand = localizedString(cfg.brand) || t({ ar: "\u0627\u0644\u0645\u062A\u062C\u0631", en: "Store" });
+    const mark = localizedString(cfg.mark);
+    const links = getCollectionItems(cfg.links, "links").map((item) => ({ label: localizedString(item.label), url: linkHref(item.url) || "#" })).filter((item) => item.label);
+    const logo = this.dark && cfg.logo_dark || cfg.logo;
+    return html3`${announceBar(cfg, "nq", `nq-root ${schemeOf(cfg)}`, announceTone(cfg))}
     <header class=${`nq-root nq-bar ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
       <nav class="nq-nav nq-wrap ${this.open ? "is-open" : ""}">
         <a href=${linkHref(cfg.home_url) || "#"} class="nq-logo" aria-label=${brand}>
-          ${logo ? html`<img src=${logo} alt=${brand} />` : html`${brand}${mark ? html`<small>${mark}</small>` : nothing}`}
+          ${logo ? html3`<img src=${logo} alt=${brand} />` : html3`${brand}${mark ? html3`<small>${mark}</small>` : nothing3}`}
         </a>
-        ${links.length ? html`<ul>${links.map((item) => html`<li><a href=${item.url} @click=${() => {
-      this.open = !1;
-    }}>${item.label}</a></li>`)}</ul>` : nothing}
+        ${links.length ? html3`<ul>${links.map((item) => html3`<li><a href=${item.url} @click=${() => {
+      this.open = false;
+    }}>${item.label}</a></li>`)}</ul>` : nothing3}
         <span class="nq-sp"></span>
-        ${this.showMode(cfg) ? html`<button type="button" class="nq-tone" aria-pressed=${this.dark ? "true" : "false"} aria-label=${this.dark ? t({ ar: "التبديل إلى الوضع الفاتح", en: "Switch to light mode" }) : t({ ar: "التبديل إلى الوضع الداكن", en: "Switch to dark mode" })} @mousedown=${(event) => event.preventDefault()} @click=${() => this.place(() => {
-      applyTone(this.dark ? "light" : "dark"), this.dark = currentTone() === "dark";
+        ${this.showMode(cfg) ? html3`<button type="button" class="nq-tone" aria-pressed=${this.dark ? "true" : "false"} aria-label=${this.dark ? t({ ar: "\u0627\u0644\u062A\u0628\u062F\u064A\u0644 \u0625\u0644\u0649 \u0627\u0644\u0648\u0636\u0639 \u0627\u0644\u0641\u0627\u062A\u062D", en: "Switch to light mode" }) : t({ ar: "\u0627\u0644\u062A\u0628\u062F\u064A\u0644 \u0625\u0644\u0649 \u0627\u0644\u0648\u0636\u0639 \u0627\u0644\u062F\u0627\u0643\u0646", en: "Switch to dark mode" })} @mousedown=${(event) => event.preventDefault()} @click=${() => this.place(() => {
+      applyTone(this.dark ? "light" : "dark");
+      this.dark = currentTone() === "dark";
     })}>
-          ${this.dark ? html`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor" /><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6" /></g></svg>` : html`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.5 2.4a9 9 0 1 0 7.1 13.6A8 8 0 0 1 14.5 2.4z" /></svg>`}
-        </button>` : nothing}
-        <button type="button" class="nq-menu" aria-expanded=${this.open ? "true" : "false"} aria-label=${t({ ar: "القائمة", en: "Menu" })} @click=${() => {
+          ${this.dark ? html3`<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor" /><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.1 5.1l1.6 1.6M17.3 17.3l1.6 1.6M18.9 5.1l-1.6 1.6M6.7 17.3l-1.6 1.6" /></g></svg>` : html3`<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.5 2.4a9 9 0 1 0 7.1 13.6A8 8 0 0 1 14.5 2.4z" /></svg>`}
+        </button>` : nothing3}
+        <button type="button" class="nq-menu" aria-expanded=${this.open ? "true" : "false"} aria-label=${t({ ar: "\u0627\u0644\u0642\u0627\u0626\u0645\u0629", en: "Menu" })} @click=${() => {
       this.open = !this.open;
     }}>☰</button>
       </nav>
@@ -435,17 +542,17 @@ const css = `
   }
 };
 __name(_PageBar, "PageBar");
-let PageBar = _PageBar;
 __decorateClass([
   property({ type: Object })
-], PageBar.prototype, "config");
+], _PageBar.prototype, "config", 2);
 __decorateClass([
   state()
-], PageBar.prototype, "open");
+], _PageBar.prototype, "open", 2);
 __decorateClass([
   state()
-], PageBar.prototype, "dark");
-typeof PageBar < "u" && PageBar.registerSallaComponent("salla-page-bar");
+], _PageBar.prototype, "dark", 2);
+var PageBar = _PageBar;
 export {
   PageBar as default
 };
+typeof PageBar < "u" && PageBar.registerSallaComponent("salla-page-bar");

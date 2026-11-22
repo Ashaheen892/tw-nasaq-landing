@@ -30,10 +30,10 @@ const css = `
 .nq-side .nq-who { margin: 12px 0 0; letter-spacing: .08em; color: rgba(247,244,239,.72); }
 .nq-film { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 .nq-side .nq-actions { margin-top: 18px; }
-.nq-thumb { display: grid; grid-template-rows: 1fr auto; padding: 0; border: 1px solid rgba(247,244,239,.28); background: #1c1a16; color: #f7f4ef; cursor: pointer; overflow: hidden; text-align: start; }
-.nq-thumb img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; }
-.nq-thumb b { padding: 8px 10px 10px; background: #1c1a16; font-family: var(--serif); font-size: .82rem; font-weight: 700; }
-.nq-thumb.is-on { border-color: var(--gold); }
+.nq-reel-thumb { display: grid; grid-template-rows: 1fr auto; padding: 0; border: 1px solid rgba(247,244,239,.28); background: #1c1a16; color: #f7f4ef; cursor: pointer; overflow: hidden; text-align: start; }
+.nq-reel-thumb img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; }
+.nq-reel-thumb b { padding: 8px 10px 10px; background: #1c1a16; font-family: var(--serif); font-size: .82rem; font-weight: 700; }
+.nq-reel-thumb.is-on { border-color: var(--gold); }
 @container (max-width: 860px) {
   .nq-mirror-head, .nq-board { display: grid; grid-template-columns: 1fr; }
   .nq-phone { max-width: 360px; }
@@ -158,7 +158,7 @@ export default class MirrorReels extends LitElement {
             </div>
             <div>
               ${items.length > 1 ? html`<div class="nq-film" role="tablist">
-                ${items.map((clip, index) => html`<button type="button" class=${`nq-thumb ${index === this.pick ? "is-on" : ""}`} role="tab" aria-selected=${index === this.pick ? "true" : "false"} aria-label=${clip.name || `${index + 1}`} @click=${() => this.choose(index)}>
+                ${items.map((clip, index) => html`<button type="button" class=${`nq-reel-thumb ${index === this.pick ? "is-on" : ""}`} role="tab" aria-selected=${index === this.pick ? "true" : "false"} aria-label=${clip.name || `${index + 1}`} @click=${() => this.choose(index)}>
                   ${clip.poster ? html`<img src=${clip.poster} alt="" />` : nothing}
                   <b>${clip.name || index + 1}</b>
                 </button>`)}

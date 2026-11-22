@@ -6,13 +6,16 @@ import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from ".
 import { emptyCopy } from "../../utils/ui.js";
 
 const css = `
-.nq-kicker { margin: 0 0 10px; color: var(--gold); letter-spacing: .18em; font-size: .75rem; }
-.nq-partners { display: grid; }
-.nq-partner { display: grid; grid-template-columns: auto 1fr; gap: 6px 16px; align-items: baseline; padding: 18px 0; border-block-end: 1px solid var(--line); }
-.nq-partner i { color: var(--gold); font-style: normal; }
-.nq-partner b { font-size: 1.2rem; font-weight: 700; }
-.nq-partner span { grid-column: 2; color: var(--muted); }
-.nq-partner.nq-rev { transition-delay: calc(var(--i, 0) * 90ms); }
+.nq-partner-head { text-align: center; margin-bottom: clamp(26px, 4vw, 44px); }
+.nq-partner-head .nq-kicker { margin: 0 0 10px; color: var(--gold); letter-spacing: .18em; font-size: .75rem; }
+.nq-partners { display: grid; gap: 18px; }
+@container (min-width: 640px) { .nq-partners { grid-template-columns: repeat(auto-fit, minmax(210px, 270px)); justify-content: center; gap: 22px; } }
+.nq-partner { position: relative; display: grid; justify-items: center; align-content: end; gap: 8px; min-height: 230px; padding: 70px 22px 30px; text-align: center; border: 1px solid var(--gold-soft); border-radius: 999px 999px 4px 4px; background: linear-gradient(180deg, color-mix(in srgb, var(--sand) 55%, transparent), var(--card)); }
+.nq-partner::before { content: ""; position: absolute; inset: 8px 8px auto; height: calc(100% - 16px); border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent); border-radius: 999px 999px 2px 2px; pointer-events: none; }
+.nq-partner i { font-style: normal; color: var(--gold); font-size: .7rem; }
+.nq-partner b { font-family: var(--serif); font-size: 1.3rem; font-weight: 700; }
+.nq-partner span { color: var(--muted); letter-spacing: .06em; font-size: .88rem; }
+.nq-partner.nq-rev { transition-delay: calc(var(--i, 0) * 110ms); }
 `;
 
 export default class PartnerRow extends LitElement {
@@ -46,10 +49,12 @@ export default class PartnerRow extends LitElement {
       .filter((item) => item.name);
     return html`<section id="nq-partners" class=${`nq-root nq-sec ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${localizedString(cfg.title) || "partners"}>
       <div class="nq-wrap">
-        ${localizedString(cfg.kicker) ? html`<p class="nq-kicker">${localizedString(cfg.kicker)}</p>` : nothing}
-        ${localizedString(cfg.title) ? html`<h2 class="nq-h2">${localizedString(cfg.title)}</h2>` : nothing}
+        <div class="nq-partner-head">
+          ${localizedString(cfg.kicker) ? html`<p class="nq-kicker">${localizedString(cfg.kicker)}</p>` : nothing}
+          ${localizedString(cfg.title) ? html`<h2 class="nq-h2">${localizedString(cfg.title)}</h2>` : nothing}
+        </div>
         ${items.length
-          ? html`<div class="nq-partners">${items.map((item, index) => html`<article class="nq-partner nq-rev" style=${`--i:${index}`}><i aria-hidden="true">—</i><b>${item.name}</b>${item.note ? html`<span>${item.note}</span>` : nothing}</article>`)}</div>`
+          ? html`<div class="nq-partners">${items.map((item, index) => html`<article class="nq-partner nq-rev" style=${`--i:${index}`}><i aria-hidden="true">◆</i><b>${item.name}</b>${item.note ? html`<span>${item.note}</span>` : nothing}</article>`)}</div>`
           : emptyCopy()}
       </div>
     </section>`;

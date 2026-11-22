@@ -8,7 +8,7 @@ import { baseCss, injectFonts, injectStyles, sectionStyle } from "../../utils/st
 
 const css = `
 .nq-foot { background: var(--nq-section-bg, var(--ink)); color: color-mix(in srgb, var(--ivory) 72%, transparent); padding-block: 48px 34px; font-size: .86rem; }
-.nq-foot .nq-logo { color: var(--ivory); }
+.nq-foot .nq-flogo { color: var(--ivory); }
 .nq-ft { display: flex; flex-wrap: wrap; gap: 30px 48px; justify-content: space-between; align-items: flex-start; }
 .nq-ft h5 { color: var(--ivory); font-family: var(--serif); font-size: 1rem; margin: 0 0 14px; font-weight: 700; }
 .nq-ft ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
@@ -22,7 +22,7 @@ const css = `
 .nq-social a { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--ivory) 28%, transparent); color: var(--ivory); }
 .nq-social a:hover { border-color: var(--gold); color: var(--gold); }
 .nq-social svg { width: 18px; height: 18px; display: block; }
-.nq-copy { margin-top: 34px; padding-top: 20px; border-top: 1px solid color-mix(in srgb, var(--ivory) 16%, transparent); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: .78rem; }
+.nq-foot-copy { margin-top: 34px; padding-top: 20px; border-top: 1px solid color-mix(in srgb, var(--ivory) 16%, transparent); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: .78rem; }
 .nq-totop, .nq-top { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 8px 18px; border: 1px solid color-mix(in srgb, var(--ivory) 28%, transparent); background: transparent; color: var(--ivory); font-family: var(--sans); font-size: .78rem; letter-spacing: .14em; cursor: pointer; transition: .3s; }
 .nq-foot .nq-totop { display: flex; width: fit-content; margin: 28px auto 0; }
 .nq-totop:hover, .nq-top:hover { border-color: var(--gold); color: var(--gold); }
@@ -32,9 +32,9 @@ const css = `
 .nq-dock[hidden] { display: none; }
 .nq-dock svg { width: 1.2rem; height: 1.2rem; display: block; }
 .nq-dock--wa { width: 3.45rem; height: 3.45rem; padding: 0; }
-.nq-logo { font-family: var(--serif); font-weight: 700; font-size: 1.5rem; letter-spacing: .02em; line-height: 1; color: var(--ivory); }
-.nq-logo small { display: block; font-family: var(--sans); font-size: .6rem; letter-spacing: .4em; color: var(--gold); font-weight: 400; margin-top: 4px; }
-.nq-logo img { height: 42px; width: auto; object-fit: contain; }
+.nq-flogo { font-family: var(--serif); font-weight: 700; font-size: 1.5rem; letter-spacing: .02em; line-height: 1; color: var(--ivory); }
+.nq-flogo small { display: block; font-family: var(--sans); font-size: .6rem; letter-spacing: .4em; color: var(--gold); font-weight: 400; margin-top: 4px; }
+.nq-flogo img { height: 42px; width: auto; object-fit: contain; }
 `;
 
 function socialIcon(name: string) {
@@ -214,7 +214,7 @@ export default class PageFooter extends LitElement {
       <div class="nq-wrap">
         <div class="nq-ft">
           <div class="nq-about">
-            <a href="#" class="nq-logo">${logo ? html`<img src=${logo} alt=${brand} />` : html`${brand}${mark ? html`<small>${mark}</small>` : nothing}`}</a>
+            <a href="#" class="nq-flogo">${logo ? html`<img src=${logo} alt=${brand} />` : html`${brand}${mark ? html`<small>${mark}</small>` : nothing}`}</a>
             ${localizedString(cfg.about) ? html`<p>${localizedString(cfg.about)}</p>` : nothing}
             ${pays.length ? html`<p class="nq-pay-size">${t({ ar: "أيقونات الدفع ٦٤×٦٤ بكسل", en: "Payment icons, 64×64 px" })}</p><div class="nq-pay">${pays.map((pay) => pay.image
               ? html`<img src=${pay.image} alt=${pay.label} width="32" height="32" title=${pay.label} />`
@@ -230,7 +230,7 @@ export default class PageFooter extends LitElement {
           </div>` : nothing}
         </div>
         ${showTop ? html`<button type="button" class="nq-totop" @click=${this.toTop}>${topLabel} <span aria-hidden="true">↑</span></button>` : nothing}
-        <div class="nq-copy">
+        <div class="nq-foot-copy">
           <span>${localizedString(cfg.copyright)}</span>
           <span>${localizedString(cfg.legal)}</span>
         </div>

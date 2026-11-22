@@ -1,73 +1,116 @@
 var __defProp = Object.defineProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
-import { LitElement, html } from "lit";
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp(target, key, result);
+  return result;
+};
+
+// tw-nasaq-landing/src/components/ribbon-line/index.ts
+import { html as html2, LitElement } from "lit";
 import { property } from "lit/decorators.js";
+
+// tw-nasaq-landing/src/utils/config.ts
 function getConfig(raw) {
-  return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
+  if (!raw) return {};
+  if (raw.component && typeof raw.component === "object") return raw.component;
+  return raw;
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  var _a, _b, _c;
-  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
+  const lang = window.Salla?.lang?.getLocale?.() || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
 function localizedString(value) {
-  if (value == null || value === "") return "";
-  if (typeof value == "string") return value;
-  if (typeof value == "object") {
-    const obj = value, text = obj[getLocale()] || obj.ar || obj.en;
-    return typeof text == "string" ? text : "";
+  if (value === null || value === void 0 || value === "") return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "object") {
+    const obj = value;
+    const text = obj[getLocale()] || obj.ar || obj.en;
+    return typeof text === "string" ? text : "";
   }
   return String(value);
 }
 __name(localizedString, "localizedString");
 function unwrapValue(value) {
-  var _a;
-  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
+  if (Array.isArray(value)) return unwrapValue(value[0]?.value ?? value[0] ?? "");
+  if (value && typeof value === "object" && "value" in value) return value.value;
+  return value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function getCollectionItems(items, prefix) {
-  return Array.isArray(items) ? items.map((item) => {
-    if (!item || typeof item != "object") return {};
+  if (!Array.isArray(items)) return [];
+  return items.map((item) => {
+    if (!item || typeof item !== "object") return {};
     const normalized = {};
-    for (const [key, val] of Object.entries(item))
+    for (const [key, val] of Object.entries(item)) {
       normalized[key.startsWith(`${prefix}.`) ? key.slice(prefix.length + 1) : key] = val;
+    }
     return normalized;
-  }) : [];
+  });
 }
 __name(getCollectionItems, "getCollectionItems");
 function watchLocale(host) {
   const update = /* @__PURE__ */ __name(() => host.requestUpdate(), "update");
-  return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
+  window.addEventListener("language-changed", update);
+  return () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
+
+// tw-nasaq-landing/src/utils/landing.ts
+import { html, nothing } from "lit";
 function schemeOf(cfg) {
   const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
-  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
+  if (scheme === "dark") return "nq-dark";
+  if (scheme === "light") return "nq-light";
+  return "nq-auto";
 }
 __name(schemeOf, "schemeOf");
+
+// tw-nasaq-landing/src/utils/styles.ts
 function injectStyles(id, css2) {
   let style = document.getElementById(id);
-  style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
+  if (!style) {
+    style = document.createElement("style");
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  if (style.textContent !== css2) style.textContent = css2;
 }
 __name(injectStyles, "injectStyles");
-const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+var KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
 function setKitFont(on) {
-  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
+  document.documentElement.classList.toggle("nq-kit-font", on);
+  const current = document.getElementById("nq-fonts");
+  if (!on) {
+    current?.remove();
+    return;
+  }
+  if (current) return;
   const link = document.createElement("link");
-  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
+  link.id = "nq-fonts";
+  link.rel = "stylesheet";
+  link.href = KIT_FONT;
+  document.head.appendChild(link);
 }
 __name(setKitFont, "setKitFont");
 function injectFonts() {
-  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
+  if (!document.documentElement.classList.contains("nq-kit-font")) return;
+  setKitFont(true);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
   return cfg.bg_color ? `--nq-section-bg:${cfg.bg_color}` : "";
 }
 __name(sectionStyle, "sectionStyle");
-const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
+var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
+var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
+var baseCss = `
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -126,48 +169,57 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
   .nq-mq-track { animation: none !important; }
 }
 `;
-var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name((decorators, target, key, kind) => {
-  for (var result = void 0, i = decorators.length - 1, decorator; i >= 0; i--)
-    (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
-  return result && __defProp2(target, key, result), result;
-}, "__decorateClass");
-const css = `
+
+// tw-nasaq-landing/src/components/ribbon-line/index.ts
+var css = `
 .nq-mq { border-block: 1px solid var(--line); background: var(--nq-section-bg, var(--card)); overflow: hidden; padding-block: 16px; }
 .nq-mq-track { display: flex; width: max-content; animation: nq-mq 36s linear infinite; }
 .nq-mq-set { display: flex; flex: none; align-items: center; }
 .nq-mq-set span { font-family: var(--serif); font-size: 1.05rem; color: var(--muted); white-space: nowrap; display: inline-flex; align-items: center; gap: 48px; padding-inline-end: 48px; }
-.nq-mq-set span::after { content: "◆"; font-size: .55rem; color: var(--gold); }
+.nq-mq-set span::after { content: "\u25C6"; font-size: .55rem; color: var(--gold); }
 .nq-mq:hover .nq-mq-track, .nq-mq:focus-within .nq-mq-track { animation-play-state: paused; }
 @keyframes nq-mq { to { transform: translateX(50%); } }
 html[dir="ltr"] .nq-mq-track { animation-name: nq-mq-ltr; }
 @keyframes nq-mq-ltr { to { transform: translateX(-50%); } }
-`, _RibbonLine = class _RibbonLine extends LitElement {
+`;
+var _RibbonLine = class _RibbonLine extends LitElement {
   constructor() {
-    super(...arguments), this.stop = () => {
-    };
+    super(...arguments);
+    this.stop = /* @__PURE__ */ __name(() => {
+    }, "stop");
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
-    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-ribbon-line", css), this.stop = watchLocale(this);
+    super.connectedCallback();
+    this.classList.add("nq-host");
+    injectFonts();
+    injectStyles("nq-base", baseCss);
+    injectStyles("nq-ribbon-line", css);
+    this.stop = watchLocale(this);
   }
   disconnectedCallback() {
-    this.stop(), super.disconnectedCallback();
+    this.stop();
+    super.disconnectedCallback();
   }
   render() {
-    const cfg = getConfig(this.config), items = getCollectionItems(cfg.items, "items").map((item) => localizedString(item.text)).filter(Boolean), times = items.length ? Math.max(2, Math.ceil(12 / items.length)) : 0, unit = times ? Array.from({ length: times }, () => items).flat() : [], row = /* @__PURE__ */ __name((hidden) => html`<div class="nq-mq-set" aria-hidden=${hidden ? "true" : "false"}>${unit.map((item) => html`<span>${item}</span>`)}</div>`, "row");
-    return html`<div class=${`nq-root nq-mq ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
-      <div class="nq-mq-track">${row(!1)}${row(!0)}</div>
+    const cfg = getConfig(this.config);
+    const items = getCollectionItems(cfg.items, "items").map((item) => localizedString(item.text)).filter(Boolean);
+    const times = items.length ? Math.max(2, Math.ceil(12 / items.length)) : 0;
+    const unit = times ? Array.from({ length: times }, () => items).flat() : [];
+    const row = /* @__PURE__ */ __name((hidden) => html2`<div class="nq-mq-set" aria-hidden=${hidden ? "true" : "false"}>${unit.map((item) => html2`<span>${item}</span>`)}</div>`, "row");
+    return html2`<div class=${`nq-root nq-mq ${schemeOf(cfg)}`} style=${sectionStyle(cfg)}>
+      <div class="nq-mq-track">${row(false)}${row(true)}</div>
     </div>`;
   }
 };
 __name(_RibbonLine, "RibbonLine");
-let RibbonLine = _RibbonLine;
 __decorateClass([
   property({ type: Object })
-], RibbonLine.prototype, "config");
-typeof RibbonLine < "u" && RibbonLine.registerSallaComponent("salla-ribbon-line");
+], _RibbonLine.prototype, "config", 2);
+var RibbonLine = _RibbonLine;
 export {
   RibbonLine as default
 };
+typeof RibbonLine < "u" && RibbonLine.registerSallaComponent("salla-ribbon-line");

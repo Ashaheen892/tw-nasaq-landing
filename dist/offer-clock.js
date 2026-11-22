@@ -1,23 +1,38 @@
 var __defProp = Object.defineProperty;
-var __name = (target, value) => __defProp(target, "name", { value, configurable: !0 });
-import { LitElement, nothing, html } from "lit";
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp(target, key, result);
+  return result;
+};
+
+// tw-nasaq-landing/src/components/offer-clock/index.ts
+import { html as html3, LitElement, nothing as nothing3 } from "lit";
 import { property, state } from "lit/decorators.js";
+
+// tw-nasaq-landing/src/utils/config.ts
 function getConfig(raw) {
-  return raw ? raw.component && typeof raw.component == "object" ? raw.component : raw : {};
+  if (!raw) return {};
+  if (raw.component && typeof raw.component === "object") return raw.component;
+  return raw;
 }
 __name(getConfig, "getConfig");
 function getLocale() {
-  var _a, _b, _c;
-  const lang = ((_c = (_b = (_a = window.Salla) == null ? void 0 : _a.lang) == null ? void 0 : _b.getLocale) == null ? void 0 : _c.call(_b)) || document.documentElement.lang || "ar";
+  const lang = window.Salla?.lang?.getLocale?.() || document.documentElement.lang || "ar";
   return String(lang).toLowerCase().startsWith("en") ? "en" : "ar";
 }
 __name(getLocale, "getLocale");
 function localizedString(value) {
-  if (value == null || value === "") return "";
-  if (typeof value == "string") return value;
-  if (typeof value == "object") {
-    const obj = value, text = obj[getLocale()] || obj.ar || obj.en;
-    return typeof text == "string" ? text : "";
+  if (value === null || value === void 0 || value === "") return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "object") {
+    const obj = value;
+    const text = obj[getLocale()] || obj.ar || obj.en;
+    return typeof text === "string" ? text : "";
   }
   return String(value);
 }
@@ -27,44 +42,68 @@ function t(strings) {
 }
 __name(t, "t");
 function unwrapValue(value) {
-  var _a;
-  return Array.isArray(value) ? unwrapValue(((_a = value[0]) == null ? void 0 : _a.value) ?? value[0] ?? "") : value && typeof value == "object" && "value" in value ? value.value : value ?? "";
+  if (Array.isArray(value)) return unwrapValue(value[0]?.value ?? value[0] ?? "");
+  if (value && typeof value === "object" && "value" in value) return value.value;
+  return value ?? "";
 }
 __name(unwrapValue, "unwrapValue");
 function flag(value) {
   const raw = unwrapValue(value);
-  if (raw === !0 || raw === 1) return !0;
-  if (typeof raw == "string") {
+  if (raw === true || raw === 1) return true;
+  if (typeof raw === "string") {
     const text = raw.trim().toLowerCase();
     return text === "true" || text === "1" || text === "on" || text === "yes";
   }
-  return !1;
+  return false;
 }
 __name(flag, "flag");
 function watchLocale(host) {
   const update = /* @__PURE__ */ __name(() => host.requestUpdate(), "update");
-  return window.addEventListener("language-changed", update), () => window.removeEventListener("language-changed", update);
+  window.addEventListener("language-changed", update);
+  return () => window.removeEventListener("language-changed", update);
 }
 __name(watchLocale, "watchLocale");
+
+// tw-nasaq-landing/src/utils/landing.ts
+import { html, nothing } from "lit";
 function schemeOf(cfg) {
   const scheme = String(unwrapValue(cfg.color_scheme) || "auto");
-  return scheme === "dark" ? "nq-dark" : scheme === "light" ? "nq-light" : "nq-auto";
+  if (scheme === "dark") return "nq-dark";
+  if (scheme === "light") return "nq-light";
+  return "nq-auto";
 }
 __name(schemeOf, "schemeOf");
+
+// tw-nasaq-landing/src/utils/styles.ts
 function injectStyles(id, css2) {
   let style = document.getElementById(id);
-  style || (style = document.createElement("style"), style.id = id, document.head.appendChild(style)), style.textContent !== css2 && (style.textContent = css2);
+  if (!style) {
+    style = document.createElement("style");
+    style.id = id;
+    document.head.appendChild(style);
+  }
+  if (style.textContent !== css2) style.textContent = css2;
 }
 __name(injectStyles, "injectStyles");
-const KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
+var KIT_FONT = "https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Almarai:wght@300;400;700&display=swap";
 function setKitFont(on) {
-  if (document.documentElement.classList.toggle("nq-kit-font", on), document.getElementById("nq-fonts")) return;
+  document.documentElement.classList.toggle("nq-kit-font", on);
+  const current = document.getElementById("nq-fonts");
+  if (!on) {
+    current?.remove();
+    return;
+  }
+  if (current) return;
   const link = document.createElement("link");
-  link.id = "nq-fonts", link.rel = "stylesheet", link.href = KIT_FONT, document.head.appendChild(link);
+  link.id = "nq-fonts";
+  link.rel = "stylesheet";
+  link.href = KIT_FONT;
+  document.head.appendChild(link);
 }
 __name(setKitFont, "setKitFont");
 function injectFonts() {
-  document.documentElement.classList.contains("nq-kit-font") && setKitFont(!0);
+  if (!document.documentElement.classList.contains("nq-kit-font")) return;
+  setKitFont(true);
 }
 __name(injectFonts, "injectFonts");
 function sectionStyle(cfg) {
@@ -72,20 +111,32 @@ function sectionStyle(cfg) {
 }
 __name(sectionStyle, "sectionStyle");
 function watchReveal(host) {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-    return host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in")), () => {
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) {
+    host.querySelectorAll(".nq-rev").forEach((el) => el.classList.add("in"));
+    return () => {
     };
+  }
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      entry.isIntersecting && (entry.target.classList.add("in"), io.unobserve(entry.target));
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("in");
+      io.unobserve(entry.target);
     });
-  }, { threshold: 0.14 }), scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan"), mo = new MutationObserver(scan);
-  return mo.observe(host, { childList: !0, subtree: !0 }), scan(), () => {
-    io.disconnect(), mo.disconnect();
+  }, { threshold: 0.14 });
+  const scan = /* @__PURE__ */ __name(() => host.querySelectorAll(".nq-rev:not(.in)").forEach((el) => io.observe(el)), "scan");
+  const mo = new MutationObserver(scan);
+  mo.observe(host, { childList: true, subtree: true });
+  scan();
+  return () => {
+    io.disconnect();
+    mo.disconnect();
   };
 }
 __name(watchReveal, "watchReveal");
-const LIGHT = "--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;", DARK = "--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;", baseCss = `
+var LIGHT = `--ink:#101014; --ink-soft:#2a2a30; --ivory:#f7f4ef; --sand:#e8dfd3; --sand-2:#d9ccbb; --gold:#b8945f; --gold-soft:#d8c49c; --line:#ddd2c4; --muted:#7d7468; --card:#ffffff; --page:#f7f4ef;`;
+var DARK = `--ink:#f3efe8; --ink-soft:#d9d1c6; --ivory:#14130f; --sand:#2a261f; --sand-2:#3a342b; --gold:#d4b483; --gold-soft:#e6d3b0; --line:rgba(243,239,232,.16); --muted:#b7ab9c; --card:#1c1a16; --page:#0e0d0b;`;
+var baseCss = `
 .nq-host { display: block; width: 100%; min-width: 0; container-type: inline-size; }
 body:has(.nq-host) { background: #f7f4ef; }
 html.nq-mode-light { ${LIGHT} }
@@ -144,16 +195,21 @@ html.nq-kit-font .nq-root { --serif:'Amiri',"Times New Roman",serif; --sans:'Alm
   .nq-mq-track { animation: none !important; }
 }
 `;
+
+// tw-nasaq-landing/src/utils/ui.ts
+import { html as html2, nothing as nothing2 } from "lit";
 function arDigits(n) {
-  return String(Math.max(0, n)).padStart(2, "0").replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[Number(d)]);
+  return String(Math.max(0, n)).padStart(2, "0").replace(/\d/g, (d) => "\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669"[Number(d)]);
 }
 __name(arDigits, "arDigits");
+
+// tw-nasaq-landing/src/utils/video.ts
 function clipUrl(value) {
   const raw = unwrapValue(value);
-  if (typeof raw == "string") return raw.trim();
-  if (raw && typeof raw == "object") {
+  if (typeof raw === "string") return raw.trim();
+  if (raw && typeof raw === "object") {
     const url = raw.url ?? raw.src;
-    if (typeof url == "string") return url.trim();
+    if (typeof url === "string") return url.trim();
   }
   return "";
 }
@@ -174,7 +230,6 @@ function kindOf(url) {
 }
 __name(kindOf, "kindOf");
 function frameSrc(url) {
-  var _a, _b;
   let frame = url;
   const kind = kindOf(url);
   try {
@@ -182,24 +237,37 @@ function frameSrc(url) {
     if (kind === "youtube") {
       const host = parsed.hostname.replace(/^www\./, "");
       let id = "";
-      host === "youtu.be" ? id = parsed.pathname.split("/").filter(Boolean)[0] || "" : parsed.pathname.includes("/embed/") ? id = ((_a = parsed.pathname.split("/embed/")[1]) == null ? void 0 : _a.split("/")[0]) || "" : parsed.pathname.includes("/shorts/") ? id = ((_b = parsed.pathname.split("/shorts/")[1]) == null ? void 0 : _b.split("/")[0]) || "" : id = parsed.searchParams.get("v") || "", id && (frame = `https://www.youtube-nocookie.com/embed/${id}`);
+      if (host === "youtu.be") id = parsed.pathname.split("/").filter(Boolean)[0] || "";
+      else if (parsed.pathname.includes("/embed/")) id = parsed.pathname.split("/embed/")[1]?.split("/")[0] || "";
+      else if (parsed.pathname.includes("/shorts/")) id = parsed.pathname.split("/shorts/")[1]?.split("/")[0] || "";
+      else id = parsed.searchParams.get("v") || "";
+      if (id) frame = `https://www.youtube-nocookie.com/embed/${id}`;
     } else if (kind === "vimeo") {
       const id = parsed.pathname.split("/").filter(Boolean).pop() || "";
-      /^\d+$/.test(id) && (frame = `https://player.vimeo.com/video/${id}`);
+      if (/^\d+$/.test(id)) frame = `https://player.vimeo.com/video/${id}`;
     }
   } catch {
     frame = url;
   }
   if (kind === "file") return frame;
   const params = new URLSearchParams();
-  return params.set("autoplay", "1"), params.set("playsinline", "1"), kind === "youtube" ? (params.set("mute", "1"), params.set("rel", "0"), params.set("enablejsapi", "1")) : (kind === "vimeo" || params.set("mute", "1"), params.set("muted", "1")), `${frame}${frame.includes("?") ? "&" : "?"}${params.toString()}`;
+  params.set("autoplay", "1");
+  params.set("playsinline", "1");
+  if (kind === "youtube") {
+    params.set("mute", "1");
+    params.set("rel", "0");
+    params.set("enablejsapi", "1");
+  } else if (kind === "vimeo") {
+    params.set("muted", "1");
+  } else {
+    params.set("mute", "1");
+    params.set("muted", "1");
+  }
+  return `${frame}${frame.includes("?") ? "&" : "?"}${params.toString()}`;
 }
 __name(frameSrc, "frameSrc");
-var __defProp2 = Object.defineProperty, __decorateClass = /* @__PURE__ */ __name((decorators, target, key, kind) => {
-  for (var result = void 0, i = decorators.length - 1, decorator; i >= 0; i--)
-    (decorator = decorators[i]) && (result = decorator(target, key, result) || result);
-  return result && __defProp2(target, key, result), result;
-}, "__decorateClass");
+
+// tw-nasaq-landing/src/components/offer-clock/index.ts
 function offerEnd(raw) {
   const text = String(unwrapValue(raw) || "").trim();
   if (!text) return 0;
@@ -211,7 +279,7 @@ function offerEnd(raw) {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 __name(offerEnd, "offerEnd");
-const css = `
+var css = `
 .nq-cd { background: var(--nq-section-bg, var(--ink)); color: var(--ivory); position: relative; overflow: hidden; }
 .nq-cd::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(60% 80% at 85% 10%, rgba(184,148,95,.22), transparent 60%); }
 .nq-cd-video { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; object-fit: cover; border: 0; pointer-events: none; }
@@ -226,68 +294,91 @@ const css = `
 .nq-unit { min-width: 86px; text-align: center; border: 1px solid color-mix(in srgb, var(--ivory) 22%, transparent); padding: 14px 10px; }
 .nq-unit b { display: block; font-family: var(--serif); font-size: 2.1rem; line-height: 1; font-variant-numeric: tabular-nums; }
 .nq-unit span { font-size: .68rem; letter-spacing: .2em; color: var(--gold-soft); }
-`, _OfferClock = class _OfferClock extends LitElement {
+`;
+var _OfferClock = class _OfferClock extends LitElement {
   constructor() {
-    super(...arguments), this.left = 0, this.stop = () => {
-    }, this.timer = 0, this.end = 0;
+    super(...arguments);
+    this.left = 0;
+    this.stop = /* @__PURE__ */ __name(() => {
+    }, "stop");
+    this.timer = 0;
+    this.end = 0;
   }
   createRenderRoot() {
     return this;
   }
   connectedCallback() {
-    super.connectedCallback(), this.classList.add("nq-host"), injectFonts(), injectStyles("nq-base", baseCss), injectStyles("nq-offer-clock", css);
-    const stopLocale = watchLocale(this), stopReveal = watchReveal(this);
-    this.arm(), this.timer = window.setInterval(() => {
+    super.connectedCallback();
+    this.classList.add("nq-host");
+    injectFonts();
+    injectStyles("nq-base", baseCss);
+    injectStyles("nq-offer-clock", css);
+    const stopLocale = watchLocale(this);
+    const stopReveal = watchReveal(this);
+    this.arm();
+    this.timer = window.setInterval(() => {
       this.left = Math.max(0, this.end - Date.now());
-    }, 1e3), this.stop = () => {
-      stopLocale(), stopReveal(), window.clearInterval(this.timer);
+    }, 1e3);
+    this.stop = () => {
+      stopLocale();
+      stopReveal();
+      window.clearInterval(this.timer);
     };
   }
   disconnectedCallback() {
-    this.stop(), super.disconnectedCallback();
+    this.stop();
+    super.disconnectedCallback();
   }
   willUpdate(changed) {
-    changed.has("config") && this.arm();
+    if (changed.has("config")) this.arm();
   }
   updated() {
     const video = this.querySelector(".nq-cd-video");
-    video instanceof HTMLVideoElement && (video.muted = !0, video.defaultMuted = !0, video.paused && video.play().catch(() => {
-    }));
+    if (!(video instanceof HTMLVideoElement)) return;
+    video.muted = true;
+    video.defaultMuted = true;
+    if (video.paused) void video.play().catch(() => void 0);
   }
   arm() {
-    this.end = offerEnd(getConfig(this.config).ends_at), this.left = Math.max(0, this.end - Date.now());
+    this.end = offerEnd(getConfig(this.config).ends_at);
+    this.left = Math.max(0, this.end - Date.now());
   }
   render() {
-    const cfg = getConfig(this.config), title = localizedString(cfg.title), seconds = Math.floor(this.left / 1e3), parts = [
-      [Math.floor(seconds / 86400), t({ ar: "يوم", en: "day" })],
-      [Math.floor(seconds % 86400 / 3600), t({ ar: "ساعة", en: "hour" })],
-      [Math.floor(seconds % 3600 / 60), t({ ar: "دقيقة", en: "min" })],
-      [seconds % 60, t({ ar: "ثانية", en: "sec" })]
-    ], video = flag(cfg.show_video) ? clipUrl(cfg.video_url) : "", file = video && (isFileClip(video) || !/youtube|youtu\.be|vimeo/i.test(video));
-    return html`<section class=${`nq-root nq-cd nq-sec ${schemeOf(cfg)} ${video ? "has-video" : ""}`} style=${sectionStyle(cfg)} aria-label=${title || "offer"}>
-      ${video ? file ? html`<video class="nq-cd-video" src=${video} autoplay muted loop playsinline aria-hidden="true"></video>` : html`<iframe class="nq-cd-video" src=${frameSrc(video)} title="" allow="autoplay; encrypted-media" tabindex="-1"></iframe>` : nothing}
+    const cfg = getConfig(this.config);
+    const title = localizedString(cfg.title);
+    const seconds = Math.floor(this.left / 1e3);
+    const parts = [
+      [Math.floor(seconds / 86400), t({ ar: "\u064A\u0648\u0645", en: "day" })],
+      [Math.floor(seconds % 86400 / 3600), t({ ar: "\u0633\u0627\u0639\u0629", en: "hour" })],
+      [Math.floor(seconds % 3600 / 60), t({ ar: "\u062F\u0642\u064A\u0642\u0629", en: "min" })],
+      [seconds % 60, t({ ar: "\u062B\u0627\u0646\u064A\u0629", en: "sec" })]
+    ];
+    const video = flag(cfg.show_video) ? clipUrl(cfg.video_url) : "";
+    const file = video && (isFileClip(video) || !/youtube|youtu\.be|vimeo/i.test(video));
+    return html3`<section class=${`nq-root nq-cd nq-sec ${schemeOf(cfg)} ${video ? "has-video" : ""}`} style=${sectionStyle(cfg)} aria-label=${title || "offer"}>
+      ${video ? file ? html3`<video class="nq-cd-video" src=${video} autoplay muted loop playsinline aria-hidden="true"></video>` : html3`<iframe class="nq-cd-video" src=${frameSrc(video)} title="" allow="autoplay; encrypted-media" tabindex="-1"></iframe>` : nothing3}
       <div class="nq-wrap nq-cd-g">
         <div class="nq-rev">
-          ${localizedString(cfg.kicker) ? html`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : ""}
-          ${title ? html`<h2>${title}</h2>` : ""}
-          ${localizedString(cfg.text) ? html`<p>${localizedString(cfg.text)}</p>` : ""}
+          ${localizedString(cfg.kicker) ? html3`<p class="nq-eyebrow">${localizedString(cfg.kicker)}</p>` : ""}
+          ${title ? html3`<h2>${title}</h2>` : ""}
+          ${localizedString(cfg.text) ? html3`<p>${localizedString(cfg.text)}</p>` : ""}
         </div>
         <div class="nq-clock nq-rev" aria-live="polite">
-          ${parts.map(([value, label]) => html`<div class="nq-unit"><b>${arDigits(Number(value))}</b><span>${label}</span></div>`)}
+          ${parts.map(([value, label]) => html3`<div class="nq-unit"><b>${arDigits(Number(value))}</b><span>${label}</span></div>`)}
         </div>
       </div>
     </section>`;
   }
 };
 __name(_OfferClock, "OfferClock");
-let OfferClock = _OfferClock;
 __decorateClass([
   property({ type: Object })
-], OfferClock.prototype, "config");
+], _OfferClock.prototype, "config", 2);
 __decorateClass([
   state()
-], OfferClock.prototype, "left");
-typeof OfferClock < "u" && OfferClock.registerSallaComponent("salla-offer-clock");
+], _OfferClock.prototype, "left", 2);
+var OfferClock = _OfferClock;
 export {
   OfferClock as default
 };
+typeof OfferClock < "u" && OfferClock.registerSallaComponent("salla-offer-clock");

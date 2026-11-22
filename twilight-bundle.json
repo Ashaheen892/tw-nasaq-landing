@@ -282,7 +282,7 @@
                     "label": "خط الصفحة",
                     "icon": "sicon-toggle-off",
                     "required": false,
-                    "description": "الافتراضي خط المتجر من سلة، مثل سيليا. فعّله فقط إذا أردت خط أميري والمرعي.",
+                    "description": "الافتراضي خط المتجر من سلة، فعّله فقط إذا أردت خط أميري والمرعي.",
                     "value": false,
                     "selected": false
                 },

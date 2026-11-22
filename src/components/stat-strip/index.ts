@@ -3,16 +3,20 @@ import { property } from "lit/decorators.js";
 import { getCollectionItems, getConfig, localizedString, watchLocale } from "../../utils/config.js";
 import { schemeOf } from "../../utils/landing.js";
 import { baseCss, injectFonts, injectStyles, sectionStyle, watchReveal } from "../../utils/styles.js";
-import { arDigits, emptyCopy } from "../../utils/ui.js";
+import { emptyCopy } from "../../utils/ui.js";
 
 const css = `
-.nq-kicker { margin: 0 0 10px; color: var(--gold); letter-spacing: .18em; font-size: .75rem; }
-.nq-stats { display: grid; }
-.nq-stat { display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; align-items: baseline; padding: 22px 0; border-block-end: 1px solid var(--line); }
-.nq-stat i { grid-row: span 2; font-style: normal; color: var(--gold); letter-spacing: .16em; }
-.nq-stat b { font-size: clamp(1.8rem, 3vw, 2.7rem); font-weight: 700; line-height: 1; }
-.nq-stat span { color: var(--muted); }
-.nq-stat.nq-rev { transition-delay: calc(var(--i, 0) * 90ms); }
+.nq-stat-head { text-align: center; margin-bottom: clamp(28px, 4vw, 48px); }
+.nq-stat-head .nq-kicker { margin: 0 0 10px; color: var(--gold); letter-spacing: .18em; font-size: .75rem; }
+.nq-stat-head .nq-kicker::before, .nq-stat-head .nq-kicker::after { content: "◆"; margin-inline: .7em; font-size: .55em; vertical-align: middle; }
+.nq-stats { display: grid; gap: 28px; }
+@container (min-width: 720px) { .nq-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; } }
+.nq-stat { position: relative; display: grid; justify-items: center; gap: 10px; padding: 8px 20px; text-align: center; }
+@container (min-width: 720px) { .nq-stat + .nq-stat::before { content: ""; position: absolute; inset-inline-start: 0; top: 12%; bottom: 12%; width: 1px; background: linear-gradient(transparent, var(--gold), transparent); } }
+.nq-stat b { font-family: var(--serif); font-size: clamp(2.3rem, 4.5vw, 3.6rem); font-weight: 700; line-height: 1; color: var(--ink); }
+.nq-stat i { width: 28px; height: 1px; background: var(--gold); }
+.nq-stat span { color: var(--muted); letter-spacing: .04em; }
+.nq-stat.nq-rev { transition-delay: calc(var(--i, 0) * 110ms); }
 `;
 
 export default class StatStrip extends LitElement {
@@ -46,10 +50,12 @@ export default class StatStrip extends LitElement {
       .filter((item) => item.value);
     return html`<section id="nq-stats" class=${`nq-root nq-sec ${schemeOf(cfg)}`} style=${sectionStyle(cfg)} aria-label=${localizedString(cfg.title) || "stats"}>
       <div class="nq-wrap">
-        ${localizedString(cfg.kicker) ? html`<p class="nq-kicker">${localizedString(cfg.kicker)}</p>` : ""}
-        ${localizedString(cfg.title) ? html`<h2 class="nq-h2">${localizedString(cfg.title)}</h2>` : ""}
+        <div class="nq-stat-head">
+          ${localizedString(cfg.kicker) ? html`<p class="nq-kicker">${localizedString(cfg.kicker)}</p>` : ""}
+          ${localizedString(cfg.title) ? html`<h2 class="nq-h2">${localizedString(cfg.title)}</h2>` : ""}
+        </div>
         ${items.length
-          ? html`<div class="nq-stats">${items.map((item, index) => html`<article class="nq-stat nq-rev" style=${`--i:${index}`}><i>${arDigits(index + 1)}</i><b>${item.value}</b><span>${item.label}</span></article>`)}</div>`
+          ? html`<div class="nq-stats">${items.map((item, index) => html`<article class="nq-stat nq-rev" style=${`--i:${index}`}><b>${item.value}</b><i aria-hidden="true"></i><span>${item.label}</span></article>`)}</div>`
           : emptyCopy()}
       </div>
     </section>`;
